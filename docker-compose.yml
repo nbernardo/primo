@@ -9,6 +9,7 @@ services:
       dockerfile: Dockerfile
     ports: 
       - "80:80"
+      
 
   promo:
     image: promo:service1
@@ -16,7 +17,7 @@ services:
       context: ./services/promos/
       dockerfile: Dockerfile
     ports: 
-      - "4001:4001"
+      - "4000:4000"
   
   user:
     image: user:service1
@@ -24,4 +25,4 @@ services:
       context: ./services/user/
       dockerfile: Dockerfile
     ports: 
-      - "4000:4000"
+      - "4001:4001"
