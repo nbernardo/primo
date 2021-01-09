@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  nginx:
+      image: nginx
+      ports:
+        - "4080:80"
+    
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile
+  

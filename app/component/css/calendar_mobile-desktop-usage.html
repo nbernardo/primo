@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+
+    <script>
+        // Ignore this in your implementation
+        window.isMbscDemo = true;
+    </script>
+
+    <title>Mobile & Desktop usage</title>
+
+    <!-- Mobiscroll JS and CSS Includes -->
+    <link rel="stylesheet" href="mobiscroll.javascript.min.css">
+    <script src="../js/mobiscroll.javascript.min.js"></script>
+
+    <style type="text/css">
+
+    
+    .md-mobile-picker-inline {
+
+        margin: 6px 0 12px 0;
+        width: 98%;
+        margin: 0 auto;
+
+    }
+
+    </style>
+
+</head>
+<body>
+
+<div mbsc-page class="demo-mobile-desktop-usage">
+  <div style="height:100%">
+
+    <div class="md-mobile-picker-inline">
+        <div id="demo-mobile-picker-inline"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+
+    mobiscroll.setOptions({
+        locale: mobiscroll.localeEn,  // Specify language like: locale: mobiscroll.localePl or omit setting to use default
+        theme: 'ios',                 // Specify theme like: theme: 'ios' or omit setting to use default
+        themeVariant: 'light'         // More info about themeVariant: https://docs.mobiscroll.com/5-0-2/javascript/calendar#opt-themeVariant
+    });
+
+    mobiscroll.datepicker('#demo-mobile-picker-inline', {
+        controls: ['calendar'],       // More info about controls: https://docs.mobiscroll.com/5-0-2/javascript/calendar#opt-controls
+        display: 'inline'             // Specify display mode like: display: 'bottom' or omit setting to use default
+    });
+    
+
+</script>
+
+</body>
+</html>
