@@ -5,5 +5,7 @@ services/order/node_modules
 services/promos/node_modules
 services/promos/mongo/data;*
 services/user/node_modules
+services/user/Dockerfile
+services/promos/Dockerfile
 client
 app/node_modules
