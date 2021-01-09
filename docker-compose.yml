@@ -1,14 +1,27 @@
 version: '3'
 
 services:
+
+  front:
+    image: primo:app
+    build:
+      context: ./app/
+      dockerfile: Dockerfile
+    ports: 
+      - "80:80"
+
   promo:
     image: promo:service1
     build: 
       context: ./services/promos/
       dockerfile: Dockerfile
+    ports: 
+      - "4001:4001"
   
   user:
     image: user:service1
     build:
       context: ./services/user/
       dockerfile: Dockerfile
+    ports: 
+      - "4000:4000"
