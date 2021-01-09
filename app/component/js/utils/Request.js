@@ -1,4 +1,4 @@
-const BASE_IP = "http://192.168.1.2";
+const BASE_IP = "http://64.225.11.52";
 
 function ProwebRequest(){
 
