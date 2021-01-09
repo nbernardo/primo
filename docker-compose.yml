@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  promo:
+    image: promo:service1
+    build: 
+      context: ./services/promos/
+      dockerfile: Dockerfile
+  
+  user:
+    image: user:service1
+    build:
+      context: ./services/user/
+      dockerfile: Dockerfile
