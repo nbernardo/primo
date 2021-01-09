@@ -1,19 +1,5 @@
 const {MongoClient, ObjectId} = require("mongodb");
-
-/*
-const environments = {
-    dev : {
-        port: 27001
-    },
-    prod: {
-        port: 27017
-    }
-}
-*/
-//const url = `mongodb://localhost:${environments[process.env.ENVIRONMENT].port}/`;
-const PORT = 27001;
-const url = `mongodb://localhost:${PORT}/`;
-console.log(`Mongo correndo na porta ${PORT}`);
+const url = "mongodb://localhost:27001/";
 
 
 const find = ({table, database, query}, callback) => {
