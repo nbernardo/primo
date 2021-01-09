@@ -1,11 +1,11 @@
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
 
-const { route } = require("../promos/controller");
 const {find, deleteOne, save} = require("./dataccess");
 
 router.get("/", (req, res) => {
 
+    res.send("User Service está no ar");
     /*
     save(14,{obj: "http://192.168.1.2:3000/template/img/promos/images/pao_273x180.jpg"});
     save(13,{obj: "http://192.168.1.2:3000/template/img/promos/images/paes_273x180.png"});

@@ -3,6 +3,7 @@ documentation
 services/catalog/node_modules
 services/order/node_modules
 services/promos/node_modules
+services/promos/mongo/data;*
 services/user/node_modules
 client
 app/node_modules

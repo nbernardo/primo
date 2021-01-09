@@ -1,8 +1,8 @@
 FROM node:alpine
 
 WORKDIR /app
+ENV PORT 4001
 COPY . .
 RUN npm install
 CMD npm start
-ENV PORT 4000
-EXPOSE 4000
+EXPOSE 4001
