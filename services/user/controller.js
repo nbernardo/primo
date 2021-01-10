@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
 
-const {find, deleteOne, save} = require("./dataccess");
+const {find, deleteOne, save, saveAddress} = require("./dataccess");
 
 router.get("/", (req, res) => {
 
@@ -11,6 +11,41 @@ router.get("/", (req, res) => {
     save(13,{obj: "http://192.168.1.2:3000/template/img/promos/images/paes_273x180.png"});
     res.send("Chamando a rota inicial");
     */
+
+})
+
+router.post("/address", (req, client) => {
+
+    const dados = {...req.body};
+    
+    saveAddress(dados, ({err, res}) => {
+        
+        const {result: {ok, nModified}} = res;
+        if(ok){
+            client.send({
+                status: "ok"
+            });
+            return;
+        }
+
+        if(err){
+
+            client.status(204).send({
+                erros:{
+                    ...err
+                },
+                result: {
+                    ...result
+                }
+            })
+
+        }
+
+        //console.log(res1);
+        
+
+    });
+    
 
 })
 
@@ -39,7 +74,7 @@ router.post("/", (req, resp) => {
 
     console.log(req);
 
-    save({...dados},(err, result) => {
+    save({...dados, senhaConf: ''},(err, result) => {
 
         const {insertedIds, result: {ok}} = result;
 

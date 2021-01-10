@@ -5,12 +5,24 @@ user = {
 
 function UserViewController(){
 
+    this.userLat = 0;
+    this.userLng = 0;
+
+    this.setLat = function(lat){
+        this.userLat = lat;
+    }
+
+    navigator.geolocation.getCurrentPosition((position) => {
+        this.userLat = position.coords.latitude;
+        this.userLng = position.coords.longitude;
+    });
+
     this.getFields = function(){
 
         let filedsClass = "entyti-user";
         let fields = document.getElementsByClassName(filedsClass);
         let values = {}
-
+        
         for(x = 0; x < fields.length; x++){
             values[fields[x].id] = fields[x].value;
         }
@@ -63,6 +75,66 @@ function UserViewController(){
 
     }
 
+    this.getLoggedUser = function(){
+
+        const user = localStorage.getItem("user");
+        const userData = JSON.parse(user);
+
+        return {
+            name: userData.nomeCompleto,
+            email: userData.email,
+            id: userData.id
+        };
+        
+
+    }
+
+    this.saveAddress = function(){
+
+        let fields = __FORM_UTIL__.getFieldValueByClass("entity-userAddress");
+        fields["latLng"] = `${this.userLat},${this.userLng}`;
+        let obj = {userId: this.getLoggedUser().id, endereco: fields};
+
+        let userAddress = JSON.stringify(obj);
+
+        __VIEW_UTILS__.showSpinnerWithNoEscape({
+            feedback: true,
+            title: "Registo de endereço",
+            message1: `Endereço registado com sucesso`
+        });
+
+        __REQUEST__.postJSON(`${BASE_IP}:4001/user/address`, userAddress, (resp, xhr) => {
+
+            __VIEW_UTILS__.showSpinnerFeedback();
+            let result = JSON.parse(resp);
+            if(result.status == "ok"){
+                this.saveAddressOffline(userAddress);
+            }
+
+        })
+
+    }
+
+    this.saveAddressOffline = function(address){
+
+        localStorage.setItem("address", address);
+
+    }
+
+    this.getOfflineAddress = function(){
+
+        let fullAddress = localStorage.getItem("address");
+        let splittedAddr = JSON.parse(fullAddress);
+        for(field in splittedAddr.endereco){
+           
+            if(field != undefined && field != "latLng")
+                document.getElementById(`user${field.capitalize()}`).value = splittedAddr.endereco[field];
+            
+            
+        }
+
+    }
+
     this.saveUser = function(){
         
         this.clearUserCreationValidation();
@@ -76,11 +148,8 @@ function UserViewController(){
             return;
         }
         
-        console.log("Resultado validação: ",userInputValidation);
-
         if(userInputValidation){
 
-            console.log("Entrou");
             document.getElementById("btnCriarUser").disabled = true;
             // __VIEW_UTILS__ está localizado em app/component/js/utils
             __VIEW_UTILS__.showSpinnerForViewContainer("accountModal");

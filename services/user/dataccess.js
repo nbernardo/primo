@@ -1,5 +1,5 @@
 const {MongoClient, ObjectId} = require("mongodb");
-const url = "mongodb://localhost:27001/";
+const url = "mongodb://localhost:27003/";
 
 
 const find = ({table, database, query}, callback) => {
@@ -29,7 +29,7 @@ const save = (objValue, callback) => {
 
         const obj = objValue;
 
-        const table = client.db("promo").collection("user");
+        let table = client.db("promo").collection("user");
         table.insertMany([
             {...obj}
         ], (err, result) => {
@@ -38,6 +38,24 @@ const save = (objValue, callback) => {
         })
 
     })
+}
+
+module.exports.saveAddress = (user, callback) => {
+
+    MongoClient.connect(url, (err, client) => {
+
+        let table = client.db("promo").collection("user");
+        table.updateOne(
+            {_id: ObjectId(user.userId)},
+            {$set: {...user}}
+        , (err, res) => {
+
+            callback({err: err, res: res});
+
+        })
+
+    })
+
 }
 
 const remove = (id) => {

@@ -23,6 +23,8 @@
       <script src="../component/js/utils/HtmlComponent.js"></script>
       <script src="../component/js/view/MenuViewController.js"></script>
       <script src="../component/js/utils/ProwebMap.js"></script>
+      <script src="../component/js/utils/FormUtil.js" defer></script>
+      <script src="../component/js/utils/ViewUtils.js" defer></script>
 
       <script defer>
 
@@ -568,7 +570,7 @@
                                      <!-- delivery header -->
                                      <div class="card-header bg-white border-0 p-0" id="headingthree">
                                          <h2 class="mb-0">
-                                             <button class="btn d-flex align-items-center bg-white btn-block text-left btn-lg h5 px-3 py-4 m-0" type="button" data-toggle="collapse" data-target="#collapsethree" aria-expanded="true" aria-controls="collapsethree">
+                                             <button onclick="user.controller.getOfflineAddress()" class="btn d-flex align-items-center bg-white btn-block text-left btn-lg h5 px-3 py-4 m-0" type="button" data-toggle="collapse" data-target="#collapsethree" aria-expanded="true" aria-controls="collapsethree">
                                                 <i class="icofont-address-book osahan-icofont bg-dark"></i>Meu endereço
                                              </button>
                                          </h2>
@@ -581,11 +583,9 @@
                                                  <div class="schedule" id="orderScheduler"></div>
                                                  <div class="mb-1 py-2">
                                                      <!-- <p class="display-2"><i class="icofont-ui-calendar text-success"></i></p> -->
-                                                     <label class="form-label ml-1">Latitude:</label>
-                                                     <input id="userLatitude" style="width:98%; margin: 0 auto;" mbsc-input data-input-style="outline" data-label-style="stacked" class="form-control" placeholder="Latitude" />
-                                                     
-                                                     <label class="form-label ml-1">Longitude:</label>
-                                                     <input id="userLongitude" style="width:98%; margin: 0 auto;" mbsc-input data-input-style="outline" data-label-style="stacked" class="form-control" placeholder="Longitude" />
+                                                     <input id="userDestrito" data-field="destrito" style="width:98%; margin: 0 auto;" mbsc-input data-input-style="outline" data-label-style="stacked" class="form-control entity-userAddress" placeholder="Distrito (Ex: Benfica-Kifica, Lar do Patriota)" />
+                                                     <input id="userRua" data-field="rua" style="width:98%; margin: 10px auto;" mbsc-input data-input-style="outline" data-label-style="stacked" class="form-control entity-userAddress" placeholder="Rua" />
+                                                     <input id="userCasa" data-field="casa" style="width:98%; margin: 10px auto;" mbsc-input data-input-style="outline" data-label-style="stacked" class="form-control entity-userAddress" placeholder="Casa Nº" />
                                                      
                                                      <input id="delivaryDateTime" type="hidden" />
 
@@ -594,12 +594,10 @@
                                                          CÓDIGO user.controller.renderAddressOnMap()
                                                       -->
                                                       <div id="localMap"></div>
-                                                      
-
                                                  </div>
                                              </div>
                                              <div class="p-3">
-                                                 <a href="#" class="btn btn-success btn-lg btn-block" type="button" data-toggle="collapse" data-target="#collapsefour" aria-expanded="true" aria-controls="collapsefour">Agendar</a>
+                                                 <button onclick="user.controller.saveAddress()" class="btn btn-success btn-lg btn-block" type="button">Salvar Endereço</button>
                                              </div>
                                          </div>
                                      </div>
@@ -951,15 +949,32 @@
 
          #localMap{
             width: 100%;
-            height: 400px;
+            height: 350px;
             margin-top: 10px;
          }
 
       </style>
 
+      <!-- SUCCESS MODAL -->
+      <div id="successModalContainer"></div>
+      <!-- SPINNING MODAL -->
+      <div id="spinnerModalContainer"></div>
+
       <script>
 
-         user.controller.renderAddressOnMap()
+         setTimeout(() => {
+
+            console.log("Spinner e outro");
+            user.controller.renderAddressOnMap()
+
+            /* RENDERIZA A MODAL PARA PROCESSOS BEM SUCESSIDOS (Ex: Criação de Conta, CHeckout de uma compra)*/
+            __VIEW_UTILS__.generateSuccessModal();
+                  
+            /* RENDERIZA A MODAL PARA INDICAR UM PROCESSO EM EXECUÇÂO */
+            __VIEW_UTILS__.generateSpinningModal();
+
+         }, 500)
+
 
       </script>
 
