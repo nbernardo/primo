@@ -1,4 +1,4 @@
-__CALENDAR__ = new ProwebCalendar();
+const __CALENDAR__ = new ProwebCalendar();
 
 
 function ProwebCalendar(){

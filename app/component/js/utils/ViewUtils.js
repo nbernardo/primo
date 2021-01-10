@@ -238,6 +238,11 @@ function ViewUtils(){
     }
 
 
+    this.mapView = function(){
+        
+    }
+
+
     this.loadCss = function(path){
 
         let cssObj = document.createElement("link");

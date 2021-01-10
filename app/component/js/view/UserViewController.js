@@ -82,6 +82,7 @@ function UserViewController(){
 
             console.log("Entrou");
             document.getElementById("btnCriarUser").disabled = true;
+            // __VIEW_UTILS__ está localizado em app/component/js/utils
             __VIEW_UTILS__.showSpinnerForViewContainer("accountModal");
 
             (new ProwebRequest()).postJSON(`${BASE_IP}:4001/user`, obj, (res, xhr) => {
@@ -107,6 +108,11 @@ function UserViewController(){
             })
         }
 
+    }
+
+
+    this.renderAddressOnMap = function(){
+        __PROWEBMAP__.renderMap("localMap");
     }
 
     return this;
