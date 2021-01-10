@@ -22,6 +22,25 @@
       <script src="../component/js/utils/Request.js"></script>
       <script src="../component/js/utils/HtmlComponent.js"></script>
       <script src="../component/js/view/MenuViewController.js"></script>
+      <script src="../component/js/utils/ProwebMap.js"></script>
+
+      <script defer>
+
+         window.addEventListener('load', () => {
+
+            const user = localStorage.getItem("user");
+            const userData = JSON.parse(user);
+
+            document.getElementById("loggerUserName").innerHTML = userData.nomeCompleto;
+            document.getElementById("loggerUserEmail").innerHTML = userData.email;
+            
+            document.getElementById("nomeCompleto").value = userData.nomeCompleto;
+            document.getElementById("telefone").value = userData.telefone;
+            document.getElementById("email").value = userData.email;
+
+         })
+
+      </script>
 
    </head>
    <body class="fixed-bottom-padding">
@@ -239,84 +258,436 @@
                   <div class="osahan-account bg-white rounded shadow-sm overflow-hidden">
                      <div class="p-4 profile text-center border-bottom">
                         <img src="img/user.png" class="img-fluid rounded-pill">
-                        <h6 class="font-weight-bold m-0 mt-2">Askbootstrap</h6>
-                        <p class="small text-muted m-0">iamosahan@gmail.com</p>
+                        <h6 class="font-weight-bold m-0 mt-1"><span id="loggerUserName">(loggerUserName)</span></h6>
+                        <p class="small text-muted m-0"><span id="loggerUserEmail">(loggerUserEmail)</span></p>
                      </div>
                      <div class="account-sections">
-                        <ul class="list-group">
-                           <a href="my_account.html" class="text-decoration-none text-dark">
-                              <li class="border-bottom bg-white d-flex align-items-center p-3">
-                                 <i class="icofont-user osahan-icofont bg-danger"></i>Minha conta
-                                 <span class="badge badge-success p-1 badge-pill ml-auto"><i class="icofont-simple-right"></i></span>
-                              </li>
-                           </a>
-                           <a href="promos.html" class="text-decoration-none text-dark">
-                              <li class="border-bottom bg-white d-flex align-items-center p-3">
-                                 <i class="icofont-sale-discount osahan-icofont bg-success"></i>Meus pontos
-                                 <span class="badge badge-success p-1 badge-pill ml-auto"><i class="icofont-simple-right"></i></span>
-                              </li>
-                           </a>
-                           <a href="my_address.html" class="text-decoration-none text-dark">
-                              <li class="border-bottom bg-white d-flex align-items-center p-3">
-                                 <i class="icofont-address-book osahan-icofont bg-dark"></i>Meu endereço
-                                 <span class="badge badge-success p-1 badge-pill ml-auto"><i class="icofont-simple-right"></i></span>
-                              </li>
-                           </a>
-                           <a href="terms_conditions.html" class="text-decoration-none text-dark">
-                              <li class="border-bottom bg-white d-flex align-items-center p-3">
-                                 <i class="icofont-info-circle osahan-icofont bg-primary"></i>Termos & condições
-                                 <span class="badge badge-success p-1 badge-pill ml-auto"><i class="icofont-simple-right"></i></span>
-                              </li>
-                           </a>
-                           <a href="help_support.html" class="text-decoration-none text-dark">
-                              <li class="border-bottom bg-white d-flex align-items-center p-3">
-                                 <i class="icofont-phone osahan-icofont bg-warning"></i>Ajuda
-                                 <span class="badge badge-success p-1 badge-pill ml-auto"><i class="icofont-simple-right"></i></span>
-                              </li>
-                           </a>
+                        
+                        <div class="col-lg-8 p-4 bg-white rounded shadow-sm">
 
-                           <a href="signin.html" class="text-decoration-none text-dark">
-                              <li class="border-bottom bg-white d-flex  align-items-center p-3">
-                                 <i class="icofont-lock osahan-icofont bg-danger"></i> Sair
-                              </li>
-                           </a>
-                        </ul>
+                           <!-- ACCORDION OPTIONS -->
+                           <div>
+         
+                              <div class="accordion" id="accordionExample">
+                                 <!-- cart items -->
+                                 <div class="card border-0 osahan-accor rounded shadow-sm overflow-hidden">
+                                     <!-- cart header -->
+                                     <div class="card-header bg-white border-0 p-0" id="headingOne">
+                                     <h2 class="mb-0">
+                                         <button class="btn d-flex align-items-center bg-white btn-block text-left btn-lg h5 px-3 py-4 m-0" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                          <i class="icofont-user osahan-icofont bg-danger"></i>Meus dados
+                                         </button>
+                                     </h2>
+                                     </div>
+                                     <!-- body cart items -->
+                                     <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                       <div class="card-body p-0 border-top">
+                                          <div class="osahan-cart" style="width: 95%; margin: 20px auto;">
+                                             <div id="edit_profile">
+                                                <div class="p-0">
+                                                   <form action="my_account.html">
+                                                      <div class="form-group">
+                                                         <input type="text" class="form-control entyti-user required" id="nomeCompleto" placeholder="* Nome completo">
+                                                         <label style="display: none;" class="text-danger requiredLabel">Informe o nome</label>
+                                                      </div>
+                                                      <div class="form-group">
+                                                         <input type="number" class="form-control entyti-user required" id="telefone" placeholder="* Telefone">
+                                                         <label style="display: none;" class="text-danger requiredLabel">Digite o telefone</label>
+                                                      </div>
+                                                      <div class="form-group">
+                                                         <input type="email" class="form-control entyti-user" id="email" placeholder="Email">
+                                                      </div>                                 
+                                                      <div class="text-center">
+                                                         <button type="submit" class="btn btn-success btn-block btn-lg">Salvar alterações</button>
+                                                      </div>
+                                                   </form>
+                                                </div>
+                                                <div class="additional mt-3">
+                                                   <div class="change_password mb-1">
+                                                      <a href="change_password.html" class="p-3 btn-light border btn d-flex align-items-center">Alterar senha 
+                                                      <i class="icofont-rounded-right ml-auto"></i></a>
+                                                   </div>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                     </div>
+                                 </div>
+            
+                                 <!-- cart address -->
+                                 <div class="card border-0 osahan-accor rounded shadow-sm overflow-hidden mt-3">
+                                     <!-- address header -->
+                                     <div class="card-header bg-white border-0 p-0" id="headingtwo">
+                                         <h2 class="mb-0">
+                                             <button class="btn d-flex align-items-center bg-white btn-block text-left btn-lg h5 px-3 py-4 m-0" type="button" data-toggle="collapse" data-target="#collapsetwo" aria-expanded="true" aria-controls="collapsetwo">
+                                                <i class="icofont-sale-discount osahan-icofont bg-success"></i>Meus pontos
+                                             </button>
+                                         </h2>
+                                     </div>
+                                     <!-- body address -->
+                                     <div id="collapsetwo" class="collapse" aria-labelledby="headingtwo" data-parent="#accordionExample">
+                                         <div class="card-body p-0 border-top">
+                                             <div class="osahan-order_address">
+                                                
+                                                     
+                                                   <!-- LOCAL PONTOS -->
+                                                   <div class="tab-content col-md-9" id="myTabContent">
+                                                      <div class="tab-pane fade show active" id="completed" role="tabpanel" aria-labelledby="completed-tab">
+                                                         <div class="order-body">
+                                                            <div class="pb-3">
+                                                               <a href="status_complete.html" class="text-decoration-none text-dark">
+                                                                  <div class="p-3 rounded shadow-sm bg-white">
+                                                                     <div class="d-flex align-items-center mb-3">
+                                                                        <p class="bg-success text-white py-1 px-2 mb-0 rounded small">Delivered</p>
+                                                                        <p class="text-muted ml-auto small mb-0"><i class="icofont-clock-time"></i> 06/04/2020</p>
+                                                                     </div>
+                                                                     <div class="d-flex">
+                                                                        <p class="text-muted m-0">Transaction. ID<br>
+                                                                           <span class="text-dark font-weight-bold">#321DERS</span>
+                                                                        </p>
+                                                                        <p class="text-muted m-0 ml-auto">Delivered to<br>
+                                                                           <span class="text-dark font-weight-bold">Home</span>
+                                                                        </p>
+                                                                        <p class="text-muted m-0 ml-auto">Total Payment<br>
+                                                                           <span class="text-dark font-weight-bold">$12.74</span>
+                                                                        </p>
+                                                                     </div>
+                                                                  </div>
+                                                               </a>
+                                                            </div>
+                                                            <div class="pb-3">
+                                                               <a href="status_complete.html" class="text-decoration-none text-dark">
+                                                                  <div class="p-3 rounded shadow-sm bg-white">
+                                                                     <div class="d-flex align-items-center mb-3">
+                                                                        <p class="bg-success text-white py-1 px-2 rounded small m-0">Delivered</p>
+                                                                        <p class="text-muted ml-auto small m-0"><i class="icofont-clock-time"></i> 06/04/2020</p>
+                                                                     </div>
+                                                                     <div class="d-flex">
+                                                                        <p class="text-muted m-0">Transaction. ID<br>
+                                                                           <span class="text-dark font-weight-bold">#321DERS</span>
+                                                                        </p>
+                                                                        <p class="text-muted m-0 ml-auto">Delivered to<br>
+                                                                           <span class="text-dark font-weight-bold">Home</span>
+                                                                        </p>
+                                                                        <p class="text-muted m-0 ml-auto">Total Payment<br>
+                                                                           <span class="text-dark font-weight-bold">$12.74</span>
+                                                                        </p>
+                                                                     </div>
+                                                                  </div>
+                                                               </a>
+                                                            </div>
+                                                            <div class="pb-3">
+                                                               <a href="status_complete.html" class="text-decoration-none text-dark">
+                                                                  <div class="p-3 rounded shadow-sm bg-white">
+                                                                     <div class="d-flex align-items-center mb-3">
+                                                                        <p class="bg-success text-white py-1 px-2 rounded small mb-0">Delivered</p>
+                                                                        <p class="text-muted ml-auto small m-0"><i class="icofont-clock-time"></i> 06/04/2020</p>
+                                                                     </div>
+                                                                     <div class="d-flex">
+                                                                        <p class="text-muted m-0">Transaction. ID<br>
+                                                                           <span class="text-dark font-weight-bold">#321DERS</span>
+                                                                        </p>
+                                                                        <p class="text-muted m-0 ml-auto">Delivered to<br>
+                                                                           <span class="text-dark font-weight-bold">Home</span>
+                                                                        </p>
+                                                                        <p class="text-muted m-0 ml-auto">Total Payment<br>
+                                                                           <span class="text-dark font-weight-bold">$12.74</span>
+                                                                        </p>
+                                                                     </div>
+                                                                  </div>
+                                                               </a>
+                                                            </div>
+                                                            <div class="pb-3">
+                                                               <a href="status_onprocess.html" class="text-decoration-none text-dark">
+                                                                  <div class="p-3 rounded shadow-sm bg-white">
+                                                                     <div class="d-flex align-items-center mb-3">
+                                                                        <p class="bg-warning text-white py-1 px-2 rounded small m-0">On Process</p>
+                                                                        <p class="text-muted ml-auto small m-0"><i class="icofont-clock-time"></i> 06/04/2020</p>
+                                                                     </div>
+                                                                     <div class="d-flex">
+                                                                        <p class="text-muted m-0">Transaction. ID<br>
+                                                                           <span class="text-dark font-weight-bold">#321DERS</span>
+                                                                        </p>
+                                                                        <p class="text-muted m-0 ml-auto">Delivered to<br>
+                                                                           <span class="text-dark font-weight-bold">Home</span>
+                                                                        </p>
+                                                                        <p class="text-muted m-0 ml-auto">Total Payment<br>
+                                                                           <span class="text-dark font-weight-bold">$12.74</span>
+                                                                        </p>
+                                                                     </div>
+                                                                  </div>
+                                                               </a>
+                                                            </div>
+                                                            <div class="pb-3">
+                                                               <a href="status_canceled.html" class="text-decoration-none text-dark">
+                                                                  <div class="p-3 rounded shadow-sm bg-white">
+                                                                     <div class="d-flex align-items-center mb-3">
+                                                                        <p class="bg-danger text-white py-1 px-2 rounded small m-0">Canceled</p>
+                                                                        <p class="text-muted ml-auto small m-0"><i class="icofont-clock-time"></i> 06/04/2020</p>
+                                                                     </div>
+                                                                     <div class="d-flex">
+                                                                        <p class="text-muted m-0">Transaction. ID<br>
+                                                                           <span class="text-dark font-weight-bold">#321DERS</span>
+                                                                        </p>
+                                                                        <p class="text-muted m-0 ml-auto">Delivered to<br>
+                                                                           <span class="text-dark font-weight-bold">Home</span>
+                                                                        </p>
+                                                                        <p class="text-muted m-0 ml-auto">Total Payment<br>
+                                                                           <span class="text-dark font-weight-bold">$12.74</span>
+                                                                        </p>
+                                                                     </div>
+                                                                  </div>
+                                                               </a>
+                                                            </div>
+                                                         </div>
+                                                      </div>
+                                                      <div class="tab-pane fade" id="progress" role="tabpanel" aria-labelledby="progress-tab">
+                                                         <div class="order-body">
+                                                            <div class="pb-3">
+                                                               <a href="status_onprocess.html" class="text-decoration-none text-dark">
+                                                                  <div class="p-3 rounded shadow-sm bg-white">
+                                                                     <div class="d-flex align-items-center mb-3">
+                                                                        <p class="bg-warning text-white py-1 px-2 rounded small m-0">On Process</p>
+                                                                        <p class="text-muted ml-auto small m-0"><i class="icofont-clock-time"></i> 06/04/2020</p>
+                                                                     </div>
+                                                                     <div class="d-flex">
+                                                                        <p class="text-muted m-0">Transaction. ID<br>
+                                                                           <span class="text-dark font-weight-bold">#321DERS</span>
+                                                                        </p>
+                                                                        <p class="text-muted m-0 ml-auto">Delivered to<br>
+                                                                           <span class="text-dark font-weight-bold">Home</span>
+                                                                        </p>
+                                                                        <p class="text-muted m-0 ml-auto">Total Payment<br>
+                                                                           <span class="text-dark font-weight-bold">$12.74</span>
+                                                                        </p>
+                                                                     </div>
+                                                                  </div>
+                                                               </a>
+                                                            </div>
+                                                            <div class="pb-3">
+                                                               <a href="status_onprocess.html" class="text-decoration-none text-dark">
+                                                                  <div class="p-3 rounded shadow-sm bg-white">
+                                                                     <div class="d-flex align-items-center mb-3">
+                                                                        <p class="bg-warning text-white py-1 px-2 rounded small m-0">Dispatching</p>
+                                                                        <p class="text-muted ml-auto small m-0"><i class="icofont-clock-time"></i> 06/04/2020</p>
+                                                                     </div>
+                                                                     <div class="d-flex">
+                                                                        <p class="text-muted m-0">Transaction. ID<br>
+                                                                           <span class="text-dark font-weight-bold">#321DERS</span>
+                                                                        </p>
+                                                                        <p class="text-muted m-0 ml-auto">Delivered to<br>
+                                                                           <span class="text-dark font-weight-bold">Home</span>
+                                                                        </p>
+                                                                        <p class="text-muted m-0 ml-auto">Total Payment<br>
+                                                                           <span class="text-dark font-weight-bold">$12.74</span>
+                                                                        </p>
+                                                                     </div>
+                                                                  </div>
+                                                               </a>
+                                                            </div>
+                                                            <div class="pb-3">
+                                                               <a href="status_onprocess.html" class="text-decoration-none text-dark">
+                                                                  <div class="p-3 rounded shadow-sm bg-white">
+                                                                     <div class="d-flex align-items-center mb-3">
+                                                                        <p class="bg-warning text-white py-1 px-2 rounded small m-0">On the way</p>
+                                                                        <p class="text-muted ml-auto small m-0"><i class="icofont-clock-time"></i> 06/04/2020</p>
+                                                                     </div>
+                                                                     <div class="d-flex">
+                                                                        <p class="text-muted m-0">Transaction. ID<br>
+                                                                           <span class="text-dark font-weight-bold">#321DERS</span>
+                                                                        </p>
+                                                                        <p class="text-muted m-0 ml-auto">Delivered to<br>
+                                                                           <span class="text-dark font-weight-bold">Home</span>
+                                                                        </p>
+                                                                        <p class="text-muted m-0 ml-auto">Total Payment<br>
+                                                                           <span class="text-dark font-weight-bold">$12.74</span>
+                                                                        </p>
+                                                                     </div>
+                                                                  </div>
+                                                               </a>
+                                                            </div>
+                                                         </div>
+                                                      </div>
+                                                      <div class="tab-pane fade" id="canceled" role="tabpanel" aria-labelledby="canceled-tab">
+                                                         <div class="order-body">
+                                                            <div class="pb-3">
+                                                               <a href="status_canceled.html" class="text-decoration-none text-dark">
+                                                                  <div class="p-3 rounded shadow-sm bg-white">
+                                                                     <div class="d-flex align-items-center mb-3">
+                                                                        <p class="bg-danger text-white py-1 px-2 rounded small m-0">Failed Payment</p>
+                                                                        <p class="text-muted ml-auto small m-0"><i class="icofont-clock-time"></i> 06/04/2020</p>
+                                                                     </div>
+                                                                     <div class="d-flex">
+                                                                        <p class="text-muted m-0">Transaction. ID<br>
+                                                                           <span class="text-dark font-weight-bold">#321DERS</span>
+                                                                        </p>
+                                                                        <p class="text-muted m-0 ml-auto">Delivered to<br>
+                                                                           <span class="text-dark font-weight-bold">Home</span>
+                                                                        </p>
+                                                                        <p class="text-muted m-0 ml-auto">Total Payment<br>
+                                                                           <span class="text-dark font-weight-bold">$12.74</span>
+                                                                        </p>
+                                                                     </div>
+                                                                  </div>
+                                                               </a>
+                                                            </div>
+                                                            <div class="pb-3">
+                                                               <a href="status_canceled.html" class="text-decoration-none text-dark">
+                                                                  <div class="p-3 rounded shadow-sm bg-white">
+                                                                     <div class="d-flex align-items-center mb-3">
+                                                                        <p class="bg-danger text-white py-1 px-2 rounded small m-0">Canceled</p>
+                                                                        <p class="text-muted ml-auto small m-0"><i class="icofont-clock-time"></i> 06/04/2020</p>
+                                                                     </div>
+                                                                     <div class="d-flex">
+                                                                        <p class="text-muted m-0">Transaction. ID<br>
+                                                                           <span class="text-dark font-weight-bold">#321DERS</span>
+                                                                        </p>
+                                                                        <p class="text-muted m-0 ml-auto">Delivered to<br>
+                                                                           <span class="text-dark font-weight-bold">Home</span>
+                                                                        </p>
+                                                                        <p class="text-muted m-0 ml-auto">Total Payment<br>
+                                                                           <span class="text-dark font-weight-bold">$12.74</span>
+                                                                        </p>
+                                                                     </div>
+                                                                  </div>
+                                                               </a>
+                                                            </div>
+                                                         </div>
+                                                      </div>
+                                                   </div>
+         
+         
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+            
+                                 <!-- cart delivery -->
+                                 <div class="card border-0 osahan-accor rounded shadow-sm overflow-hidden mt-3">
+                                     
+                                     <!-- delivery header -->
+                                     <div class="card-header bg-white border-0 p-0" id="headingthree">
+                                         <h2 class="mb-0">
+                                             <button class="btn d-flex align-items-center bg-white btn-block text-left btn-lg h5 px-3 py-4 m-0" type="button" data-toggle="collapse" data-target="#collapsethree" aria-expanded="true" aria-controls="collapsethree">
+                                                <i class="icofont-address-book osahan-icofont bg-dark"></i>Meu endereço
+                                             </button>
+                                         </h2>
+                                     </div>
+            
+                                     <!-- body delivery --> 
+                                     <div id="collapsethree" class="collapse" aria-labelledby="headingthree" data-parent="#accordionExample">
+                                         <div class="card-body p-0 border-top">
+                                             <div class="osahan-order_address">
+                                                 <div class="schedule" id="orderScheduler"></div>
+                                                 <div class="mb-1 py-2">
+                                                     <!-- <p class="display-2"><i class="icofont-ui-calendar text-success"></i></p> -->
+                                                     <label class="form-label ml-1">Latitude:</label>
+                                                     <input id="userLatitude" style="width:98%; margin: 0 auto;" mbsc-input data-input-style="outline" data-label-style="stacked" class="form-control" placeholder="Latitude" />
+                                                     
+                                                     <label class="form-label ml-1">Longitude:</label>
+                                                     <input id="userLongitude" style="width:98%; margin: 0 auto;" mbsc-input data-input-style="outline" data-label-style="stacked" class="form-control" placeholder="Longitude" />
+                                                     
+                                                     <input id="delivaryDateTime" type="hidden" />
+
+                                                      <!--
+                                                         O MAPA É RENDERIDAZO PELA CHAMADA DO
+                                                         CÓDIGO user.controller.renderAddressOnMap()
+                                                      -->
+                                                      <div id="localMap"></div>
+
+                                                 </div>
+                                             </div>
+                                             <div class="p-3">
+                                                 <a href="#" class="btn btn-success btn-lg btn-block" type="button" data-toggle="collapse" data-target="#collapsefour" aria-expanded="true" aria-controls="collapsefour">Agendar</a>
+                                             </div>
+                                         </div>
+                                     </div>
+            
+                                 </div>
+            
+            
+                                 <!-- Terms & conditions -->
+                                 <div class="card border-0 osahan-accor rounded shadow-sm overflow-hidden mt-3">
+                                     <!-- Terms & conditions header -->
+                                     <div class="card-header bg-white border-0 p-0" id="headingfour">
+                                       <h2 class="mb-0">
+                                          <button class="btn d-flex align-items-center bg-white btn-block text-left btn-lg h5 px-3 py-4 m-0" type="button" data-toggle="collapse" data-target="#collapsefour" aria-expanded="true" aria-controls="collapsefour">
+                                             <i class="icofont-info-circle osahan-icofont bg-primary"></i>Termos & condições
+                                          </button>
+                                       </h2>
+                                     </div>
+                                     <!-- Terms & conditions payment -->
+                                     <div id="collapsefour" class="collapse" aria-labelledby="headingfour" data-parent="#accordionExample">
+                                       <div class="card-body px-1 pb-1 pt-1 border-top">
+                                          
+                                             <div class="col-lg-8 p-4 bg-white rounded ">
+                                                <h4 class="mb-4 profile-title">Terms & Conditions</h4>
+                                                <div id="terms_conditions">
+                                                   <p class="text-muted">Grocery may give refunds for some item purchases, depending on the refund policies. You can also contact us directly.<br><br>If a purchase was accidentally made by a friend or family member using your account, request a refund on the grocery website.<br><br> If you find a grocery purchase on your card or other payment method that you did'nt make and that wasn't made by anyone you know, report unauthorized charges within 120 days of the transaction.<br><br>If you've had a refund request accepted, check how long your refund will take.</p>
+                                                </div>
+                                             </div>
+                                          
+                                       </div>
+                                     </div>   
+                           </div>
+         
+                           <!-- Ajuda -->
+                           <div class="card border-0 osahan-accor rounded shadow-sm overflow-hidden mt-3">
+                              <!-- payment header -->
+                              <div class="card-header bg-white border-0 p-0" id="headingfive">
+                              <h2 class="mb-0">
+                                  <button class="btn d-flex align-items-center bg-white btn-block text-left btn-lg h5 px-3 py-4 m-0" type="button" data-toggle="collapse" data-target="#collapsefive" aria-expanded="true" aria-controls="collapsefive">
+                                   <i class="icofont-info-circle osahan-icofont bg-primary"></i>Ajuda
+                                  </button>
+                              </h2>
+                              </div>
+                              <!-- body payment -->
+                              <div id="collapsefive" class="collapse" aria-labelledby="headingfive" data-parent="#accordionExample">
+                                <div class="card-body px-3 pb-3 pt-1 border-top">
+                                   
+                                    <h4 class="mb-4 profile-title">Help & Support</h4>
+                                    <div class="help_support">
+                                       <a href="refund_payment.html" class="text-decoration-none"><button class="p-3 btn-light border d-flex align-items-center btn w-100 mb-1" type="button">
+                                       How to check status of my order 
+                                       <i class="text-success icofont-rounded-right ml-auto"></i>
+                                       </button></a>
+                                       <a href="refund_payment.html" class="text-decoration-none"><button class="p-3 btn-light border d-flex align-items-center btn w-100 mb-1" type="button">
+                                       Change items in my order 
+                                       <i class="text-success icofont-rounded-right ml-auto"></i>
+                                       </button></a>
+                                       <a href="refund_payment.html" class="text-decoration-none"><button class="p-3 btn-light border d-flex align-items-center btn w-100 mb-1" type="button">
+                                       Cancel my order 
+                                       <i class="text-success icofont-rounded-right ml-auto"></i>
+                                       </button></a>
+                                       <a href="refund_payment.html" class="text-decoration-none"><button class="p-3 btn-light border d-flex align-items-center btn w-100 mb-1" type="button">
+                                       Change my delivery address 
+                                       <i class="text-success icofont-rounded-right ml-auto"></i>
+                                       </button></a>
+                                       <a href="refund_payment.html" class="text-decoration-none"><button class="p-3 btn-light border d-flex align-items-center btn w-100 mb-1" type="button">
+                                       Help with  a pick-up order 
+                                       <i class="text-success icofont-rounded-right ml-auto"></i>
+                                       </button></a>
+                                       <a href="refund_payment.html" class="text-decoration-none"><button class="p-3 btn-light border d-flex align-items-center btn w-100 mb-1" type="button">
+                                       My delivery person made me unsafe 
+                                       <i class="text-success icofont-rounded-right ml-auto"></i>
+                                       </button></a>
+                                       <a href="refund_payment.html" class="text-decoration-none"><button class="p-3 btn-light border d-flex align-items-center btn w-100 mb-1" type="button">
+                                       Refunding Payment 
+                                       <i class="text-success icofont-rounded-right ml-auto"></i>
+                                       </button></a>
+                                    </div>
+                                   
+                                </div>
+                              </div>
+                          </div>
+                      </div>
+
                      </div>
                   </div>
                </div>
-               <div class="col-lg-8 p-4 bg-white rounded shadow-sm">
-                  <h4 class="mb-4 profile-title">Minha conta</h4>
-                  <div id="edit_profile">
-                     <div class="p-0">
-                        <form action="my_account.html">
-                           <div class="form-group">
-                              <input type="text" class="form-control" id="exampleInputName1" placeholder="Nome completo">
-                           </div>
-                           <div class="form-group">
-                              <input type="number" class="form-control" id="exampleInputNumber1" placeholder="Telefone">
-                           </div>
-                           <div class="form-group">
-                              <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
-                           </div>
-                           <div class="text-center">
-                              <button type="submit" class="btn btn-success btn-block btn-lg">Salvar alterações</button>
-                           </div>
-                        </form>
-                     </div>
-                     <div class="additional mt-3">
-                        <div class="change_password mb-1">
-                           <a href="change_password.html" class="p-3 btn-light border btn d-flex align-items-center">Alterar senha 
-                           <i class="icofont-rounded-right ml-auto"></i></a>
-                        </div>
-                        <!--
-                           <div class="deactivate_account">
-                              <a href="deactivate_account.html" class="p-3 btn-light border btn d-flex align-items-center">Deactivate Account 
-                              <i class="icofont-rounded-right ml-auto"></i></a>
-                           </div>
-                        -->
-                     </div>
-                  </div>
+               
                </div>
+
             </div>
          </div>
       </section>
@@ -564,5 +935,32 @@
       <script type="text/javascript" src="vendor/sidebar/hc-offcanvas-nav.js"></script>
       <!-- Custom scripts for all pages-->
       <script src="js/osahan.js"></script>
+
+      <script src="../component/js/view/UserViewController.js"></script>
+
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+            integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+            crossorigin=""/>
+
+      <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+            crossorigin=""></script>
+
+      <style>
+
+         #localMap{
+            width: 100%;
+            height: 400px;
+            margin-top: 10px;
+         }
+
+      </style>
+
+      <script>
+
+         user.controller.renderAddressOnMap()
+
+      </script>
+
    </body>
 </html>
