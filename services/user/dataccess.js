@@ -1,5 +1,5 @@
 const {MongoClient, ObjectId} = require("mongodb");
-const url = "mongodb://localhost:27001/";
+const url = "mongodb://mongoservice:27017/";
 
 
 const find = ({table, database, query}, callback) => {
