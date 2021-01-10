@@ -9,3 +9,4 @@ services/user/Dockerfile
 services/promos/Dockerfile
 client
 app/node_modules
+mongo/*
