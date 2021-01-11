@@ -3,7 +3,7 @@ const User = require("./controller")
 const cors = require("cors");
 const bodyParser = require("body-parser"); 
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 4001
 
 app.use(cors());
 app.use(bodyParser.json());

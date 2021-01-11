@@ -1,4 +1,5 @@
-const BASE_IP = "http://192.168.1.2";
+const BASE_IP = "http://64.225.11.52";
+const __REQUEST__ = new ProwebRequest();
 
 function ProwebRequest(){
 
@@ -34,7 +35,7 @@ function ProwebRequest(){
         xhr.setRequestHeader("Content-type", "application/json");
 
         xhr.onreadystatechange = function(){
-
+            
             if(xhr.readyState == 4){
                 callback(xhr.responseText, xhr);
             }

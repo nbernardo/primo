@@ -1,10 +1,17 @@
 const __VIEW_UTILS__ = new ViewUtils();
 
+String.prototype.capitalize = function(){
+    return this.charAt(0).toUpperCase() + this.substr(1);
+}
 
 
 function ViewUtils(){
 
     this.viewToHide = "";
+    this.spinningSuccessMessage = "";
+    this.afterSpinningContent = "";
+    this.spinnerFeedBack = false;
+
 
     this.showSpinnerForViewContainer = function(viewToHide){
 
@@ -61,7 +68,7 @@ function ViewUtils(){
                     <i class="text-white icofont-badge" style="color: white; font-size: 18px;"></i> Processando...
                 </a>
 
-                <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+                <div class="modal fade" id="successModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="successModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content bg-success">
                         <div class="modal-header">
@@ -199,16 +206,16 @@ function ViewUtils(){
                     <a href="#" data-toggle="modal" data-target="#loadingModal" id="processSpinnerButton" style="display: none;" class="text-decoration-none text-white">
                         <i class="text-white icofont-badge" style="color: white; font-size: 18px;"></i> Processando...
                     </a>
-                    <div class="modal fade" id="loadingModal" tabindex="-1" role="dialog" aria-labelledby="loadingModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="loadingModal"  aria-labelledby="loadingModalLabel">
                         <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="loadingModalLabel">Processando...</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
+                                <button type="button" id="spinnerCloseButton" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body" style="text-align: center;">
+                            <div class="modal-body" id="spinnerModalContent" style="text-align: center;">
 
                                 <div class="lds-roller">
                                     <div></div>
@@ -234,12 +241,78 @@ function ViewUtils(){
         `;
 
         document.getElementById("spinnerModalContainer").innerHTML = modal;
+        //setTimeout(() => {$('#loadingModal').modal({backdrop: 'static', keyboard: false})}, 500);
+
+    }
+
+    this.spinningContent = function(){
+
+        return `
+                <div class="lds-roller">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+
+                <div>
+                    ... Aguarde ...
+                </div>
+        `;
+
+    }
+
+    
+
+    this.showSpinnerWithNoEscape = function(obj){
+
+        document.getElementById("spinnerCloseButton").style.display = "none";
+        $('#loadingModal').modal({backdrop: 'static', keyboard: false});
+
+        document.getElementById("loadingModalLabel").innerHTML = `${(obj.title || "Processando...")}`;
+        
+        this.spinnerFeedBack = obj.feedback;
+        this.spinningSuccessMessage = `${(obj.message1 ? obj.message1 : 'Processo terminado com sucesso')}`;
+        this.afterSpinningContent = `
+            <h6>${ this.spinningSuccessMessage} !</h6>
+            <div style="margin: 20px auto">
+                <button type="button" class="btn btn-danger btn-block btn-lg" class="close" data-dismiss="modal" aria-label="Close">Fachar</button>
+            </div>
+        `;
+
 
     }
 
 
+    this.showSpinnerFeedback = function(){
+
+        if(this.spinnerFeedBack){
+            setTimeout(() => {
+                document.getElementById("spinnerModalContent").innerHTML = this.afterSpinningContent;    
+            },500);
+        }
+
+    }
+
+
+    this.showSpinner = function(obj){
+
+        //if(obj.message1) document.getElementById("userMessage").innerHTML = obj.message1;
+        document.getElementById("processSpinnerButton").click();
+
+    }
+
+    this.hideSpinner = function(){
+        document.getElementById("loadingModal").getElementsByTagName("button")[0].click();
+    }
+
+
     this.mapView = function(){
-        
+
     }
 
 
@@ -260,6 +333,7 @@ function ViewUtils(){
         document.getElementsByTagName("head")[0].appendChild(jsObj);
 
     }
+
 
     return this;
 
