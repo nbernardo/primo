@@ -19,12 +19,33 @@
       <!-- Sidebar CSS -->
       <link href="vendor/sidebar/demo.css" rel="stylesheet">
 
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+            integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+            crossorigin=""/>
+
+      <script src="../component/js/utils/ProwebAuth.js"></script>
+      <script>
+         
+         document.onreadystatechange = function(){
+            if(document.readyState === "interactive"){
+               __PROWEBAUTH__.checkPageViewPermission();
+            }
+            
+         }
+
+      </script>
+
       <script src="../component/js/utils/Request.js"></script>
       <script src="../component/js/utils/HtmlComponent.js"></script>
+      <script src="../component/js/view/UserViewController.js"></script>
       <script src="../component/js/view/MenuViewController.js"></script>
       <script src="../component/js/utils/ProwebMap.js"></script>
       <script src="../component/js/utils/FormUtil.js" defer></script>
       <script src="../component/js/utils/ViewUtils.js" defer></script>
+
+      <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+               integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+               crossorigin="" defer></script>
 
       <script defer>
 
@@ -935,15 +956,7 @@
       <!-- Custom scripts for all pages-->
       <script src="js/osahan.js"></script>
 
-      <script src="../component/js/view/UserViewController.js"></script>
 
-      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-            integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-            crossorigin=""/>
-
-      <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-            crossorigin=""></script>
 
       <style>
 
