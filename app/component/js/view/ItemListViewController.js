@@ -8,10 +8,25 @@ function ItemListViewController(){
 
     this.renderListItems = function(){
 
-        document.getElementById("vitrine-listItems").innerHTML = this.generateListItems();
+
+        const url = `${BASE_IP}:4002/catalog/item`;
+        (new ProwebRequest()).getRequest(url,null, async (res, xhr) => {
+
+            const response = JSON.parse(res);
+            const dados = await response.data.map(i => this.generateItem(i));
+            document.getElementById("vitrine-listItems").innerHTML = dados.join("");
+
+        });
+        
 
     }
 
+    this.mm = function(obj){
+
+        this.nn = obj.nome;
+        return this;
+
+    }
 
     this.generateListItems = function(){
 
@@ -24,13 +39,12 @@ function ItemListViewController(){
 
     }
 
-
     this.generateItem = function(obj){
 
         let nome = obj.nome || "Nome produto";
         let imagem = obj.imagem || "img/listing/v8.jpg";
         let preco = obj.preco || "0.5";
-        let id = obj.id || Math.random();
+        let id = obj._id || Math.random();
 
         return `
         

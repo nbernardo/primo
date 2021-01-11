@@ -47,23 +47,47 @@ function MenuViewController(){
 
     }
 
+    authorizedMenu = function(section){
+
+        let loggedUser = (new UserViewController()).getLoggedUser();
+
+        if(!loggedUser.isTrue) return false;
+
+        const loggedInSections = {
+            "meusDados" : `
+                        <li>
+                            <a href="#"><i class="icofont-ui-user mr-2"></i>Minha conta</a>
+                            <ul>
+                                <li><a class="dropdown-item" href="my_account.html">Meus dados</a></li>
+                                <li><a class="dropdown-item" href="promos.html">Meus pontos</a></li>
+                                <li><a class="dropdown-item" href="my_address.html">Meu endereço</a></li>
+                                <li><a class="dropdown-item" href="terms_conditions.html">Termos & condições</a></li>
+                                <li><a class="dropdown-item" href="help_support.html">Ajuda</a></li>
+                                <li><a class="dropdown-item" href="signin.html">Sair</a></li>
+                            </ul>
+                        </li>
+            `, 
+            "meusPontos" : `
+                    <li>
+                        <a href="index.html">
+                            <i class="icofont-money-bag mr-3" style="font-size: 20px;"></i> Meus Pontos
+                        </a>
+                    </li>
+            `,
+        }
+
+        return loggedInSections[section];
+        
+    }
+
     this.generateMainMenu = function(){
 
         return `
-        
-            <li>
-                <a href="#"><i class="icofont-ui-user mr-2"></i>Minha conta</a>
-                <ul>
-                    <li><a class="dropdown-item" href="my_account.html">Meus dados</a></li>
-                    <li><a class="dropdown-item" href="promos.html">Meus pontos</a></li>
-                    <li><a class="dropdown-item" href="my_address.html">Meu endereço</a></li>
-                    <li><a class="dropdown-item" href="terms_conditions.html">Termos & condições</a></li>
-                    <li><a class="dropdown-item" href="help_support.html">Ajuda</a></li>
-                    <li><a class="dropdown-item" href="signin.html">Sair</a></li>
-                </ul>
-            </li>
+            
+                ${authorizedMenu("meusDados")}
+                ${authorizedMenu("meusPontos")}
+            
 
-            <li><a href="index.html"><i class="icofont-money-bag mr-3" style="font-size: 20px;"></i> Meus Pontos</a></li>
             <li><a href="index.html"><i class="icofont-smart-phone mr-2"></i> Início</a></li>
             <li>
             <a href="#"><i class="icofont-login mr-2"></i> Autenticação</a>
@@ -95,6 +119,10 @@ function MenuViewController(){
                     <li><a class="dropdown-item" href="status_canceled.html">Cancelada</a></li>
                     <li><a class="dropdown-item" href="review.html">Rever</a></li>
                 </ul>
+            </li>
+
+            <li>
+                <a href="#a"><i class="icofont-logout mr-2"></i> Sair</a>
             </li>
 
         `;

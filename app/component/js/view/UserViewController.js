@@ -80,13 +80,15 @@ function UserViewController(){
         const user = localStorage.getItem("user");
         const userData = JSON.parse(user);
 
+        if(user == null || user == undefined) return {isTrue: false};
+
         return {
             name: userData.nomeCompleto,
             email: userData.email,
-            id: userData.id
+            id: userData.id,
+            isTrue : userData.logged ? userData.logged : false
         };
         
-
     }
 
     this.saveAddress = function(){
@@ -125,13 +127,22 @@ function UserViewController(){
 
         let fullAddress = localStorage.getItem("address");
         let splittedAddr = JSON.parse(fullAddress);
-        for(field in splittedAddr.endereco){
-           
-            if(field != undefined && field != "latLng")
-                document.getElementById(`user${field.capitalize()}`).value = splittedAddr.endereco[field];
-            
-            
+
+        if(fullAddress){
+
+            if(splittedAddr.endereco){
+
+                for(field in splittedAddr.endereco){
+                
+                    if(field != undefined && field != "latLng")
+                        document.getElementById(`user${field.capitalize()}`).value = splittedAddr.endereco[field];
+                    
+                }
+    
+            }
+
         }
+
 
     }
 
@@ -158,6 +169,7 @@ function UserViewController(){
                 const result = JSON.parse(res);
                 
                 userObj["id"] = result.id;
+                userObj["logged"] = true;
 
                 if(result.status == "ok"){
                     resultObj = {
