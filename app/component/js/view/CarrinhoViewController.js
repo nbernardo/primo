@@ -1,5 +1,6 @@
 const carrinho = {
     controller: new CarrinhoViewController(),
+    accessTry: false,
 }
 
 function CarrinhoViewController(){
@@ -140,6 +141,19 @@ function CarrinhoViewController(){
 
     }
 
+    this.showAppropriateView = function(){
+
+        carrinho.accessTry = true;
+        if(__PROWEBAUTH__.isUserLogged() == null){
+            document.getElementById("loginModalButton").click();            
+            return;
+        }
+
+        carrinho.accessTry = false;          
+        this.showCartOppened();
+
+    }
+
     this.showCartOppened = function(){
 
         this.totalAmount = 0;
@@ -157,6 +171,8 @@ function CarrinhoViewController(){
             document.getElementById("itensOnCart").innerHTML = itemsToShow;
 
             document.getElementById("totalFactura").innerHTML = `${this.totalAmount} Kz`;
+            document.getElementById("carrinhoModalButton").click();
+            user.controller.renderAddressOnMap();
 
 
         })
@@ -257,7 +273,13 @@ function CarrinhoViewController(){
                                             <div class="card-header bg-white border-0 p-0" id="headingtwo">
                                                 <h2 class="mb-0">
                                                     <button class="btn d-flex align-items-center bg-white btn-block text-left btn-lg h5 px-3 py-4 m-0" type="button" data-toggle="collapse" data-target="#collapsetwo" aria-expanded="true" aria-controls="collapsetwo">
-                                                    <span class="c-number">2</span> Order Address <a href="#"  data-toggle="modal" data-target="#exampleModal" class="text-decoration-none text-success ml-auto"> <i class="icofont-plus-circle mr-1"></i>Confirmar o endereço</a>
+                                                    
+                                                    <span class="c-number">2</span> Endereço de entrega 
+                                                        <!--
+                                                        <a href="#"  data-toggle="modal" data-target="#exampleModal" class="text-decoration-none text-success ml-auto"> 
+                                                            <i class="icofont-plus-circle mr-1"></i>Confirmar o endereço
+                                                        </a>
+                                                        -->
                                                     </button>
                                                 </h2>
                                             </div>
@@ -271,20 +293,29 @@ function CarrinhoViewController(){
                                                                 <label class="custom-control-label w-100" for="customRadioInline1">
                                                                     <div>
                                                                         <div class="p-3 bg-white rounded shadow-sm w-100">
+                                                                            
                                                                             <div class="d-flex align-items-center mb-2">
-                                                                            <p class="mb-0 h6">Morada</p>
-                                                                            <p class="mb-0 badge badge-success ml-auto"><i class="icofont-check-circled"></i> Confirmada</p>
+                                                                                <p class="mb-0 h6">Morada</p>
+                                                                                <p class="mb-0 badge badge-success ml-auto"><i class="icofont-check-circled"></i> Confirmada</p>
                                                                             </div>
-                                                                            <p class="small text-muted m-0">1001 Veterans Blvd</p>
-                                                                            <p class="small text-muted m-0">Benfica, CA 94063</p>
+                                                                            <p class="small text-muted m-0">(bairro)</p>
+                                                                            <p class="small text-muted m-0">(rua), (numero)</p>
+                                                                            <!--
                                                                             <p class="pt-2 m-0 text-right"><span class="small"><a href="#"  data-toggle="modal" data-target="#exampleModal" class="text-decoration-none text-info">Alterar</a></span></p>
+                                                                            -->
+                                                                            
                                                                         </div>
-                                                                        <span class="btn btn-light border-top btn-lg btn-block">
-                                                                        &nbsp;
-                                                                        </span>
+                                                                        <!-- <span class="btn btn-light border-top btn-lg btn-block">&nbsp;</span> -->
                                                                     </div>
+
                                                                 </label>
                                                             </div>
+
+                                                            <!--
+                                                                O MAPA É RENDERIDAZO PELA CHAMADA DO
+                                                                CÓDIGO user.controller.renderAddressOnMap()
+                                                            -->
+                                                            <div id="localMap"></div>
 
                                                             
                                                             <a href="#" class="btn btn-success btn-lg btn-block mt-3" type="button" data-toggle="collapse" data-target="#collapsethree" aria-expanded="true" aria-controls="collapsethree">Continue</a>
@@ -471,6 +502,27 @@ function CarrinhoViewController(){
         `
 
         return modal;
+
+    }
+
+
+    this.cartButton = function(){
+
+        let modalTarget = ""; 
+        if(__PROWEBAUTH__.isUserLogged()){
+            modalTarget = `data-target="#carrinhoModal"`;
+        }
+
+        let button = `
+        
+            <a href="#" data-toggle="modal" ${modalTarget} class="text-decoration-none text-white">
+                <i class="text-white icofont-shopping-cart" style="color: white; font-size: 14px;"></i> 
+                <span id="itensOnCarrinho">
+                ( <span>...</span> )
+                </span>
+            </a>
+
+        `;
 
     }
 

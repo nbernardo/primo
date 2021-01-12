@@ -2,6 +2,20 @@ const __PROWEBAUTH__ = new ProwebAuth();
 
 function ProwebAuth(){
 
+    this.isUserLogged = function(){
+
+        let loggetUser = localStorage.getItem("user");
+
+        console.log("CHecou: ", loggetUser);
+
+        if(loggetUser){
+            loggetUser = JSON.parse(loggetUser);
+            return loggetUser.logged ? true : null;
+        }
+        return loggetUser;
+
+    }
+
     this.checkPageViewPermission = function(){
 
         const user = localStorage.getItem("user");
