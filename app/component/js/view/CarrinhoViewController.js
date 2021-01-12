@@ -7,6 +7,7 @@ function CarrinhoViewController(){
     this.curDateTime = "";
     this.itemsOnCart = [];
     this.invoicesObj = [];
+    this.totalAmount = 0;
 
     this.createInvoice = async function(curInvoice){
 
@@ -70,9 +71,12 @@ function CarrinhoViewController(){
             
             let activatedInvoice = await this.getInvoice(r.id);
             let itemToRemove = activatedInvoice.findIndex(it => it._id == removedEscapeObject._id);
-            
-            //Remove exissting Item to be replaced 
-            activatedInvoice.splice(itemToRemove,1);
+
+            console.log("REtorno: ", itemToRemove);
+            if(itemToRemove >= 0){
+                //Remove exissting Item to be replaced 
+                activatedInvoice.splice(itemToRemove,1);
+            }
             //Insert the replacing item
             activatedInvoice.push(removedEscapeObject);
             saveItem(r.id,activatedInvoice);
@@ -81,37 +85,64 @@ function CarrinhoViewController(){
         
     }
 
+    this.removeFromCart = function(item){
+
+        this.getActiveInvoice().then(async (r) => {
+            
+            let activatedInvoice = await this.getInvoice(r.id);
+            let itemToRemove = activatedInvoice.findIndex(it => it._id == item);
+            
+            //Remove exissting Item to be replaced 
+            activatedInvoice.splice(itemToRemove,1);
+            await saveItem(r.id,activatedInvoice);
+            removeFromView(item);
+        });
+
+    }
+
+    const removeFromView = function(idItem){
+        document.getElementById(`item-on-cart-${idItem}`).style.display = "none";
+    }
+
     this.cartItem = function(obj){
 
+        let totalAmount = obj.preco * obj.qtd;
+        this.totalAmount += parseInt(totalAmount); 
 
         return `
         
-        <div class="cart-items bg-white position-relative border-bottom">
-            <a href="product_details.html" class="position-absolute">
-            <span class="badge badge-danger m-3">10%</span>
-            </a>
-            <div class="d-flex  align-items-center p-3">
-            <a href="product_details.html"><img src="${obj.imagem}" class="img-fluid"></a>
-            <a href="product_details.html" class="ml-3 text-dark text-decoration-none w-100">
-                <h5 class="mb-1">${obj.nome}</h5>
-                <p class="text-muted mb-2">${obj.preco} Kz / Unidade</p>
-                <div class="d-flex align-items-center">
-                    <p class="total_price font-weight-bold m-0">${(obj.preco * obj.qtd)} Kz</p>
-                    <form id='myform' class="cart-items-number d-flex ml-auto" method='POST' action='#'>
-                        <input type='button' value='-' class='qtyminus btn btn-success btn-sm' field='quantity' />
-                        <input type='text' name='quantity' value='${obj.qtd}' class='qty form-control' />
-                        <input type='button' value='+' class='qtyplus btn btn-success btn-sm' field='quantity' />
-                    </form>
+                <div class="cart-items bg-white position-relative border-bottom" id="item-on-cart-${obj._id}">
+
+                    <button type="button" style="margin-right: 10px;" onclick="carrinho.controller.removeFromCart('${obj._id}')" class="close">
+                        <span aria-hidden="true" style="color: red;">&times;</span>
+                    </button>
+
+                    <a href="product_details.html" class="position-absolute">
+                    <span class="badge badge-danger m-3">10%</span>
+                    </a>
+                    <div class="d-flex  align-items-center p-3">
+                        <a href="product_details.html"><img src="${obj.imagem}" class="img-fluid"></a>
+                        <span class="ml-3 text-dark text-decoration-none w-100">
+                            <h5 class="mb-1">${obj.nome}</h5>
+                            <p class="text-muted mb-2">${obj.preco} Kz / Unidade</p>
+                            <div class="d-flex align-items-center">
+                                <p class="total_price font-weight-bold m-0">${(totalAmount)} Kz</p>
+                                <form id='myform' class="cart-items-number d-flex ml-auto" style="padding-top: 7px; padding-left: 10px;" method='POST' action='#'>
+                                    <span style="font-size:11px; font-weight:bold;">Qtd:</span> 
+                                    &nbsp;<input style="max-width: 50%; margin-top:-7px;" type='text' id='quantity${obj._id}_' name='quantity${obj._id}_' value='${obj.qtd}' class='qty form-control' />
+                                </form>
+                            </div>
+                        </span>
+                    </div>
                 </div>
-            </a>
-            </div>
-        </div>
 
         `
 
     }
 
     this.showCartOppened = function(){
+
+        this.totalAmount = 0;
 
         this.getActiveInvoice().then(async (r) => {
 
@@ -124,6 +155,9 @@ function CarrinhoViewController(){
             let itemsToShow = curInvoice.map(it => this.cartItem(it));
             
             document.getElementById("itensOnCart").innerHTML = itemsToShow;
+
+            document.getElementById("totalFactura").innerHTML = `${this.totalAmount} Kz`;
+
 
         })
 
@@ -204,7 +238,7 @@ function CarrinhoViewController(){
                                                         <a href="#" class="text-decoration-none btn btn-block p-3" type="button" data-toggle="collapse" data-target="#collapsetwo" aria-expanded="true" aria-controls="collapsetwo">
                                                         <div class="rounded shadow bg-success d-flex align-items-center p-3 text-white">
                                                             <div class="more">
-                                                                <h6 class="m-0">Total da factura $8.52</h6>
+                                                                <h6 class="m-0">Total da factura <span id="totalFactura"></span></h6>
                                                                 <p class="small m-0">Continuar</p>
                                                             </div>
                                                             <div class="ml-auto"><i class="icofont-simple-right"></i></div>
