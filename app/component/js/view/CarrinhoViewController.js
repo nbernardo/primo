@@ -9,6 +9,7 @@ function CarrinhoViewController(){
     this.itemsOnCart = [];
     this.invoicesObj = [];
     this.totalAmount = 0;
+    this.totalItems = 0;
 
     this.createInvoice = async function(curInvoice){
 
@@ -108,7 +109,8 @@ function CarrinhoViewController(){
     this.cartItem = function(obj){
 
         let totalAmount = obj.preco * obj.qtd;
-        this.totalAmount += parseInt(totalAmount); 
+        this.totalAmount += parseInt(totalAmount);
+        this.totalItems += parseInt(obj.qtd);
 
         return `
         
@@ -126,8 +128,8 @@ function CarrinhoViewController(){
                         <span class="ml-3 text-dark text-decoration-none w-100">
                             <h5 class="mb-1">${obj.nome}</h5>
                             <p class="text-muted mb-2">${obj.preco} Kz / Unidade</p>
-                            <div class="d-flex align-items-center">
-                                <p class="total_price font-weight-bold m-0">${(totalAmount)} Kz</p>
+                            <div class="align-items-center">
+                                <p class="total_price font-weight-bold m-0">Tot: ${(totalAmount)} Kz</p>
                                 <form id='myform' class="cart-items-number d-flex ml-auto" style="padding-top: 7px; padding-left: 10px;" method='POST' action='#'>
                                     <span style="font-size:11px; font-weight:bold;">Qtd:</span> 
                                     &nbsp;<input style="max-width: 50%; margin-top:-7px;" type='text' id='quantity${obj._id}_' name='quantity${obj._id}_' value='${obj.qtd}' class='qty form-control' />
@@ -171,6 +173,8 @@ function CarrinhoViewController(){
             document.getElementById("itensOnCart").innerHTML = itemsToShow;
 
             document.getElementById("totalFactura").innerHTML = `${this.totalAmount} Kz`;
+            document.getElementById("endTotalAmount").innerHTML = `${this.totalAmount} Kz`;
+            document.getElementById("totalItems").innerHTML = `${this.totalItems} itens`
             document.getElementById("carrinhoModalButton").click();
             user.controller.renderAddressOnMap();
 
@@ -362,16 +366,18 @@ function CarrinhoViewController(){
 
 
                                         <!-- cart payment -->
+                                        
                                         <div class="card border-0 osahan-accor rounded shadow-sm overflow-hidden mt-3">
-                                            <!-- payment header -->
+                                            
                                             <div class="card-header bg-white border-0 p-0" id="headingfour">
+                                            <!--
                                             <h2 class="mb-0">
                                                 <button class="btn d-flex align-items-center bg-white btn-block text-left btn-lg h5 px-3 py-4 m-0" type="button" data-toggle="collapse" data-target="#collapsefour" aria-expanded="true" aria-controls="collapsefour">
-                                                <span class="c-number">4</span> Payment
+                                                <span class="c-number">4</span> Pagamento
                                                 </button>
                                             </h2>
                                             </div>
-                                            <!-- body payment -->
+                                            
                                             <div id="collapsefour" class="collapse" aria-labelledby="headingfour" data-parent="#accordionExample">
                                             <div class="card-body px-3 pb-3 pt-1 border-top">
                                                 <div class="schedule">
@@ -463,8 +469,11 @@ function CarrinhoViewController(){
                                                 </div>
                                                 <a href="checkout.html" class="btn btn-success btn-lg btn-block mt-3" type="button">Continue</a>
                                             </div>
+                                            -->
                                             </div>
                                         </div>
+                                        
+
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
@@ -473,24 +482,27 @@ function CarrinhoViewController(){
                                             <div class="d-flex align-items-center osahan-cart-item-profile border-bottom bg-white p-3">
                                             <img alt="osahan" src="img/starter1.jpg" class="mr-3 rounded-circle img-fluid">
                                             <div class="d-flex flex-column">
-                                                <h6 class="mb-1 font-weight-bold">Osahan Fresh Store</h6>
-                                                <p class="mb-0 small text-muted"><i class="feather-map-pin"></i> 2036 2ND AVE, NEW YORK, NY 10029</p>
+                                                <h6 class="mb-1 font-weight-bold">PPRIMO</h6>
+                                                <p class="mb-0 small text-muted"><i class="feather-map-pin"></i> FAZEMOS POR SI </p>
                                             </div>
                                             </div>
                                             <div>
                                             <div class="bg-white p-3 clearfix">
-                                                <p class="font-weight-bold small mb-2">Bill Details</p>
-                                                <p class="mb-1">Item Total <span class="small text-muted">(3 item)</span> <span class="float-right text-dark">$3140</span></p>
-                                                <p class="mb-1">Store Charges <span class="float-right text-dark">$62.8</span></p>
-                                                <p class="mb-3">Delivery Fee <span  data-toggle="tooltip" data-placement="top" title="Delivery partner fee - $3" class="text-info ml-1"><i class="icofont-info-circle"></i></span><span class="float-right text-dark">$10</span></p>
-                                                <h6 class="mb-0 text-success">Total Discount<span class="float-right text-success">$1884</span></h6>
+                                                <p class="font-weight-bold small mb-2">Detalhe de encomenda</p>
+                                                <p class="mb-1">Total produtos <span class="small text-muted"><span id="totalItems">(3 item)</span></span> <span class="float-right text-dark">$3140</span></p>
+                                                <!-- <p class="mb-1">Store Charges <span class="float-right text-dark">$62.8</span></p> -->
+                                                <p class="mb-3">Taxa de entrega <span  data-toggle="tooltip" data-placement="top" title="Delivery partner fee - $3" class="text-info ml-1"><i class="icofont-info-circle"></i></span><span class="float-right text-dark">Gratis</span></p>
+                                                
+                                                <!--
+                                                <h6 class="mb-0 text-success">Total desconto<span class="float-right text-success">$1884</span></h6>
+                                                -->
                                             </div>
                                             <div class="p-3 border-top">
-                                                <h5 class="mb-0">TO PAY  <span class="float-right text-danger">$1329</span></h5>
+                                                <h5 class="mb-0">A PAGAR  <span class="float-right text-danger" id="endTotalAmount">$1329</span></h5>
                                             </div>
                                             </div>
                                         </div>
-                                        <p class="text-success text-center">Your Total Savings on this order $8.52</p>
+                                        <!-- <p class="text-success text-center">Your Total Savings on this order $8.52</p> -->
                                     </div>
                                 </div>
                                 </div>
