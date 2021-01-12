@@ -272,9 +272,9 @@ function CarrinhoViewController(){
                                             <!-- address header -->
                                             <div class="card-header bg-white border-0 p-0" id="headingtwo">
                                                 <h2 class="mb-0">
-                                                    <button class="btn d-flex align-items-center bg-white btn-block text-left btn-lg h5 px-3 py-4 m-0" type="button" data-toggle="collapse" data-target="#collapsetwo" aria-expanded="true" aria-controls="collapsetwo">
+                                                    <button onclick="carrinho.controller.getDeliveryAddress()" class="btn d-flex align-items-center bg-white btn-block text-left btn-lg h5 px-3 py-4 m-0" type="button" data-toggle="collapse" data-target="#collapsetwo" aria-expanded="true" aria-controls="collapsetwo">
                                                     
-                                                    <span class="c-number">2</span> Endereço de entrega 
+                                                        <span class="c-number">2</span> Endereço de entrega 
                                                         <!--
                                                         <a href="#"  data-toggle="modal" data-target="#exampleModal" class="text-decoration-none text-success ml-auto"> 
                                                             <i class="icofont-plus-circle mr-1"></i>Confirmar o endereço
@@ -298,8 +298,11 @@ function CarrinhoViewController(){
                                                                                 <p class="mb-0 h6">Morada</p>
                                                                                 <p class="mb-0 badge badge-success ml-auto"><i class="icofont-check-circled"></i> Confirmada</p>
                                                                             </div>
-                                                                            <p class="small text-muted m-0">(bairro)</p>
-                                                                            <p class="small text-muted m-0">(rua), (numero)</p>
+                                                                            <p class="small text-muted m-0"><span id="deliveryDistrict">(bairro)</span></p>
+                                                                            <p class="small text-muted m-0">
+                                                                                <span id="deliveryStreet">(rua)</span>, 
+                                                                                <span id="deliveryHouse">(numero)</span>
+                                                                            </p>
                                                                             <!--
                                                                             <p class="pt-2 m-0 text-right"><span class="small"><a href="#"  data-toggle="modal" data-target="#exampleModal" class="text-decoration-none text-info">Alterar</a></span></p>
                                                                             -->
@@ -524,6 +527,18 @@ function CarrinhoViewController(){
 
         `;
 
+    }
+
+
+    this.getDeliveryAddress = async function(){
+
+        let fullAddress = await (new UserViewController()).getAddress();
+        let address = fullAddress.endereco;
+
+        document.getElementById("deliveryDistrict").innerHTML = address.destrito;
+        document.getElementById("deliveryStreet").innerHTML = address.rua;
+        document.getElementById("deliveryHouse").innerHTML = address.casa;
+        
     }
 
     return this;

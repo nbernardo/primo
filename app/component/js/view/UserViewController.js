@@ -274,8 +274,18 @@ function UserViewController(){
         }else{
             document.getElementById("loginError").style.display = "";
         }
-        
         document.getElementsByClassName("second-nav")[0].innerHTML = menu.controller.generateMainMenu();
+
+    }
+
+    this.getAddress = async function(){
+
+        let curAddress = await localStorage.getItem("address");
+        if(curAddress){
+            return JSON.parse(curAddress);
+        }
+        
+        return {};
 
     }
 
