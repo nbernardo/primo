@@ -64,9 +64,7 @@ function CarrinhoViewController(){
      
         let removedEscapeObject = JSON.parse(unescape(item));
         let qtd = document.getElementById("quantity"+removedEscapeObject._id).value;
-
         removedEscapeObject.qtd = qtd || 1;
-
 
         this.getActiveInvoice().then(async (r) => {
             
@@ -75,13 +73,62 @@ function CarrinhoViewController(){
             
             //Remove exissting Item to be replaced 
             activatedInvoice.splice(itemToRemove,1);
-
+            //Insert the replacing item
             activatedInvoice.push(removedEscapeObject);
             saveItem(r.id,activatedInvoice);
     
         });
         
     }
+
+    this.cartItem = function(obj){
+
+
+        return `
+        
+        <div class="cart-items bg-white position-relative border-bottom">
+            <a href="product_details.html" class="position-absolute">
+            <span class="badge badge-danger m-3">10%</span>
+            </a>
+            <div class="d-flex  align-items-center p-3">
+            <a href="product_details.html"><img src="${obj.imagem}" class="img-fluid"></a>
+            <a href="product_details.html" class="ml-3 text-dark text-decoration-none w-100">
+                <h5 class="mb-1">${obj.nome}</h5>
+                <p class="text-muted mb-2">${obj.preco} Kz / Unidade</p>
+                <div class="d-flex align-items-center">
+                    <p class="total_price font-weight-bold m-0">${(obj.preco * obj.qtd)} Kz</p>
+                    <form id='myform' class="cart-items-number d-flex ml-auto" method='POST' action='#'>
+                        <input type='button' value='-' class='qtyminus btn btn-success btn-sm' field='quantity' />
+                        <input type='text' name='quantity' value='${obj.qtd}' class='qty form-control' />
+                        <input type='button' value='+' class='qtyplus btn btn-success btn-sm' field='quantity' />
+                    </form>
+                </div>
+            </a>
+            </div>
+        </div>
+
+        `
+
+    }
+
+    this.showCartOppened = function(){
+
+        this.getActiveInvoice().then(async (r) => {
+
+            let totalItems = document.getElementById("itensOnCarrinho").innerHTML.toString();
+            totalItems = totalItems.replace("(","").replace(")","");
+
+            document.getElementById("showCartItemCount").innerHTML = `${totalItems} `;
+
+            let curInvoice = await this.getInvoice(r.id);
+            let itemsToShow = curInvoice.map(it => this.cartItem(it));
+            
+            document.getElementById("itensOnCart").innerHTML = itemsToShow;
+
+        })
+
+    }
+
 
     const saveItem = async function(id,item){
 
@@ -141,7 +188,8 @@ function CarrinhoViewController(){
                                             <div class="card-header bg-white border-0 p-0" id="headingOne">
                                             <h2 class="mb-0">
                                                 <button class="btn d-flex align-items-center bg-white btn-block text-left btn-lg h5 px-3 py-4 m-0" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                <span class="c-number">1</span> Carrinho (3 iten(s))
+                                                <span class="c-number">1</span> 
+                                                Carrinho (<span id="showCartItemCount">3</span> iten(s))
                                                 </button>
                                             </h2>
                                             </div>
@@ -150,45 +198,7 @@ function CarrinhoViewController(){
                                             <div class="card-body p-0 border-top">
                                                 <div class="osahan-cart">
 
-                                                    <div class="cart-items bg-white position-relative border-bottom">
-                                                        <a href="product_details.html" class="position-absolute">
-                                                        <span class="badge badge-danger m-3">10%</span>
-                                                        </a>
-                                                        <div class="d-flex  align-items-center p-3">
-                                                        <a href="product_details.html"><img src="img/cart/g1.png" class="img-fluid"></a>
-                                                        <a href="product_details.html" class="ml-3 text-dark text-decoration-none w-100">
-                                                            <h5 class="mb-1">Bread</h5>
-                                                            <p class="text-muted mb-2"><del class="text-success mr-1">$1.20kg</del> $0.98/kg</p>
-                                                            <div class="d-flex align-items-center">
-                                                                <p class="total_price font-weight-bold m-0">$2.82</p>
-                                                                <form id='myform' class="cart-items-number d-flex ml-auto" method='POST' action='#'>
-                                                                    <input type='button' value='-' class='qtyminus btn btn-success btn-sm' field='quantity' />
-                                                                    <input type='text' name='quantity' value='1' class='qty form-control' />
-                                                                    <input type='button' value='+' class='qtyplus btn btn-success btn-sm' field='quantity' />
-                                                                </form>
-                                                            </div>
-                                                        </a>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="cart-items bg-white position-relative border-bottom">
-                                                        <div class="d-flex  align-items-center p-3">
-                                                        <a href="product_details.html"><img src="img/cart/g2.png" class="img-fluid"></a>
-                                                        <a href="product_details.html" class="ml-3 text-dark text-decoration-none w-100">
-                                                            <h5 class="mb-1">Spinach</h5>
-                                                            <p class="text-muted mb-2"><del class="text-success mr-1">$1.20kg</del> $0.98/kg</p>
-                                                            <div class="d-flex align-items-center">
-                                                                <p class="total_price font-weight-bold m-0">$3.82</p>
-                                                                <form id='myform' class="cart-items-number d-flex ml-auto" method='POST' action='#'>
-                                                                    <input type='button' value='-' class='qtyminus btn btn-success btn-sm' field='quantity' />
-                                                                    <input type='text' name='quantity' value='1' class='qty form-control' />
-                                                                    <input type='button' value='+' class='qtyplus btn btn-success btn-sm' field='quantity' />
-                                                                </form>
-                                                            </div>
-                                                        </a>
-                                                        </div>
-                                                    </div>
-
+                                                    <div id="itensOnCart"></div>
 
                                                     <div>
                                                         <a href="#" class="text-decoration-none btn btn-block p-3" type="button" data-toggle="collapse" data-target="#collapsetwo" aria-expanded="true" aria-controls="collapsetwo">
@@ -201,6 +211,7 @@ function CarrinhoViewController(){
                                                         </div>
                                                         </a>
                                                     </div>
+
                                                 </div>
                                             </div>
                                             </div>
