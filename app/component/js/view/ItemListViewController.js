@@ -46,6 +46,9 @@ function ItemListViewController(){
         let preco = obj.preco || "0.5";
         let id = obj._id || Math.random();
 
+        let linkObject = JSON.stringify(obj);
+        let transformLinkObject = escape(linkObject);
+
         return `
         
                 <div class="col-6 col-md-3 mb-3">
@@ -72,7 +75,11 @@ function ItemListViewController(){
                                     </div>
                                     </div>
                                     <br/>
-                                    <p class="bg-success text-white py-2 px-2 mb-0 rounded small">Adicionar</p>
+                                    <p 
+                                        onclick=carrinho.controller.addToCart('${transformLinkObject}');
+                                        class="objectAddLink bg-success text-white py-2 px-2 mb-0 rounded small">
+                                        Adicionar
+                                    </p>
                                 </div>
                             </a>
                         </div>
@@ -81,7 +88,8 @@ function ItemListViewController(){
 
         `;
 
-    }
+    } 
+    
 
     return this;
 

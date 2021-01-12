@@ -1,10 +1,83 @@
-carrinho = {
+const carrinho = {
     controller: new CarrinhoViewController(),
 }
 
 function CarrinhoViewController(){
 
     this.curDateTime = "";
+    this.itemsOnCart = [];
+
+    this.getActiveInvoice = async function(){
+
+        let invoices = await localStorage.getItem("invoices_");
+        let invoiceId = (new Date()).getTime();
+        
+
+        if(invoices == null || invoices == undefined || invoices == null){
+        
+            let curInvoice = [];
+            invoiceObj = {id: invoiceId, active: true};
+            curInvoice.push(invoiceObj);
+            localStorage.setItem("invoices_", JSON.stringify(curInvoice));
+            return await invoiceObj;
+
+        }
+
+        invoicesObj = JSON.parse(invoices);
+        console.log("Rett: ", invoicesObj);
+
+        if(invoicesObj.filter(inv => inv.active).length == 0){
+
+            curInvoice = {id: invoiceId, active: true};
+            invoicesObj.push(curInvoice);
+            localStorage.setItem("invoices_", JSON.stringify(invoicesObj));
+            return await curInvoice;
+
+        }
+            
+        
+        return await invoicesObj.filter(inv => inv.active)[0];
+
+    }
+
+    this.getInvoice = function(id){
+
+        let invoice = localStorage.getItem(id);
+        return invoice ? JSON.parse(invoice) : [];
+
+    }
+
+    this.addToCart = function(item){
+     
+        let removedEscapeObject = JSON.parse(unescape(item));
+        this.getActiveInvoice().then(r => {
+
+            const {id, active} = r;
+
+            let activatedInvoice = this.getInvoice(id);
+            activatedInvoice.push(removedEscapeObject);
+            saveItem(id,activatedInvoice);
+    
+
+        });
+
+        /*
+        console.log("Recuperado: ", activeInvoiceId);
+
+        let activatedInvoice = this.getInvoice(activeInvoiceId);
+
+        activatedInvoice.push(removedEscapeObject);
+        saveItem(activeInvoiceId,activatedInvoice);
+        */
+        
+    }
+
+    const saveItem = function(id,item){
+
+        let newItem = JSON.stringify(item);
+        localStorage.setItem(id,newItem);
+
+    }
 
     this.renderCartView = function(){
 
