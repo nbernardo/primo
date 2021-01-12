@@ -6,37 +6,39 @@ function CarrinhoViewController(){
 
     this.curDateTime = "";
     this.itemsOnCart = [];
+    this.invoicesObj = [];
+
+    this.createInvoice = async function(curInvoice){
+
+        console.log("*** Para os que vão ***");
+        this.invoicesObj.push(curInvoice);
+        await localStorage.setItem("invoices_", JSON.stringify(this.invoicesObj));
+        return curInvoice;
+    }
 
     this.getActiveInvoice = async function(){
 
         let invoices = await localStorage.getItem("invoices_");
         let invoiceId = (new Date()).getTime();
         
-
         if(invoices == null || invoices == undefined || invoices == null){
         
-            let curInvoice = [];
-            invoiceObj = {id: invoiceId, active: true};
-            curInvoice.push(invoiceObj);
-            localStorage.setItem("invoices_", JSON.stringify(curInvoice));
-            return await invoiceObj;
+            this.invoicesObj = [];
+            curInvoice = {id: invoiceId, active: true};
+            return this.createInvoice(curInvoice);
 
         }
 
-        invoicesObj = JSON.parse(invoices);
-        console.log("Rett: ", invoicesObj);
+        this.invoicesObj = JSON.parse(invoices);
 
-        if(invoicesObj.filter(inv => inv.active).length == 0){
+        if(this.invoicesObj.filter(inv => inv.active).length == 0){
 
             curInvoice = {id: invoiceId, active: true};
-            invoicesObj.push(curInvoice);
-            localStorage.setItem("invoices_", JSON.stringify(invoicesObj));
-            return await curInvoice;
+            return this.createInvoice(curInvoice);
 
         }
-            
         
-        return await invoicesObj.filter(inv => inv.active)[0];
+        return await this.invoicesObj.filter(inv => inv.active)[0];
 
     }
 
@@ -60,15 +62,6 @@ function CarrinhoViewController(){
     
 
         });
-
-        /*
-        console.log("Recuperado: ", activeInvoiceId);
-
-        let activatedInvoice = this.getInvoice(activeInvoiceId);
-
-        activatedInvoice.push(removedEscapeObject);
-        saveItem(activeInvoiceId,activatedInvoice);
-        */
         
     }
 
