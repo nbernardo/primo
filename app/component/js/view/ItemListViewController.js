@@ -67,7 +67,7 @@ function ItemListViewController(){
                                             <span class="ml-auto" href="#">
                                                 <form id='myform' class="cart-items-number d-flex" method='POST' action='#'>
                                                 <input type='button' value='-' class='qtyminus btn btn-success btn-sm' field='quantity${id}' />
-                                                <input type='text' name='quantity${id}' value='1' class='qty form-control' />
+                                                <input type='text' name='quantity${id}' id='quantity${id}' value='1' class='qty form-control' />
                                                 <input type='button' value='+' class='qtyplus btn btn-success btn-sm' field='quantity${id}' />
                                                 </form>   
                                             </span>

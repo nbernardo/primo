@@ -42,35 +42,42 @@ function CarrinhoViewController(){
 
     }
 
-    this.getInvoice = function(id){
+    this.getInvoice = async function(id){
 
-        let invoice = localStorage.getItem(id);
+        let invoice = await localStorage.getItem(id);
         return invoice ? JSON.parse(invoice) : [];
 
     }
 
     this.cartItemsCount = function(){
 
-        this.getActiveInvoice().then(r => {
+        this.getActiveInvoice().then(async (r) => {
 
-            let totalItems = this.getInvoice(r.id);
+            let totalItems = await this.getInvoice(r.id);
             document.getElementById("itensOnCarrinho").innerHTML = `\(${totalItems.length}\)`;
 
         })
 
     }
 
-    this.addToCart = function(item){
+    this.addToCart = async function(item){
      
         let removedEscapeObject = JSON.parse(unescape(item));
-        
-        this.getActiveInvoice().then(r => {
+        let qtd = document.getElementById("quantity"+removedEscapeObject._id).value;
 
-            const {id, active} = r;
+        removedEscapeObject.qtd = qtd || 1;
 
-            let activatedInvoice = this.getInvoice(id);
+
+        this.getActiveInvoice().then(async (r) => {
+            
+            let activatedInvoice = await this.getInvoice(r.id);
+            let itemToRemove = activatedInvoice.findIndex(it => it._id == removedEscapeObject._id);
+            
+            //Remove exissting Item to be replaced 
+            activatedInvoice.splice(itemToRemove,1);
+
             activatedInvoice.push(removedEscapeObject);
-            saveItem(id,activatedInvoice);
+            saveItem(r.id,activatedInvoice);
     
         });
         
