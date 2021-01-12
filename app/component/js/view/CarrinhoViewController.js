@@ -49,9 +49,21 @@ function CarrinhoViewController(){
 
     }
 
+    this.cartItemsCount = function(){
+
+        this.getActiveInvoice().then(r => {
+
+            let totalItems = this.getInvoice(r.id);
+            document.getElementById("itensOnCarrinho").innerHTML = `\(${totalItems.length}\)`;
+
+        })
+
+    }
+
     this.addToCart = function(item){
      
         let removedEscapeObject = JSON.parse(unescape(item));
+        
         this.getActiveInvoice().then(r => {
 
             const {id, active} = r;
@@ -60,15 +72,15 @@ function CarrinhoViewController(){
             activatedInvoice.push(removedEscapeObject);
             saveItem(id,activatedInvoice);
     
-
         });
         
     }
 
-    const saveItem = function(id,item){
+    const saveItem = async function(id,item){
 
         let newItem = JSON.stringify(item);
-        localStorage.setItem(id,newItem);
+        await localStorage.setItem(id,newItem);
+        (new CarrinhoViewController()).cartItemsCount();
 
     }
 

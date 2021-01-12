@@ -274,7 +274,9 @@
                         <span class="bg-color-head text-white  rounded  profileButton" style="right: 0; position: absolute; width: 70px; top: -20px; height: 42px;">
                            <a href="#" data-toggle="modal" data-target="#carrinhoModal" class="text-decoration-none text-white">
                               <i class="text-white icofont-shopping-cart" style="color: white; font-size: 14px;"></i> 
-                              (<span id="itensOnCarrinho">0</span>)
+                              <span id="itensOnCarrinho">
+                                 ( <span>...</span> )
+                              </span>
                            </a>
                         </span>
                         
@@ -799,6 +801,7 @@
          PODEM SER ADICIONADOS AO CARRINHO
          */
          itemList.controller.renderListItems();
+         carrinho.controller.cartItemsCount();
 
       </script>
 
