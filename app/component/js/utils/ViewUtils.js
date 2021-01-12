@@ -280,7 +280,7 @@ function ViewUtils(){
         this.afterSpinningContent = `
             <h6>${ this.spinningSuccessMessage} !</h6>
             <div style="margin: 20px auto">
-                <button type="button" class="btn btn-danger btn-block btn-lg" class="close" data-dismiss="modal" aria-label="Close">Fachar</button>
+                <button type="button" class="btn btn-success btn-block btn-lg" class="close" data-dismiss="modal" aria-label="Close">Ok</button>
             </div>
         `;
 

@@ -19,12 +19,21 @@
       <!-- Sidebar CSS -->
       <link href="vendor/sidebar/demo.css" rel="stylesheet">
 
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+            integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+            crossorigin=""/>
+
       <script src="../component/js/utils/Request.js"></script>
       <script src="../component/js/utils/HtmlComponent.js"></script>
       <script src="../component/js/view/PromoViewController.js"></script>
       <script src="../component/js/view/MenuViewController.js"></script>
       <script src="../component/js/view/ItemListViewController.js"></script>
       <script src="../component/js/utils/ProwebCalendar.js"></script>
+      <script src="../component/js/utils/ProwebAuth.js"></script>
+
+      <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+               integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+               crossorigin="" defer></script>
 
    </head>
    <body class="fixed-bottom-padding">
@@ -259,22 +268,20 @@
                      <!-- body -->
                      <div class="osahan-body" style="margin-top: -10px;">
 
-                        <span class="bg-danger text-white px-3 rounded small m-0 profileButton">
-                           <a href="#" data-toggle="modal" data-target="#accountModal" class="text-decoration-none text-white">
-                              <i class="text-white icofont-badge" style="color: white; font-size: 18px;"></i> Registar-me
-                           </a>
-                        </span>
+                        <span id="notAuthButton"></span>
+
                         &nbsp;
-                        <span class="bg-danger text-white  px-3 rounded small m-0 profileButton">
-                           <a href="#" data-toggle="modal" data-target="#loginModal" class="text-decoration-none text-white">
-                              <i class="text-white icofont-ui-user" style="color: white;"></i> Logar
-                           </a>
-                        </span>
-                        &nbsp;
-                        <span class="bg-color-head text-white  rounded  profileButton" style="right: 0; position: absolute; width: 70px; top: -20px; height: 42px;">
-                           <a href="#" data-toggle="modal" data-target="#carrinhoModal" class="text-decoration-none text-white">
+                        <a href="#" style="display: none;" data-toggle="modal" id="carrinhoModalButton" data-target="#carrinhoModal">&nbsp;</a>
+                        <span 
+                           onclick="carrinho.controller.showAppropriateView()" 
+                           class="bg-color-head text-white  rounded  profileButton" 
+                           style="right: 0; position: absolute; width: 70px; top: -20px; height: 42px;">
+                           
+                           <a href="#" class="text-decoration-none text-white">
                               <i class="text-white icofont-shopping-cart" style="color: white; font-size: 14px;"></i> 
-                              (<span id="itensOnCarrinho">0</span>)
+                              <span id="itensOnCarrinho">
+                                 ( <span>...</span> )
+                              </span>
                            </a>
                         </span>
                         
@@ -769,10 +776,12 @@
 
       <style>
 
-         .col-c{
-            /*width: 100px !important;*/
-         }
 
+         #localMap{
+            width: 100%;
+            height: 350px;
+            margin-top: 10px;
+         }
 
          .disabled-des{
             opacity: .5;
@@ -784,12 +793,16 @@
 
       </style>
 
+      <script src="../component/js/utils/ProwebMap.js"></script>
       <script src="../component/js/view/UserViewController.js"></script>
       <script src="../component/js/utils/Validation.js"></script>
       <script src="../component/js/utils/ViewUtils.js"></script>
       <script src="../component/js/view/CarrinhoViewController.js"></script>
       <script> 
          
+         // REGISTRATION AND LOGIN BUTTONS
+         user.controller.handleNoAuthButton();
+
          /* SCRIPT EXECUTIONS */
          promo.controller.findAndPromos("promoLocal"); 
          menu.controller.renderMenu("Vitrine Principal");
@@ -799,6 +812,7 @@
          PODEM SER ADICIONADOS AO CARRINHO
          */
          itemList.controller.renderListItems();
+         carrinho.controller.cartItemsCount();
 
       </script>
 
@@ -867,21 +881,26 @@
                <div class="modal-header">
                   <h5 class="modal-title" id="loginModalLabel">Login</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
+                  <span aria-hidden="true" id="closeLoginButton">&times;</span>
                   </button>
                </div>
                <div class="modal-body">
-                  <form action="my_account.html">
+                  <form>
+
+                     <span
+                        style="display: block; padding-bottom: 10px; color: red;" 
+                        id="mensagemLoginRequired">Precisa fazer o login para ver o carrinho</span>
 
                      <div class="form-group">
-                        <input type="text" class="form-control" id="exampleInputName1" placeholder="Telefone">
+                        <input type="text" class="form-control" id="loginUser" placeholder="Telefone">
                      </div>
                      <div class="form-group">
-                        <input type="password" class="form-control" id="exampleInputNumber1" placeholder="Senha">
+                        <input type="password" class="form-control" id="loginPassword" placeholder="Senha">
                      </div>
 
                      <div class="text-center">
-                        <button type="submit" class="btn btn-success btn-block btn-lg">Entrar</button>
+                        <label style="display: none;" id="loginError" class="text-danger requiredLabel">Utilizador ou senha errada</label>
+                        <button type="button" onclick="user.controller.login()" class="btn btn-success btn-block btn-lg">Entrar</button>
                      </div>
 
                   </form>

@@ -1,10 +1,192 @@
-carrinho = {
+const carrinho = {
     controller: new CarrinhoViewController(),
+    accessTry: false,
 }
 
 function CarrinhoViewController(){
 
     this.curDateTime = "";
+    this.itemsOnCart = [];
+    this.invoicesObj = [];
+    this.totalAmount = 0;
+
+    this.createInvoice = async function(curInvoice){
+
+        console.log("*** Para os que vão ***");
+        this.invoicesObj.push(curInvoice);
+        await localStorage.setItem("invoices_", JSON.stringify(this.invoicesObj));
+        return curInvoice;
+    }
+
+    this.getActiveInvoice = async function(){
+
+        let invoices = await localStorage.getItem("invoices_");
+        let invoiceId = (new Date()).getTime();
+        
+        if(invoices == null || invoices == undefined || invoices == null){
+        
+            this.invoicesObj = [];
+            curInvoice = {id: invoiceId, active: true};
+            return this.createInvoice(curInvoice);
+
+        }
+
+        this.invoicesObj = JSON.parse(invoices);
+
+        if(this.invoicesObj.filter(inv => inv.active).length == 0){
+
+            curInvoice = {id: invoiceId, active: true};
+            return this.createInvoice(curInvoice);
+
+        }
+        
+        return await this.invoicesObj.filter(inv => inv.active)[0];
+
+    }
+
+    this.getInvoice = async function(id){
+
+        let invoice = await localStorage.getItem(id);
+        return invoice ? JSON.parse(invoice) : [];
+
+    }
+
+    this.cartItemsCount = function(){
+
+        this.getActiveInvoice().then(async (r) => {
+
+            let totalItems = await this.getInvoice(r.id);
+            document.getElementById("itensOnCarrinho").innerHTML = `\(${totalItems.length}\)`;
+
+        })
+
+    }
+
+    this.addToCart = async function(item){
+     
+        let removedEscapeObject = JSON.parse(unescape(item));
+        let qtd = document.getElementById("quantity"+removedEscapeObject._id).value;
+        removedEscapeObject.qtd = qtd || 1;
+
+        this.getActiveInvoice().then(async (r) => {
+            
+            let activatedInvoice = await this.getInvoice(r.id);
+            let itemToRemove = activatedInvoice.findIndex(it => it._id == removedEscapeObject._id);
+
+            console.log("REtorno: ", itemToRemove);
+            if(itemToRemove >= 0){
+                //Remove exissting Item to be replaced 
+                activatedInvoice.splice(itemToRemove,1);
+            }
+            //Insert the replacing item
+            activatedInvoice.push(removedEscapeObject);
+            saveItem(r.id,activatedInvoice);
+    
+        });
+        
+    }
+
+    this.removeFromCart = function(item){
+
+        this.getActiveInvoice().then(async (r) => {
+            
+            let activatedInvoice = await this.getInvoice(r.id);
+            let itemToRemove = activatedInvoice.findIndex(it => it._id == item);
+            
+            //Remove exissting Item to be replaced 
+            activatedInvoice.splice(itemToRemove,1);
+            await saveItem(r.id,activatedInvoice);
+            removeFromView(item);
+        });
+
+    }
+
+    const removeFromView = function(idItem){
+        document.getElementById(`item-on-cart-${idItem}`).style.display = "none";
+    }
+
+    this.cartItem = function(obj){
+
+        let totalAmount = obj.preco * obj.qtd;
+        this.totalAmount += parseInt(totalAmount); 
+
+        return `
+        
+                <div class="cart-items bg-white position-relative border-bottom" id="item-on-cart-${obj._id}">
+
+                    <button type="button" style="margin-right: 10px;" onclick="carrinho.controller.removeFromCart('${obj._id}')" class="close">
+                        <span aria-hidden="true" style="color: red;">&times;</span>
+                    </button>
+
+                    <a href="product_details.html" class="position-absolute">
+                    <span class="badge badge-danger m-3">10%</span>
+                    </a>
+                    <div class="d-flex  align-items-center p-3">
+                        <a href="product_details.html"><img src="${obj.imagem}" class="img-fluid"></a>
+                        <span class="ml-3 text-dark text-decoration-none w-100">
+                            <h5 class="mb-1">${obj.nome}</h5>
+                            <p class="text-muted mb-2">${obj.preco} Kz / Unidade</p>
+                            <div class="d-flex align-items-center">
+                                <p class="total_price font-weight-bold m-0">${(totalAmount)} Kz</p>
+                                <form id='myform' class="cart-items-number d-flex ml-auto" style="padding-top: 7px; padding-left: 10px;" method='POST' action='#'>
+                                    <span style="font-size:11px; font-weight:bold;">Qtd:</span> 
+                                    &nbsp;<input style="max-width: 50%; margin-top:-7px;" type='text' id='quantity${obj._id}_' name='quantity${obj._id}_' value='${obj.qtd}' class='qty form-control' />
+                                </form>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+
+        `
+
+    }
+
+    this.showAppropriateView = function(){
+
+        carrinho.accessTry = true;
+        if(__PROWEBAUTH__.isUserLogged() == null){
+            document.getElementById("loginModalButton").click();            
+            return;
+        }
+
+        carrinho.accessTry = false;          
+        this.showCartOppened();
+
+    }
+
+    this.showCartOppened = function(){
+
+        this.totalAmount = 0;
+
+        this.getActiveInvoice().then(async (r) => {
+
+            let totalItems = document.getElementById("itensOnCarrinho").innerHTML.toString();
+            totalItems = totalItems.replace("(","").replace(")","");
+
+            document.getElementById("showCartItemCount").innerHTML = `${totalItems} `;
+
+            let curInvoice = await this.getInvoice(r.id);
+            let itemsToShow = curInvoice.map(it => this.cartItem(it));
+            
+            document.getElementById("itensOnCart").innerHTML = itemsToShow;
+
+            document.getElementById("totalFactura").innerHTML = `${this.totalAmount} Kz`;
+            document.getElementById("carrinhoModalButton").click();
+            user.controller.renderAddressOnMap();
+
+
+        })
+
+    }
+
+
+    const saveItem = async function(id,item){
+
+        let newItem = JSON.stringify(item);
+        await localStorage.setItem(id,newItem);
+        (new CarrinhoViewController()).cartItemsCount();
+
+    }
 
     this.renderCartView = function(){
 
@@ -56,7 +238,8 @@ function CarrinhoViewController(){
                                             <div class="card-header bg-white border-0 p-0" id="headingOne">
                                             <h2 class="mb-0">
                                                 <button class="btn d-flex align-items-center bg-white btn-block text-left btn-lg h5 px-3 py-4 m-0" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                <span class="c-number">1</span> Carrinho (3 iten(s))
+                                                <span class="c-number">1</span> 
+                                                Carrinho (<span id="showCartItemCount">3</span> iten(s))
                                                 </button>
                                             </h2>
                                             </div>
@@ -65,57 +248,20 @@ function CarrinhoViewController(){
                                             <div class="card-body p-0 border-top">
                                                 <div class="osahan-cart">
 
-                                                    <div class="cart-items bg-white position-relative border-bottom">
-                                                        <a href="product_details.html" class="position-absolute">
-                                                        <span class="badge badge-danger m-3">10%</span>
-                                                        </a>
-                                                        <div class="d-flex  align-items-center p-3">
-                                                        <a href="product_details.html"><img src="img/cart/g1.png" class="img-fluid"></a>
-                                                        <a href="product_details.html" class="ml-3 text-dark text-decoration-none w-100">
-                                                            <h5 class="mb-1">Bread</h5>
-                                                            <p class="text-muted mb-2"><del class="text-success mr-1">$1.20kg</del> $0.98/kg</p>
-                                                            <div class="d-flex align-items-center">
-                                                                <p class="total_price font-weight-bold m-0">$2.82</p>
-                                                                <form id='myform' class="cart-items-number d-flex ml-auto" method='POST' action='#'>
-                                                                    <input type='button' value='-' class='qtyminus btn btn-success btn-sm' field='quantity' />
-                                                                    <input type='text' name='quantity' value='1' class='qty form-control' />
-                                                                    <input type='button' value='+' class='qtyplus btn btn-success btn-sm' field='quantity' />
-                                                                </form>
-                                                            </div>
-                                                        </a>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="cart-items bg-white position-relative border-bottom">
-                                                        <div class="d-flex  align-items-center p-3">
-                                                        <a href="product_details.html"><img src="img/cart/g2.png" class="img-fluid"></a>
-                                                        <a href="product_details.html" class="ml-3 text-dark text-decoration-none w-100">
-                                                            <h5 class="mb-1">Spinach</h5>
-                                                            <p class="text-muted mb-2"><del class="text-success mr-1">$1.20kg</del> $0.98/kg</p>
-                                                            <div class="d-flex align-items-center">
-                                                                <p class="total_price font-weight-bold m-0">$3.82</p>
-                                                                <form id='myform' class="cart-items-number d-flex ml-auto" method='POST' action='#'>
-                                                                    <input type='button' value='-' class='qtyminus btn btn-success btn-sm' field='quantity' />
-                                                                    <input type='text' name='quantity' value='1' class='qty form-control' />
-                                                                    <input type='button' value='+' class='qtyplus btn btn-success btn-sm' field='quantity' />
-                                                                </form>
-                                                            </div>
-                                                        </a>
-                                                        </div>
-                                                    </div>
-
+                                                    <div id="itensOnCart"></div>
 
                                                     <div>
                                                         <a href="#" class="text-decoration-none btn btn-block p-3" type="button" data-toggle="collapse" data-target="#collapsetwo" aria-expanded="true" aria-controls="collapsetwo">
                                                         <div class="rounded shadow bg-success d-flex align-items-center p-3 text-white">
                                                             <div class="more">
-                                                                <h6 class="m-0">Total da factura $8.52</h6>
+                                                                <h6 class="m-0">Total da factura <span id="totalFactura"></span></h6>
                                                                 <p class="small m-0">Continuar</p>
                                                             </div>
                                                             <div class="ml-auto"><i class="icofont-simple-right"></i></div>
                                                         </div>
                                                         </a>
                                                     </div>
+
                                                 </div>
                                             </div>
                                             </div>
@@ -126,8 +272,14 @@ function CarrinhoViewController(){
                                             <!-- address header -->
                                             <div class="card-header bg-white border-0 p-0" id="headingtwo">
                                                 <h2 class="mb-0">
-                                                    <button class="btn d-flex align-items-center bg-white btn-block text-left btn-lg h5 px-3 py-4 m-0" type="button" data-toggle="collapse" data-target="#collapsetwo" aria-expanded="true" aria-controls="collapsetwo">
-                                                    <span class="c-number">2</span> Order Address <a href="#"  data-toggle="modal" data-target="#exampleModal" class="text-decoration-none text-success ml-auto"> <i class="icofont-plus-circle mr-1"></i>Confirmar o endereço</a>
+                                                    <button onclick="carrinho.controller.getDeliveryAddress()" class="btn d-flex align-items-center bg-white btn-block text-left btn-lg h5 px-3 py-4 m-0" type="button" data-toggle="collapse" data-target="#collapsetwo" aria-expanded="true" aria-controls="collapsetwo">
+                                                    
+                                                        <span class="c-number">2</span> Endereço de entrega 
+                                                        <!--
+                                                        <a href="#"  data-toggle="modal" data-target="#exampleModal" class="text-decoration-none text-success ml-auto"> 
+                                                            <i class="icofont-plus-circle mr-1"></i>Confirmar o endereço
+                                                        </a>
+                                                        -->
                                                     </button>
                                                 </h2>
                                             </div>
@@ -141,20 +293,32 @@ function CarrinhoViewController(){
                                                                 <label class="custom-control-label w-100" for="customRadioInline1">
                                                                     <div>
                                                                         <div class="p-3 bg-white rounded shadow-sm w-100">
+                                                                            
                                                                             <div class="d-flex align-items-center mb-2">
-                                                                            <p class="mb-0 h6">Morada</p>
-                                                                            <p class="mb-0 badge badge-success ml-auto"><i class="icofont-check-circled"></i> Confirmada</p>
+                                                                                <p class="mb-0 h6">Morada</p>
+                                                                                <p class="mb-0 badge badge-success ml-auto"><i class="icofont-check-circled"></i> Confirmada</p>
                                                                             </div>
-                                                                            <p class="small text-muted m-0">1001 Veterans Blvd</p>
-                                                                            <p class="small text-muted m-0">Benfica, CA 94063</p>
+                                                                            <p class="small text-muted m-0"><span id="deliveryDistrict">(bairro)</span></p>
+                                                                            <p class="small text-muted m-0">
+                                                                                <span id="deliveryStreet">(rua)</span>, 
+                                                                                <span id="deliveryHouse">(numero)</span>
+                                                                            </p>
+                                                                            <!--
                                                                             <p class="pt-2 m-0 text-right"><span class="small"><a href="#"  data-toggle="modal" data-target="#exampleModal" class="text-decoration-none text-info">Alterar</a></span></p>
+                                                                            -->
+                                                                            
                                                                         </div>
-                                                                        <span class="btn btn-light border-top btn-lg btn-block">
-                                                                        &nbsp;
-                                                                        </span>
+                                                                        <!-- <span class="btn btn-light border-top btn-lg btn-block">&nbsp;</span> -->
                                                                     </div>
+
                                                                 </label>
                                                             </div>
+
+                                                            <!--
+                                                                O MAPA É RENDERIDAZO PELA CHAMADA DO
+                                                                CÓDIGO user.controller.renderAddressOnMap()
+                                                            -->
+                                                            <div id="localMap"></div>
 
                                                             
                                                             <a href="#" class="btn btn-success btn-lg btn-block mt-3" type="button" data-toggle="collapse" data-target="#collapsethree" aria-expanded="true" aria-controls="collapsethree">Continue</a>
@@ -342,6 +506,39 @@ function CarrinhoViewController(){
 
         return modal;
 
+    }
+
+
+    this.cartButton = function(){
+
+        let modalTarget = ""; 
+        if(__PROWEBAUTH__.isUserLogged()){
+            modalTarget = `data-target="#carrinhoModal"`;
+        }
+
+        let button = `
+        
+            <a href="#" data-toggle="modal" ${modalTarget} class="text-decoration-none text-white">
+                <i class="text-white icofont-shopping-cart" style="color: white; font-size: 14px;"></i> 
+                <span id="itensOnCarrinho">
+                ( <span>...</span> )
+                </span>
+            </a>
+
+        `;
+
+    }
+
+
+    this.getDeliveryAddress = async function(){
+
+        let fullAddress = await (new UserViewController()).getAddress();
+        let address = fullAddress.endereco;
+
+        document.getElementById("deliveryDistrict").innerHTML = address.destrito;
+        document.getElementById("deliveryStreet").innerHTML = address.rua;
+        document.getElementById("deliveryHouse").innerHTML = address.casa;
+        
     }
 
     return this;

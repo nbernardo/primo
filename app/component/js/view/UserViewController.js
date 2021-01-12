@@ -136,14 +136,10 @@ function UserViewController(){
                 
                     if(field != undefined && field != "latLng")
                         document.getElementById(`user${field.capitalize()}`).value = splittedAddr.endereco[field];
-                    
+                   
                 }
-    
             }
-
         }
-
-
     }
 
     this.saveUser = function(){
@@ -194,6 +190,103 @@ function UserViewController(){
 
     this.renderAddressOnMap = function(){
         __PROWEBMAP__.renderMap("localMap");
+    }
+
+    this.findOfflineUser = async function(){
+
+        let loggedUser = await localStorage.getItem("user");
+        if(loggedUser){
+            loggedUser = JSON.parse(loggedUser);
+            return loggedUser;
+        }
+
+        return {};
+
+    }
+
+    this.handleNoAuthButton = function(){
+
+        if(__PROWEBAUTH__.isUserLogged()){
+            document.getElementById("notAuthButton").innerHTML = "";
+            return;
+        }
+
+        let buttons = `
+        
+                    <span class="bg-danger text-white px-3 rounded small m-0 profileButton">
+                        <a href="#" data-toggle="modal" data-target="#accountModal" class="text-decoration-none text-white">
+                        <i class="text-white icofont-badge" style="color: white; font-size: 18px;"></i> Registar-me
+                        </a>
+                    </span>
+                    &nbsp;
+                    <span class="bg-danger text-white  px-3 rounded small m-0 profileButton">
+                        <a href="#" id="loginModalButton" data-toggle="modal" data-target="#loginModal" class="text-decoration-none text-white">
+                        <i class="text-white icofont-ui-user" style="color: white;"></i> Logar
+                        </a>
+                    </span>
+
+        `;
+
+        document.getElementById("notAuthButton").innerHTML = buttons;
+
+    }
+
+    this.hideNoAuthButton = function(){
+        document.getElementById("notAuthButton").innerHTML = "";
+    }
+
+    this.closeLogin = function(){
+        document.getElementById("closeLoginButton").click();
+    }
+
+    this.logout = async function(){
+
+        let loggedUser = await this.findOfflineUser();
+
+        loggedUser.logged = false;
+        localStorage.setItem("user",JSON.stringify(loggedUser));
+        this.handleNoAuthButton();
+        document.getElementById("toggleButton").click();
+
+    }
+
+    this.login = async function(){
+
+        document.getElementById("loginError").style.display = "none";
+        let pass = document.getElementById("loginPassword").value;
+        let user = document.getElementById("loginUser").value;
+        
+        let loggedUser = await this.findOfflineUser();
+
+        if(loggedUser.telefone == user && pass == loggedUser.senha){
+            
+            loggedUser.logged = true;
+            localStorage.setItem("user",JSON.stringify(loggedUser));
+            document.getElementById("loginError").style.display = "none";
+
+            this.closeLogin();
+            if(carrinho.accessTry){
+                carrinho.accessTry = false;
+                carrinho.controller.showCartOppened();
+            }
+            this.handleNoAuthButton();
+            
+        }else{
+            document.getElementById("loginError").style.display = "";
+        }
+        document.getElementsByClassName("second-nav")[0].innerHTML = menu.controller.generateMainMenu();
+
+    }
+
+    this.getAddress = async function(){
+
+        let curAddress = await localStorage.getItem("address");
+        if(curAddress){
+            return JSON.parse(curAddress);
+        }
+        
+        return {};
+
     }
 
     return this;
