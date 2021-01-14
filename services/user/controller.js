@@ -33,10 +33,12 @@ router.post("/login", (req, client) => {
             console.log(isTrue);
             client.send({
                 status: isTrue,
-                data: res.length > 0 ? res[0] : [],
-            });    
+                data: isTrue ? res[0] : [],
+            });
+            return true;
 
         }
+        client.send({status: false, data: []})
 
         /*
         if(isPassCorrect){
