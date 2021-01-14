@@ -307,7 +307,9 @@ function ViewUtils(){
     }
 
     this.hideSpinner = function(){
-        document.getElementById("loadingModal").getElementsByTagName("button")[0].click();
+        setTimeout(() => {
+            document.getElementById("loadingModal").getElementsByTagName("button")[0].click();
+        },500);
     }
 
 

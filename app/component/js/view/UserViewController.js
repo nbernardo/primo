@@ -1,6 +1,7 @@
 user = {
     controller: new UserViewController(),
     request: new ProwebRequest(),
+    baseUrl: `${BASE_IP}:4001/user`
 }
 
 function UserViewController(){
@@ -105,7 +106,7 @@ function UserViewController(){
             message1: `Endereço registado com sucesso`
         });
 
-        __REQUEST__.postJSON(`${BASE_IP}:4001/user/address`, userAddress, (resp, xhr) => {
+        __REQUEST__.postJSON(`${user.baseUrl}/address`, userAddress, (resp, xhr) => {
 
             __VIEW_UTILS__.showSpinnerFeedback();
             let result = JSON.parse(resp);
@@ -161,7 +162,7 @@ function UserViewController(){
             // __VIEW_UTILS__ está localizado em app/component/js/utils
             __VIEW_UTILS__.showSpinnerForViewContainer("accountModal");
 
-            (new ProwebRequest()).postJSON(`${BASE_IP}:4001/user`, obj, (res, xhr) => {
+            (new ProwebRequest()).postJSON(`${user.baseUrl}`, obj, (res, xhr) => {
                 const result = JSON.parse(res);
                 
                 userObj["id"] = result.id;
@@ -200,7 +201,7 @@ function UserViewController(){
             return loggedUser;
         }
 
-        return {};
+        return null;
 
     }
 
@@ -243,10 +244,23 @@ function UserViewController(){
 
         let loggedUser = await this.findOfflineUser();
 
-        loggedUser.logged = false;
-        localStorage.setItem("user",JSON.stringify(loggedUser));
-        this.handleNoAuthButton();
-        document.getElementById("toggleButton").click();
+        if(loggedUser){
+
+            loggedUser.logged = false;
+            localStorage.setItem("user",JSON.stringify(loggedUser));
+            this.handleNoAuthButton();
+            handleUserMenu();
+            document.getElementById("toggleButton").click();
+
+        }
+
+    }
+
+    const handleUserMenu = function(){
+
+        setTimeout(() => {
+            document.getElementsByClassName("second-nav")[0].innerHTML = (new MenuViewController()).generateMainMenu();
+        },500);
 
     }
 
@@ -257,24 +271,83 @@ function UserViewController(){
         let user = document.getElementById("loginUser").value;
         
         let loggedUser = await this.findOfflineUser();
+        __VIEW_UTILS__.showSpinnerWithNoEscape({title: "Processando o login",});
 
-        if(loggedUser.telefone == user && pass == loggedUser.senha){
-            
-            loggedUser.logged = true;
-            localStorage.setItem("user",JSON.stringify(loggedUser));
-            document.getElementById("loginError").style.display = "none";
+        if(loggedUser){
 
-            this.closeLogin();
-            if(carrinho.accessTry){
-                carrinho.accessTry = false;
-                carrinho.controller.showCartOppened();
-            }
-            this.handleNoAuthButton();
-            
+            if(loggedUser.telefone == user && pass == loggedUser.senha){
+
+                this.loginOffline(loggedUser);
+                return true;
+
+            }else
+                this.processOnlineLogin(user, pass);
         }else{
-            document.getElementById("loginError").style.display = "";
+            this.processOnlineLogin(user, pass, true);
         }
-        document.getElementsByClassName("second-nav")[0].innerHTML = menu.controller.generateMainMenu();
+       
+    }
+
+    this.processOnlineLogin = function(user, pass, noUserOff){
+
+        if(noUserOff) console.log("*** No User offline ***");
+
+        this.loginOnline(user, pass, (res) => {
+            
+            console.log("*** Searching online 1 ***");
+            let result = JSON.parse(res);
+
+            if(!result.status){
+                document.getElementById("loginError").style.display = "";
+                __VIEW_UTILS__.hideSpinner();
+                return false;
+            }
+
+            let curUser = result.data;
+            curUser.logged = true;
+            curUser.senha = pass;
+            localStorage.setItem("user", JSON.stringify(curUser));
+            localStorage.setItem("address", JSON.stringify(curUser.endereco || {}));
+            this.handleNoAuthButton();
+            handleUserMenu();
+            this.closeLogin();
+            __VIEW_UTILS__.hideSpinner();
+            document.getElementById("loginPassword").value = "";
+            document.getElementById("loginUser").value = "";
+
+        })
+
+    }
+
+    this.loginOffline = function(loggedUser){
+
+        console.log("*** Offline Searching ***");
+        loggedUser.logged = true;
+        localStorage.setItem("user",JSON.stringify(loggedUser));
+        document.getElementById("loginError").style.display = "none";
+
+        this.closeLogin();
+        if(carrinho.accessTry){
+            carrinho.accessTry = false;
+            carrinho.controller.showCartOppened();
+        }
+        __VIEW_UTILS__.hideSpinner();
+        this.handleNoAuthButton();
+        handleUserMenu();
+
+        document.getElementById("loginPassword").value = "";
+        document.getElementById("loginUser").value = "";
+
+    }
+
+    this.loginOnline = function(userLogin, pass, callback){
+
+        let curUser = JSON.stringify({telefone: userLogin, senha: pass});
+        (new ProwebRequest()).postJSON(`${user.baseUrl}/login`,curUser, (res, xhr) => {
+            
+            callback(res);
+
+        });
 
     }
 
@@ -284,7 +357,7 @@ function UserViewController(){
         if(curAddress){
             return JSON.parse(curAddress);
         }
-        
+
         return {};
 
     }

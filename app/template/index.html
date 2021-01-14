@@ -23,11 +23,11 @@
             integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
             crossorigin=""/>
 
-      <script src="../component/js/utils/Request.js"></script>
+      <script src="../component/js/utils/Request.js?v3"></script>
       <script src="../component/js/utils/HtmlComponent.js"></script>
-      <script src="../component/js/view/PromoViewController.js"></script>
+      <script src="../component/js/view/PromoViewController.js?v2"></script>
       <script src="../component/js/view/MenuViewController.js"></script>
-      <script src="../component/js/view/ItemListViewController.js"></script>
+      <script src="../component/js/view/ItemListViewController.js?v2"></script>
       <script src="../component/js/utils/ProwebCalendar.js"></script>
       <script src="../component/js/utils/ProwebAuth.js"></script>
 
@@ -361,18 +361,32 @@
                               <a href="#" class="ml-auto btn btn-outline-success btn-sm">Mais</a>
                            </div>
                            
-                           <div class="promo-slider pb-0 mb-0" id="promoLocal">
+                           <div class="promo-slider pb-0 mb-0" id="promoLocal1">
 
                               <div class="osahan-slider-item mx-2">
                                  <a href="promo_details.html">
-                                    <img src="" class="img-fluid mx-auto rounded promoImageContainer" alt="Responsive image">
+                                    <img src="http://pprimo.online/app/template/img/promos/images/pao_273x180.jpg" class="img-fluid mx-auto rounded promoImageContainer" alt="Responsive image">
                                  </a>
                              </div>
                               <div class="osahan-slider-item mx-2">
                                  <a href="promo_details.html">
-                                    <img src="" class="img-fluid mx-auto rounded promoImageContainer" alt="Responsive image">
+                                    <img src="http://pprimo.online/app/template/img/promos/images/paes_273x180.png" class="img-fluid mx-auto rounded promoImageContainer" alt="Responsive image">
                                  </a>
                              </div>
+
+
+                              <!--
+                              <div class="osahan-slider-item mx-2">
+                                 <a href="promo_details.html">
+                                    <img src="http://pprimo.online/app/template/img/promos/images/pao_273x180.jpg" class="img-fluid mx-auto rounded" alt="Responsive image">
+                                 </a>
+                             </div>
+                              <div class="osahan-slider-item mx-2">
+                                 <a href="promo_details.html">
+                                    <img src="http://pprimo.online/app/template/img/promos/images/paes_273x180.png" class="img-fluid mx-auto rounded promoImageContainer" alt="Responsive image">
+                                 </a>
+                             </div>
+                             -->
                              
                            </div>
                            
@@ -793,8 +807,8 @@
 
       </style>
 
-      <script src="../component/js/utils/ProwebMap.js"></script>
-      <script src="../component/js/view/UserViewController.js"></script>
+      <script src="../component/js/utils/ProwebMap.js?v3"></script>
+      <script src="../component/js/view/UserViewController.js?v2"></script>
       <script src="../component/js/utils/Validation.js"></script>
       <script src="../component/js/utils/ViewUtils.js"></script>
       <script src="../component/js/view/CarrinhoViewController.js"></script>
@@ -804,8 +818,8 @@
          user.controller.handleNoAuthButton();
 
          /* SCRIPT EXECUTIONS */
-         promo.controller.findAndPromos("promoLocal"); 
-         menu.controller.renderMenu("Vitrine Principal");
+         //promo.controller.findAndPromos("promoLocal"); 
+         menu.controller.renderMenu("Bem vindo");
 
          /*
          APRESENTA ITENS/PRODUTOS NA VITRINE QUE 
