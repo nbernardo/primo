@@ -312,8 +312,9 @@ function UserViewController(){
             let curUser = result.data;
             curUser.logged = true;
             curUser.senha = pass;
+            clearOfflineUserData()
             localStorage.setItem("user", JSON.stringify(curUser));
-            let curAddress = {address: curUser.endereco || {}};
+            let curAddress = {endereco: curUser.endereco || {}};
             localStorage.setItem("address", JSON.stringify(curAddress));
             this.handleNoAuthButton();
             handleUserMenu();
@@ -325,6 +326,21 @@ function UserViewController(){
         })
 
     }
+
+
+    const clearOfflineUserData = function(){
+
+        Object.keys(localStorage).forEach(item => {
+            localStorage.removeItem(item);
+        });
+
+        carrinho.controller.cartItemsCount();
+        //carrinho.controller.renderCartView();
+        carrinho.controller.clearCart();
+        carrinho.controller.showCartOppened();
+
+    }
+
 
     this.loginOffline = function(loggedUser){
 
