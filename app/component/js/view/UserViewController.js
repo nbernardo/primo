@@ -1,7 +1,8 @@
 user = {
     controller: new UserViewController(),
     request: new ProwebRequest(),
-    baseUrl: `${BASE_IP}:4001/user`
+    baseUrl: `${BASE_IP}:4001/user`,
+    pagesPath: "/template/"
 }
 
 function UserViewController(){
@@ -212,6 +213,10 @@ function UserViewController(){
             return;
         }
 
+        if(window.location.pathname.indexOf("my_account.html") >= 0){
+            window.location = `${window.location.origin}${user.pagesPath}index.html`
+        }
+
         let buttons = `
         
                     <span class="bg-danger text-white px-3 rounded small m-0 profileButton">
@@ -227,8 +232,9 @@ function UserViewController(){
                     </span>
 
         `;
-
-        document.getElementById("notAuthButton").innerHTML = buttons;
+        try{
+            document.getElementById("notAuthButton").innerHTML = buttons;
+        }catch(e){}
 
     }
 
@@ -307,7 +313,8 @@ function UserViewController(){
             curUser.logged = true;
             curUser.senha = pass;
             localStorage.setItem("user", JSON.stringify(curUser));
-            localStorage.setItem("address", JSON.stringify(curUser.endereco || {}));
+            let curAddress = {address: curUser.endereco || {}};
+            localStorage.setItem("address", JSON.stringify(curAddress));
             this.handleNoAuthButton();
             handleUserMenu();
             this.closeLogin();

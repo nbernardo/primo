@@ -544,12 +544,16 @@ function CarrinhoViewController(){
 
     this.getDeliveryAddress = async function(){
 
-        let fullAddress = await (new UserViewController()).getAddress();
-        let address = fullAddress.endereco;
+        (new UserViewController()).getAddress().then(fullAddress => {
 
-        document.getElementById("deliveryDistrict").innerHTML = address.destrito;
-        document.getElementById("deliveryStreet").innerHTML = address.rua;
-        document.getElementById("deliveryHouse").innerHTML = address.casa;
+            let address = fullAddress.endereco;
+
+            document.getElementById("deliveryDistrict").innerHTML = address.destrito;
+            document.getElementById("deliveryStreet").innerHTML = address.rua;
+            document.getElementById("deliveryHouse").innerHTML = address.casa;
+    
+
+        });
         
     }
 
