@@ -1,8 +1,8 @@
 const {MongoClient} = require("mongodb");
 
-const IP_ADDR = `localhost`;
+const IP_ADDR = `mongoservice`;
 const service = "CATALOG";
-const url = `mongodb://${IP_ADDR}:27003`;
+const url = `mongodb://${IP_ADDR}:27017`;
 
 
 
