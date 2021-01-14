@@ -14,6 +14,45 @@ router.get("/", (req, res) => {
 
 })
 
+
+router.post("/login", (req, client) => {
+
+    const {telefone,senha} = req.body;
+
+    find({query: {telefone}}, ( async (res) => {
+
+        if((senha == undefined || senha == null || senha == "")){
+            console.log("Senha não enviada");
+            client.send({status: false, data: []});
+            return false;
+        }
+
+        if(res.length == 1){
+
+            const isTrue = await bcrypt.compare(senha || "",res[0].senha);
+            console.log(isTrue);
+            client.send({
+                status: isTrue,
+                data: res.length > 0 ? res[0] : [],
+            });    
+
+        }
+
+        /*
+        if(isPassCorrect){
+            client.send(res);
+        }else
+            client.send({
+                status: false,
+                msg: `Utilizador ou senha inválida`
+            });
+            */
+
+    }))
+
+})
+
+
 router.post("/address", (req, client) => {
 
     const dados = {...req.body};
@@ -40,10 +79,6 @@ router.post("/address", (req, client) => {
             })
 
         }
-
-        //console.log(res1);
-        
-
     });
     
 
@@ -51,7 +86,7 @@ router.post("/address", (req, client) => {
 
 router.get("/find/:id", (req, res) => {
 
-    find({}, (data) => {
+    find({query}, (data) => {
 
         res.send(data)
 
