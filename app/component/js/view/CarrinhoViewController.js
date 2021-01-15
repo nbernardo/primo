@@ -6,7 +6,8 @@ const carrinho = {
 
 function CarrinhoViewController(){
 
-    this.curDateTime = "";
+    const currentLocalTime = new Date();
+    this.curDateTime = `${currentLocalTime.getDate()}/${currentLocalTime.getMonth()}/${currentLocalTime.getFullYear()}`;
     this.itemsOnCart = [];
     this.invoicesObj = [];
     this.totalAmount = 0;
@@ -173,9 +174,18 @@ function CarrinhoViewController(){
 
     }
 
+    this.openProductsList = function(){
+
+        let isOppened = document.getElementById("collapseOne").classList.contains("show");
+        if(!isOppened){
+            document.getElementById("btnListProduct").click();
+        }
+    }
+
     this.showCartOppened = function(){
 
         this.totalAmount = 0;
+        this.openProductsList();
 
         this.getActiveInvoice().then(async (r) => {
 
@@ -228,6 +238,9 @@ function CarrinhoViewController(){
     }
 
     this.getDeliveryDateTime = function(){
+        if(document.getElementById("deliveryTime").value == ""){
+            return false;
+        }
         return `${this.curDateTime} - ${document.getElementById("deliveryTime").value}`;
     }
 
@@ -260,7 +273,7 @@ function CarrinhoViewController(){
                                             <div class="card-header bg-white border-0 p-0" id="headingOne">
                                             <h2 class="mb-0">
                                             
-                                                <button class="btn d-flex align-items-center bg-white btn-block text-left btn-lg h5 px-3 py-4 m-0" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                <button id="btnListProduct" class="btn d-flex align-items-center bg-white btn-block text-left btn-lg h5 px-3 py-4 m-0" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                                     <span class="c-number">1</span> 
                                                     Carrinho (<span id="showCartItemCount">3</span> iten(s))
                                                 </button>
@@ -359,8 +372,8 @@ function CarrinhoViewController(){
                                             <!-- delivery header -->
                                             <div class="card-header bg-white border-0 p-0" id="headingthree">
                                                 <h2 class="mb-0">
-                                                    <button class="btn d-flex align-items-center bg-white btn-block text-left btn-lg h5 px-3 py-4 m-0" type="button" data-toggle="collapse" data-target="#collapsethree" aria-expanded="true" aria-controls="collapsethree">
-                                                    <span class="c-number">3</span> Data de entrega
+                                                    <button id="dateDeliverySelectBtn" class="btn d-flex align-items-center bg-white btn-block text-left btn-lg h5 px-3 py-4 m-0" type="button" data-toggle="collapse" data-target="#collapsethree" aria-expanded="true" aria-controls="collapsethree">
+                                                        <span class="c-number">3</span> Data de entrega
                                                     </button>
                                                 </h2>
                                             </div>
@@ -622,14 +635,37 @@ function CarrinhoViewController(){
 
     }
 
+    this.closeCartView = function(){
+        document.getElementById("carModalCloseBtn").click();
+    }
+
+    this.noDeliveryDateAlert = function(){
+        this.closeCartView();
+        __VIEW_UTILS__.showModalAlert(
+                {
+                    failMessage: "Preencha a data e hora de entrega", 
+                    title: "Falha ao finalizar",
+                    onOk: () => {
+                        document.getElementById("carrinhoModalButton").click();
+                        document.getElementById("dateDeliverySelectBtn").click();
+                    }
+                })
+    }
+
     this.checkout = function(){
 
         this.getActiveInvoice().then(async (r) => {
 
+            const deliveryDate = this.getDeliveryDateTime();
+            if(!deliveryDate){
+                this.noDeliveryDateAlert();
+                return false;
+            }
+
             const loggedUser = (new UserViewController()).getLoggedUser();
             const invoice = await this.getInvoice(r.id);
             const newStateInvoice = [...invoice];
-            const data = JSON.stringify({userId: loggedUser.id, cartItems: invoice});
+            const data = JSON.stringify({userId: loggedUser.id, cartItems: invoice, deliveryDate});
             
             this.checkoutProcessFeedback();
             (new ProwebRequest()).postJSON(`${carrinho.baseUrl}`,data,(res) => {

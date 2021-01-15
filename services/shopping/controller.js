@@ -5,9 +5,9 @@ router.post("/", (req, client) => {
 
     console.log(req);
 
-    const {userId, cartItems} = req.body;
+    const {userId, cartItems, deliveryDate} = req.body;
 
-    save({userId, cartItems}, (res) => {
+    save({userId, cartItems, deliveryDate}, (res) => {
         console.log(res);
         client.send({result: res.result, obj: res});
     })

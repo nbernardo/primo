@@ -12,6 +12,7 @@ function ViewUtils(){
     this.afterSpinningContent = "";
     this.spinnerFeedBack = false;
     this.faildMessage = "";
+    this.onOk = "";
 
 
     this.showSpinnerForViewContainer = function(viewToHide){
@@ -289,11 +290,32 @@ function ViewUtils(){
         this.faildMessage = `
             <h6>${obj.failMessage} !</h6>
             <div style="margin: 20px auto">
-                <button type="button" onclick="(new ViewUtils()).spinningContentReset();" class="btn btn-danger btn-block btn-lg" class="close" data-dismiss="modal" aria-label="Close">Ok</button>
+                <button type="button" class="btn btn-danger btn-block btn-lg" class="close" data-dismiss="modal" aria-label="Close">Ok</button>
             </div>
         `;
 
+    }    
 
+    this.closeModalAlert = function(){
+        this.onOk();
+        (new ViewUtils()).spinningContentReset();
+        document.getElementById("spinnerCloseButton").click();
+    }
+
+    this.showModalAlert = function({failMessage, message1, title, onOk}){
+        
+        this.onOk = onOk;
+
+        document.getElementById("spinnerModalContent").innerHTML = `
+            <h6>${failMessage} !</h6>
+            <div style="margin: 20px auto">
+                <button type="button" onclick="__VIEW_UTILS__.closeModalAlert();" class="btn btn-danger btn-block btn-lg">Ok</button>
+            </div>
+        `;
+        document.getElementById("spinnerCloseButton").style.display = "";
+        $('#loadingModal').modal({backdrop: 'static', keyboard: false});
+        document.getElementById("loadingModalLabel").innerHTML = `${(title || "Processando...")}`;
+        
     }
 
     this.spinningContentReset = function(){
