@@ -1,7 +1,8 @@
 user = {
     controller: new UserViewController(),
     request: new ProwebRequest(),
-    baseUrl: `${BASE_IP}:4001/user`
+    baseUrl: `${BASE_IP}:4001/user`,
+    pagesPath: "/template/"
 }
 
 function UserViewController(){
@@ -86,7 +87,7 @@ function UserViewController(){
         return {
             name: userData.nomeCompleto,
             email: userData.email,
-            id: userData.id,
+            id: userData.id || userData._id,
             isTrue : userData.logged ? userData.logged : false
         };
         
@@ -143,6 +144,33 @@ function UserViewController(){
         }
     }
 
+    this.saveUserOffline = function(userObj){
+
+        clearOfflineUserData(false);
+
+        resultObj = {
+            ...userObj
+        }
+
+        localStorage.setItem("user", JSON.stringify(userObj));
+        __VIEW_UTILS__.closeModals();
+        __VIEW_UTILS__.showSuccessModal({
+                order: false, 
+                message1: `${userObj.nomeCompleto}, parabens, sua conta foi crida e com sucesso, e você já está logado na App`, 
+                message2: "A partir da agora você poderá não só navegar, mas também fazer encomendas a partir da App"
+            });
+        __VIEW_UTILS__.hideSpinner();
+        document.getElementById("btnCriarUser").disabled = false;
+
+        setTimeout(() => {
+            this.handleNoAuthButton();
+            handleUserMenu();
+        },500);
+
+        this.clearField();
+
+    }
+
     this.saveUser = function(){
         
         this.clearUserCreationValidation();
@@ -151,37 +179,19 @@ function UserViewController(){
         let passwordValidate = this.isPasswordAndConfOk();
         let userInputValidation = (new ProwebValidation()).validateRequired("entyti-user");
 
-        if(!passwordValidate.result){
-            console.log("Não passou");
-            return;
-        }
-        
+        if(!passwordValidate.result) return false;
         if(userInputValidation){
-
-            document.getElementById("btnCriarUser").disabled = true;
             // __VIEW_UTILS__ está localizado em app/component/js/utils
             __VIEW_UTILS__.showSpinnerForViewContainer("accountModal");
-
             (new ProwebRequest()).postJSON(`${user.baseUrl}`, obj, (res, xhr) => {
-                const result = JSON.parse(res);
-                
-                userObj["id"] = result.id;
+                let result = JSON.parse(res);
+                userObj["id"] = result.id || null;
                 userObj["logged"] = true;
 
                 if(result.status == "ok"){
-                    resultObj = {
-                        ...userObj
-                    }
-    
-                    localStorage.setItem("user", JSON.stringify(userObj));
-                    __VIEW_UTILS__.closeModals();
-                    __VIEW_UTILS__.showSuccessModal({
-                            order: false, 
-                            message1: `${userObj.nomeCompleto}, parabens, sua conta foi crida e com sucesso, e você já está logado na App`, 
-                            message2: "A partir da agora você poderá não só navegar, mas também fazer encomendas a partir da App"
-                        });
-                    document.getElementById("btnCriarUser").disabled = false;
-                    this.clearField();
+                    this.saveUserOffline(userObj);
+                }else{
+                    //Houve um problema
                 }
             })
         }
@@ -212,6 +222,10 @@ function UserViewController(){
             return;
         }
 
+        if(window.location.pathname.indexOf("my_account.html") >= 0){
+            window.location = `${window.location.origin}${user.pagesPath}index.html`
+        }
+
         let buttons = `
         
                     <span class="bg-danger text-white px-3 rounded small m-0 profileButton">
@@ -227,8 +241,9 @@ function UserViewController(){
                     </span>
 
         `;
-
-        document.getElementById("notAuthButton").innerHTML = buttons;
+        try{
+            document.getElementById("notAuthButton").innerHTML = buttons;
+        }catch(e){}
 
     }
 
@@ -306,8 +321,10 @@ function UserViewController(){
             let curUser = result.data;
             curUser.logged = true;
             curUser.senha = pass;
+            clearOfflineUserData(false);
             localStorage.setItem("user", JSON.stringify(curUser));
-            localStorage.setItem("address", JSON.stringify(curUser.endereco || {}));
+            let curAddress = {endereco: curUser.endereco || {}};
+            localStorage.setItem("address", JSON.stringify(curAddress));
             this.handleNoAuthButton();
             handleUserMenu();
             this.closeLogin();
@@ -318,6 +335,22 @@ function UserViewController(){
         })
 
     }
+
+
+    const clearOfflineUserData = function(showCart){
+
+        Object.keys(localStorage).forEach(item => {
+            localStorage.removeItem(item);
+        });
+
+        carrinho.controller.cartItemsCount();
+        //carrinho.controller.renderCartView();
+        carrinho.controller.clearCart();
+        if(showCart == undefined || showCart == true || showCart == null)
+            carrinho.controller.showCartOppened();
+
+    }
+
 
     this.loginOffline = function(loggedUser){
 

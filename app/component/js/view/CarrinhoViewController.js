@@ -1,6 +1,7 @@
 const carrinho = {
     controller: new CarrinhoViewController(),
     accessTry: false,
+    baseUrl: `${BASE_IP}:4003/shop`,
 }
 
 function CarrinhoViewController(){
@@ -156,6 +157,18 @@ function CarrinhoViewController(){
 
     }
 
+    this.clearCart = function(){
+
+        document.getElementById("itensOnCart").innerHTML = "";
+
+        document.getElementById("totalFactura").innerHTML = `0 Kz`;
+        document.getElementById("endTotalAmount").innerHTML = `0 Kz`;
+        document.getElementById("totalValor").innerHTML = `0 Kz`;
+        document.getElementById("totalItems").innerHTML = `0 itens`
+        user.controller.renderAddressOnMap();
+
+    }
+
     this.showCartOppened = function(){
 
         this.totalAmount = 0;
@@ -174,10 +187,10 @@ function CarrinhoViewController(){
 
             document.getElementById("totalFactura").innerHTML = `${this.totalAmount} Kz`;
             document.getElementById("endTotalAmount").innerHTML = `${this.totalAmount} Kz`;
+            document.getElementById("totalValor").innerHTML = `${this.totalAmount} Kz`;
             document.getElementById("totalItems").innerHTML = `${this.totalItems} itens`
             document.getElementById("carrinhoModalButton").click();
             user.controller.renderAddressOnMap();
-
 
         })
 
@@ -489,7 +502,11 @@ function CarrinhoViewController(){
                                             <div>
                                             <div class="bg-white p-3 clearfix">
                                                 <p class="font-weight-bold small mb-2">Detalhe de encomenda</p>
-                                                <p class="mb-1">Total produtos <span class="small text-muted"><span id="totalItems">(3 item)</span></span> <span class="float-right text-dark">$3140</span></p>
+                                                <p class="mb-1">
+                                                    Total produtos 
+                                                    <span class="small text-muted"><span id="totalItems">(3 item)</span></span> 
+                                                    <span class="float-right text-dark" id="totalValor"></span>
+                                                </p>
                                                 <!-- <p class="mb-1">Store Charges <span class="float-right text-dark">$62.8</span></p> -->
                                                 <p class="mb-3">Taxa de entrega <span  data-toggle="tooltip" data-placement="top" title="Delivery partner fee - $3" class="text-info ml-1"><i class="icofont-info-circle"></i></span><span class="float-right text-dark">Gratis</span></p>
                                                 
@@ -544,13 +561,41 @@ function CarrinhoViewController(){
 
     this.getDeliveryAddress = async function(){
 
-        let fullAddress = await (new UserViewController()).getAddress();
-        let address = fullAddress.endereco;
+        (new UserViewController()).getAddress().then(fullAddress => {
 
-        document.getElementById("deliveryDistrict").innerHTML = address.destrito;
-        document.getElementById("deliveryStreet").innerHTML = address.rua;
-        document.getElementById("deliveryHouse").innerHTML = address.casa;
+            let address = fullAddress.endereco;
+
+            document.getElementById("deliveryDistrict").innerHTML = address.destrito;
+            document.getElementById("deliveryStreet").innerHTML = address.rua;
+            document.getElementById("deliveryHouse").innerHTML = address.casa;
+    
+
+        });
         
+    }
+
+
+
+    this.checkout = function(){
+
+        this.getActiveInvoice().then(async (r) => {
+
+            const loggedUser = (new UserViewController()).getLoggedUser();
+            const invoice = await this.getInvoice(r.id);
+
+            console.log(loggedUser.id);
+            console.log("Found invoice", invoice);
+
+            const data = JSON.stringify({userId: loggedUser.id, cartItems: invoice});
+            (new ProwebRequest()).postJSON(`${carrinho.baseUrl}`,data,(res) => {
+
+                console.log("Resposta", res);
+
+            });
+            
+            
+        })
+
     }
 
     return this;
