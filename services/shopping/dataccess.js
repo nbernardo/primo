@@ -1,5 +1,5 @@
 const {MongoClient} = require("mongodb");
-const url = `mongodb://localhost:27003`;
+const url = `mongodb://mongoservice:27017/`;
 
 
 module.exports.save = function(query, callback){

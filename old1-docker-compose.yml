@@ -16,7 +16,7 @@ services:
   #    dockerfile: Dockerfile
   #  ports: 
   #    - "80:80"    
- 
+
   promo:
     depends_on: 
       - mongoservice
@@ -44,12 +44,3 @@ services:
       dockerfile: Dockerfile
     ports:
       - "4002:4002"
-
-  shopping:
-    depends_on: mongoservice
-    image: shopping
-    build:
-      context: ./services/shopping/
-      dockerfile: Dockerfile
-    ports: 
-      - "4003:4003"
