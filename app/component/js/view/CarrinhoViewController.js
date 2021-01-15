@@ -1,6 +1,7 @@
 const carrinho = {
     controller: new CarrinhoViewController(),
     accessTry: false,
+    baseUrl: `${BASE_IP}:4003/shop`,
 }
 
 function CarrinhoViewController(){
@@ -571,6 +572,30 @@ function CarrinhoViewController(){
 
         });
         
+    }
+
+
+
+    this.checkout = function(){
+
+        this.getActiveInvoice().then(async (r) => {
+
+            const loggedUser = (new UserViewController()).getLoggedUser();
+            const invoice = await this.getInvoice(r.id);
+
+            console.log(loggedUser.id);
+            console.log("Found invoice", invoice);
+
+            const data = JSON.stringify({userId: loggedUser.id, cartItems: invoice});
+            (new ProwebRequest()).postJSON(`${carrinho.baseUrl}`,data,(res) => {
+
+                console.log("Resposta", res);
+
+            });
+            
+            
+        })
+
     }
 
     return this;

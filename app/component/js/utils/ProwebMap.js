@@ -27,20 +27,22 @@ function ProwebMap(){
 
     this.renderMap = function(containerId){
 
-        if(location.protocol == ":https"){
+        try{
+            if(location.protocol == ":https"){
 
-            navigator.geolocation.getCurrentPosition((obj) => {
+                navigator.geolocation.getCurrentPosition((obj) => {
+                    mapView(obj, containerId);
+                })
+    
+             }else{
+    
+                let obj = {
+                   lat: -8.957516, lng: 13.184455
+                }
                 mapView(obj, containerId);
-            })
-
-         }else{
-
-            let obj = {
-               lat: -8.957516, lng: 13.184455
-            }
-            mapView(obj, containerId);
-
-         }
+    
+             }
+        }catch(e){}
 
     }
 

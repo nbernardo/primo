@@ -87,7 +87,7 @@ function UserViewController(){
         return {
             name: userData.nomeCompleto,
             email: userData.email,
-            id: userData.id,
+            id: userData.id || userData._id,
             isTrue : userData.logged ? userData.logged : false
         };
         
