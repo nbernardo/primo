@@ -11,6 +11,7 @@ function ViewUtils(){
     this.spinningSuccessMessage = "";
     this.afterSpinningContent = "";
     this.spinnerFeedBack = false;
+    this.faildMessage = "";
 
 
     this.showSpinnerForViewContainer = function(viewToHide){
@@ -270,6 +271,7 @@ function ViewUtils(){
 
     this.showSpinnerWithNoEscape = function(obj){
 
+        this.spinningContentReset();
         document.getElementById("spinnerCloseButton").style.display = "none";
         $('#loadingModal').modal({backdrop: 'static', keyboard: false});
 
@@ -278,21 +280,41 @@ function ViewUtils(){
         this.spinnerFeedBack = obj.feedback;
         this.spinningSuccessMessage = `${(obj.message1 ? obj.message1 : 'Processo terminado com sucesso')}`;
         this.afterSpinningContent = `
-            <h6>${ this.spinningSuccessMessage} !</h6>
+            <h6>${this.spinningSuccessMessage} !</h6>
             <div style="margin: 20px auto">
                 <button type="button" class="btn btn-success btn-block btn-lg" class="close" data-dismiss="modal" aria-label="Close">Ok</button>
+            </div>
+        `;
+
+        this.faildMessage = `
+            <h6>${obj.failMessage} !</h6>
+            <div style="margin: 20px auto">
+                <button type="button" onclick="(new ViewUtils()).spinningContentReset();" class="btn btn-danger btn-block btn-lg" class="close" data-dismiss="modal" aria-label="Close">Ok</button>
             </div>
         `;
 
 
     }
 
+    this.spinningContentReset = function(){
+        document.getElementById("spinnerModalContent").innerHTML = this.spinningContent()
+    }
 
     this.showSpinnerFeedback = function(){
 
         if(this.spinnerFeedBack){
             setTimeout(() => {
                 document.getElementById("spinnerModalContent").innerHTML = this.afterSpinningContent;    
+            },500);
+        }
+
+    }
+
+    this.showSpinnerFail = function(){
+
+        if(this.spinnerFeedBack){
+            setTimeout(() => {
+                document.getElementById("spinnerModalContent").innerHTML = this.faildMessage;    
             },500);
         }
 

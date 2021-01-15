@@ -159,6 +159,10 @@ function CarrinhoViewController(){
 
     this.clearCart = function(){
 
+        try{
+            document.getElementById("itensOnCarrinho").innerHTML = "(0)";
+        }catch(e){};
+
         document.getElementById("itensOnCart").innerHTML = "";
 
         document.getElementById("totalFactura").innerHTML = `0 Kz`;
@@ -236,10 +240,11 @@ function CarrinhoViewController(){
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="carrinhoModalLabel">Carrinho de compras</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <button type="button" id="carModalCloseBtn" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
+
                     <div class="modal-body">
 
                         <!-- CARRINHO CONTENT -->
@@ -254,9 +259,10 @@ function CarrinhoViewController(){
                                             <!-- cart header -->
                                             <div class="card-header bg-white border-0 p-0" id="headingOne">
                                             <h2 class="mb-0">
+                                            
                                                 <button class="btn d-flex align-items-center bg-white btn-block text-left btn-lg h5 px-3 py-4 m-0" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                <span class="c-number">1</span> 
-                                                Carrinho (<span id="showCartItemCount">3</span> iten(s))
+                                                    <span class="c-number">1</span> 
+                                                    Carrinho (<span id="showCartItemCount">3</span> iten(s))
                                                 </button>
                                             </h2>
                                             </div>
@@ -267,15 +273,15 @@ function CarrinhoViewController(){
 
                                                     <div id="itensOnCart"></div>
 
-                                                    <div>
+                                                    <div onclick="carrinho.controller.getDeliveryAddress()">
                                                         <a href="#" class="text-decoration-none btn btn-block p-3" type="button" data-toggle="collapse" data-target="#collapsetwo" aria-expanded="true" aria-controls="collapsetwo">
-                                                        <div class="rounded shadow bg-success d-flex align-items-center p-3 text-white">
-                                                            <div class="more">
-                                                                <h6 class="m-0">Total da factura <span id="totalFactura"></span></h6>
-                                                                <p class="small m-0">Continuar</p>
+                                                            <div class="rounded shadow bg-success d-flex align-items-center p-3 text-white">
+                                                                <div class="more">
+                                                                    <h6 class="m-0">Total da factura <span id="totalFactura"></span></h6>
+                                                                    <p class="small m-0">Ver o endereço de recebimento</p>
+                                                                </div>
+                                                                <div class="ml-auto"><i class="icofont-simple-right"></i></div>
                                                             </div>
-                                                            <div class="ml-auto"><i class="icofont-simple-right"></i></div>
-                                                        </div>
                                                         </a>
                                                     </div>
 
@@ -338,7 +344,9 @@ function CarrinhoViewController(){
                                                             <div id="localMap"></div>
 
                                                             
-                                                            <a href="#" class="btn btn-success btn-lg btn-block mt-3" type="button" data-toggle="collapse" data-target="#collapsethree" aria-expanded="true" aria-controls="collapsethree">Continue</a>
+                                                            <a href="#" class="btn btn-success btn-lg btn-block mt-3" type="button" data-toggle="collapse" data-target="#collapsethree" aria-expanded="true" aria-controls="collapsethree">
+                                                                Selecionar date de entrega
+                                                            </a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -370,7 +378,11 @@ function CarrinhoViewController(){
                                                         </div>
                                                     </div>
                                                     <div class="p-3">
-                                                        <a href="#" class="btn btn-success btn-lg btn-block" type="button" data-toggle="collapse" data-target="#collapsefour" aria-expanded="true" aria-controls="collapsefour">Agendar</a>
+                                                        <!--
+                                                        <a href="#" class="btn btn-success btn-lg btn-block" type="button" data-toggle="collapse" data-target="#collapsefour" aria-expanded="true" aria-controls="collapsefour">
+                                                            Agendar
+                                                        </a>
+                                                        -->
                                                     </div>
                                                 </div>
                                             </div>
@@ -514,9 +526,17 @@ function CarrinhoViewController(){
                                                 <h6 class="mb-0 text-success">Total desconto<span class="float-right text-success">$1884</span></h6>
                                                 -->
                                             </div>
-                                            <div class="p-3 border-top">
-                                                <h5 class="mb-0">A PAGAR  <span class="float-right text-danger" id="endTotalAmount">$1329</span></h5>
-                                            </div>
+                                                <div class="p-3 border-top">
+                                                    <h5 class="mb-0">A PAGAR  <span class="float-right text-danger" id="endTotalAmount">$1329</span></h5>
+                                                </div>
+
+                                                <div class="p-3">
+                                                    <a href="#" onclick="carrinho.controller.checkout()" class="btn btn-success btn-lg btn-block" type="button">
+                                                        <i class="text-white icofont-tick-mark" style="color: white; font-size: 14px;"></i> &nbsp;Finalizar e enviar o pedido
+                                                    </a>
+                                                </div>
+
+
                                             </div>
                                         </div>
                                         <!-- <p class="text-success text-center">Your Total Savings on this order $8.52</p> -->
@@ -575,6 +595,32 @@ function CarrinhoViewController(){
     }
 
 
+    this.closeInvice = function(id){
+
+        const oldStatus = `{"id":${id},"active":true}`;
+        const newStatus = `{"id":${id},"active":false}`;
+        
+        console.log("Before: ", oldStatus);
+        console.log("After: ", newStatus);
+
+        let invoice = localStorage.getItem("invoices_").replace(oldStatus,newStatus);
+        localStorage.setItem("invoices_",invoice);
+        this.clearCart();
+
+    }
+
+    this.checkoutProcessFeedback = function(){
+
+        document.getElementById("carModalCloseBtn").click();
+
+        __VIEW_UTILS__.showSpinnerWithNoEscape({
+            feedback: true,
+            title: "Enviando minha solicitação",
+            message1: `Solicitação enviada com sucesso`,
+            failMessage: navigator.onLine ? `Sua internet está desligada, precisa ligar para finalizar e enviar a solicitação` : `Não foi possível enviar a solicitação, verifique a sua conexão de internet e tente navamente`
+        });
+
+    }
 
     this.checkout = function(){
 
@@ -582,18 +628,28 @@ function CarrinhoViewController(){
 
             const loggedUser = (new UserViewController()).getLoggedUser();
             const invoice = await this.getInvoice(r.id);
-
-            console.log(loggedUser.id);
-            console.log("Found invoice", invoice);
-
+            const newStateInvoice = [...invoice];
             const data = JSON.stringify({userId: loggedUser.id, cartItems: invoice});
+            
+            this.checkoutProcessFeedback();
             (new ProwebRequest()).postJSON(`${carrinho.baseUrl}`,data,(res) => {
 
-                console.log("Resposta", res);
-
+                try{
+                    let response = JSON.parse(res);
+                    if(response.result.ok){
+    
+                        newStateInvoice.unshift({"details": {"status": "close", "onlineId": response.obj.insertedId, "date" : new Date()}});
+                        localStorage.setItem(r.id,JSON.stringify(newStateInvoice));
+                        this.closeInvice(r.id);
+                        __VIEW_UTILS__.showSpinnerFeedback();
+                        return true;
+                        
+                    }
+                }catch(e){ console.log("Houve um erro: ", e);}
+                __VIEW_UTILS__.showSpinnerFail();
+                
             });
-            
-            
+                        
         })
 
     }
