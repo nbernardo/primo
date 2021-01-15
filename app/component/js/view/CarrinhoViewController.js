@@ -193,8 +193,13 @@ function CarrinhoViewController(){
             totalItems = totalItems.replace("(","").replace(")","");
 
             document.getElementById("showCartItemCount").innerHTML = `${totalItems} `;
-
             let curInvoice = await this.getInvoice(r.id);
+
+            if(curInvoice.length == 0){
+                this.cartEmptyAlert();
+                return false;
+            }
+
             let itemsToShow = curInvoice.map(it => this.cartItem(it));
             
             document.getElementById("itensOnCart").innerHTML = itemsToShow;
@@ -652,18 +657,38 @@ function CarrinhoViewController(){
                 })
     }
 
+    this.cartEmptyAlert = function(){
+
+        __VIEW_UTILS__.showModalAlert(
+            {
+                failMessage: "O carrinho de compras está vazio", 
+                title: "Sem produtos",
+                onOk: () => {
+                    document.getElementById("carrinhoModalButton").click();
+                    document.getElementById("dateDeliverySelectBtn").click();
+                }
+            })
+    }
+
     this.checkout = function(){
 
         this.getActiveInvoice().then(async (r) => {
 
             const deliveryDate = this.getDeliveryDateTime();
+            const invoice = await this.getInvoice(r.id);
+
             if(!deliveryDate){
                 this.noDeliveryDateAlert();
                 return false;
             }
 
+            if(invoice.length == 0){
+                this.cartEmptyAlert();
+                return false;
+            }
+
+
             const loggedUser = (new UserViewController()).getLoggedUser();
-            const invoice = await this.getInvoice(r.id);
             const newStateInvoice = [...invoice];
             const data = JSON.stringify({userId: loggedUser.id, cartItems: invoice, deliveryDate});
             
@@ -674,15 +699,17 @@ function CarrinhoViewController(){
                     let response = JSON.parse(res);
                     if(response.result.ok){
     
-                        newStateInvoice.unshift({"details": {"status": "close", "onlineId": response.obj.insertedId, "date" : new Date()}});
+                        newStateInvoice.unshift({"details": {"status": "close", "deliveryDate": deliveryDate, "onlineId": response.obj.insertedId, "date" : new Date()}});
                         localStorage.setItem(r.id,JSON.stringify(newStateInvoice));
                         this.closeInvice(r.id);
                         __VIEW_UTILS__.showSpinnerFeedback();
+                        document.getElementById("deliveryTime").value = "";
                         return true;
                         
                     }
                 }catch(e){ console.log("Houve um erro: ", e);}
                 __VIEW_UTILS__.showSpinnerFail();
+                document.getElementById("deliveryTime").value = "";
                 
             });
                         
