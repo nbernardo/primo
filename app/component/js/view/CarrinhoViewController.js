@@ -80,6 +80,7 @@ function CarrinhoViewController(){
         if(inv.length > 0){
             let totalItem = parseInt(inv.length) - 1;    
             for(let item of inv){
+
                 if(Object.keys(item).includes("_id")){
                     totalInvoice += (parseInt(item.preco) * parseInt(item.qtd));
                 }
@@ -91,10 +92,10 @@ function CarrinhoViewController(){
 
     }
 
+    //METHODS TO INVOICE
     this.invoceCard = function(obj){
 
         if(obj[0].details){
-            
         }else{
             return "";
         }
@@ -216,6 +217,10 @@ function CarrinhoViewController(){
         document.getElementById("addedToCartMark"+idBtn).style.display = "";
     }
 
+    this.unmarkAddedToCart = function(idBtn){
+        document.getElementById("addedToCartMark"+idBtn).style.display = "none";
+    }
+
     this.getCurrentCartItems = function(){
 
         let curItems = localStorage.getItem("curCartItems");
@@ -256,6 +261,16 @@ function CarrinhoViewController(){
             });
         },300);
 
+    }
+
+    this.clearCheckCartItemsList = function(){
+        
+        let itemsList = { ...this.getCurrentCartItems() };
+        Object.keys(itemsList).forEach(i => {
+            //console.log(i);
+            this.unmarkAddedToCart(i);
+        });
+        
     }
 
     this.addToCart = async function(item, idItem){
@@ -877,6 +892,13 @@ function CarrinhoViewController(){
             })
     }
 
+    this.clearCartItemList = function(){
+        
+        this.clearCheckCartItemsList();
+        localStorage.setItem("curCartItems","{}");
+        
+    }
+
     this.checkout = function(){
 
         this.getActiveInvoice().then(async (r) => {
@@ -894,7 +916,6 @@ function CarrinhoViewController(){
                 return false;
             }
 
-
             const loggedUser = (new UserViewController()).getLoggedUser();
             const newStateInvoice = [...invoice];
             const data = JSON.stringify({userId: loggedUser.id, cartItems: invoice, deliveryDate});
@@ -911,12 +932,14 @@ function CarrinhoViewController(){
                         this.closeInvice(r.id);
                         __VIEW_UTILS__.showSpinnerFeedback();
                         document.getElementById("deliveryTime").value = "";
+                        this.clearCartItemList();
                         return true;
                         
                     }
                 }catch(e){ console.log("Houve um erro: ", e);}
                 __VIEW_UTILS__.showSpinnerFail();
                 document.getElementById("deliveryTime").value = "";
+                this.clearCartItemList();
                 
             });
                         
