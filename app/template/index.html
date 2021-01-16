@@ -18,6 +18,7 @@
       <link href="css/style.css" rel="stylesheet">
       <!-- Sidebar CSS -->
       <link href="vendor/sidebar/demo.css" rel="stylesheet">
+      <link href="../component/css/spinner.css" rel="stylesheet">
 
       <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
             integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
@@ -271,19 +272,6 @@
                         <span id="notAuthButton"></span>
 
                         &nbsp;
-                        <a href="#" style="display: none;" data-toggle="modal" id="carrinhoModalButton" data-target="#carrinhoModal">&nbsp;</a>
-                        <span 
-                           onclick="carrinho.controller.showAppropriateView()" 
-                           class="bg-color-head text-white  rounded  profileButton" 
-                           style="right: 0; position: absolute; width: 70px; top: -20px; height: 42px;">
-                           
-                           <a href="#" class="text-decoration-none text-white">
-                              <i class="text-white icofont-shopping-cart" style="color: white; font-size: 14px;"></i> 
-                              <span id="itensOnCarrinho">
-                                 ( <span>...</span> )
-                              </span>
-                           </a>
-                        </span>
                         
                         <!-- categories -->
                         <div class="pt-3 pb-2  osahan-categories" style="margin-top: 20px;">
@@ -819,7 +807,7 @@
 
          /* SCRIPT EXECUTIONS */
          //promo.controller.findAndPromos("promoLocal"); 
-         menu.controller.renderMenu("Bem vindo");
+         menu.controller.renderMenu("PPRIMO");
 
          /*
          APRESENTA ITENS/PRODUTOS NA VITRINE QUE 
@@ -841,6 +829,29 @@
 
 
       <!-- MODALS CONTENT -->
+      <!-- 
+         MODAL PARA QUALQUER TELA A SER CHAMADA
+      -->
+      <a href="#" id="emptyModalButton" style="display: none;" data-toggle="modal" data-target="#emptyModal" class="text-decoration-none text-green loggedUserButtonsIcon">
+         <i class="text-green icofont-badge" style="color: #fd7e14 !important;"></i>
+      </a>
+      <div class="modal fade" id="emptyModal" tabindex="-1" role="dialog" aria-labelledby="emptyModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="emptyModalLabel">--</h5>
+                  <button onclick="__VIEW_UTILS__.clearEmptyModalContent()" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                     <span aria-hidden="true">&times;</span>
+                  </button>
+               </div>
+               <div class="modal-body" id="epmtyModalBody">
+
+               </div>
+               
+            </div>
+         </div>
+      </div>
+
 
       <!-- ACCOUNT MODAL -->
       <div class="modal fade" id="accountModal" tabindex="-1" role="dialog" aria-labelledby="accountModalLabel" aria-hidden="true">
@@ -946,6 +957,7 @@
          /* RENDERIZA A VIEW COMPLETA DO CARRINHO DE COMPRA */
          carrinho.controller.renderCartView();
       </script>
+
 
 
    </body>

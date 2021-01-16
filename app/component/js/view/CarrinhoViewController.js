@@ -12,6 +12,7 @@ function CarrinhoViewController(){
     this.invoicesObj = [];
     this.totalAmount = 0;
     this.totalItems = 0;
+    this.totalListInvoices = 0;
 
     this.createInvoice = async function(curInvoice){
 
@@ -47,6 +48,135 @@ function CarrinhoViewController(){
 
     }
 
+    //METHODS TO INVOICE
+    this.getAllInvoices = async function(){
+
+        let invoicesIds = await localStorage.getItem("invoices_");
+        let allInvoices = JSON.parse(invoicesIds);
+
+        const mapInvoice = function(id){
+            return JSON.parse(localStorage.getItem(id))
+        }
+
+        const invocesCard = await allInvoices.map(inv => {
+            let curInvoice = mapInvoice(inv.id);
+            if(curInvoice)
+                return this.calculateInvoiceValue(curInvoice, inv.id)
+            return null;
+        });
+
+        this.totalListInvoices = invocesCard.filter(inv => inv != null).length;
+
+        return this.invoiceViewCard(invocesCard.join(""));
+        
+    }
+
+    //METHODS TO INVOICE
+    this.calculateInvoiceValue = function(inv, idInv){
+        console.log(inv);
+
+        let totalInvoice = 0;
+
+        if(inv.length > 0){
+            let totalItem = parseInt(inv.length) - 1;    
+            for(let item of inv){
+                if(Object.keys(item).includes("_id")){
+                    totalInvoice += (parseInt(item.preco) * parseInt(item.qtd));
+                }
+            }
+            return this.invoceCard({...inv, totalInvoice, totalItem, id: idInv});
+        }
+
+        return null;
+
+    }
+
+    this.invoceCard = function(obj){
+
+        if(obj[0].details){
+            
+        }else{
+            return "";
+        }
+
+        const invoiceSTatus = {
+            "close": `<p class="bg-warning text-white py-1 px-2 rounded small m-0">Em progresso</p>`,
+            "done": `<p class="bg-success text-white py-1 px-2 mb-0 rounded small">Entregue</p>`,
+            "canceled": `<p class="bg-danger text-white py-1 px-2 rounded small m-0">Cancelado</p>`
+        }
+
+        return `
+
+            <div class="order-body">
+                        
+                <div class="pb-3">
+                    <a href="status_canceled.html" class="text-decoration-none text-dark">
+                        <div class="p-3 rounded shadow-sm bg-white">
+                            <div class="d-flex align-items-center mb-3">
+                                ${invoiceSTatus[obj[0].details.status]}
+                                <p class="text-muted ml-auto small m-0"><i class="icofont-clock-time"></i>${obj[0].details.date.split("T")[0]} </p>
+                            </div>
+                            <div class="d-flex">
+                                <p class="text-muted m-0">N. encomenda<br>
+                                    <span class="text-dark font-weight-bold">#${obj.id}</span>
+                                </p>
+                                <p class="text-muted m-0 ml-auto">N. itens<br>
+                                    <span class="text-dark font-weight-bold">${obj.totalItem}</span>
+                                </p>
+                                <p class="text-muted m-0 ml-auto">Total factura<br>
+                                    <span class="text-dark font-weight-bold">${obj.totalInvoice} Kz</span>
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+        
+        `;
+
+    }
+
+    this.invoiceViewCard = function(invoices){
+
+        return `
+        
+        <section class="py-4 osahan-main-body">
+        <div class="container">
+           <div class="row">
+              <div class="col-md-3">
+                 <ul class="nav nav-tabs custom-tabs border-0 flex-column bg-white rounded overflow-hidden shadow-sm p-2 c-t-order" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                       <a class="nav-link border-0 text-dark py-3 active" id="completed-tab" data-toggle="tab" href="#completed" role="tab" aria-controls="completed" aria-selected="true">
+                       <i class="icofont-check-alt mr-2 text-success mb-0"></i> Entregues</a>
+                    </li>
+                    <li class="nav-item border-top" role="presentation">
+                       <a class="nav-link border-0 text-dark py-3" id="progress-tab" data-toggle="tab" href="#progress" role="tab" aria-controls="progress" aria-selected="false">
+                       <i class="icofont-wall-clock mr-2 text-warning mb-0"></i> EM progresso</a>
+                    </li>
+                    <li class="nav-item border-top" role="presentation">
+                       <a class="nav-link border-0 text-dark py-3" id="canceled-tab" data-toggle="tab" href="#canceled" role="tab" aria-controls="canceled" aria-selected="false">
+                       <i class="icofont-close-line mr-2 text-danger mb-0"></i> Canceladas</a>
+                    </li>
+                 </ul>
+              </div>
+              
+              <div class="tab-pane fade show active" style="width: 100%;" id="completed" role="tabpanel" aria-labelledby="completed-tab">
+                ${invoices}
+              </div>
+                
+            </div>
+
+           </div>
+        </div>
+
+
+        `
+
+
+    }
+
+
     this.getInvoice = async function(id){
 
         let invoice = await localStorage.getItem(id);
@@ -65,8 +195,77 @@ function CarrinhoViewController(){
 
     }
 
-    this.addToCart = async function(item){
+    this.disableAddToCartButton = function(idBtn){
+
+        document.getElementById("addCartBtn"+idBtn).style.backgroundColor = "#28a7457a";
+        document.getElementById("addCartBtn"+idBtn).classList.remove("bg-success");
+        document.getElementById("addCartBtn"+idBtn).classList.add("no-action");
+        document.getElementById("addCartSpinner"+idBtn).style.display = "inline-block";
+
+    }
+
+    this.enableAddToCartButton = function(idBtn){
+
+        document.getElementById("addCartBtn"+idBtn).classList.add("bg-success");
+        document.getElementById("addCartBtn"+idBtn).classList.remove("no-action");
+        document.getElementById("addCartSpinner"+idBtn).style.display = "none";
+
+    }
+
+    this.markAddedToCart = function(idBtn){
+        document.getElementById("addedToCartMark"+idBtn).style.display = "";
+    }
+
+    this.getCurrentCartItems = function(){
+
+        let curItems = localStorage.getItem("curCartItems");
+        if(curItems){
+            return JSON.parse(curItems);
+        }
+        return {};
+    }
+
+    this.addItemToCartItemsList = function(idItem){
+        
+        let itemsList = { ...this.getCurrentCartItems() };
+        itemsList[idItem] = 0;
+        localStorage.setItem("curCartItems",JSON.stringify(itemsList));
+
+    }
+    
+    this.removeItemFromCartItemsList = function(idItem){
+        
+        let itemsList = { ...this.getCurrentCartItems() };
+        let newItemList = JSON.stringify(itemsList);
+        newItemList = newItemList.replace(`"${idItem}":0,`,"").replace(`,"${idItem}":0`,"").replace(`"${idItem}":0`,"");
+
+        console.log({oldItem: itemsList, newItem: newItemList});
+
+        //.replace(`"${idItem}":0,`,"").replace(`"${idItem}":0`,""); //Deleta o item se estives no fim do array
+        localStorage.setItem("curCartItems",newItemList);
+
+    }
+
+    this.loadCartItemsList = function(){
+        
+        setTimeout(() => {
+            let itemsList = { ...this.getCurrentCartItems() };
+            Object.keys(itemsList).forEach(i => {
+                //console.log(i);
+                this.markAddedToCart(i);
+            });
+        },300);
+
+    }
+
+    this.addToCart = async function(item, idItem){
      
+        if(document.getElementById("addCartBtn"+idItem).classList.contains("no-action")){
+            return false;
+        }
+        
+        this.disableAddToCartButton(idItem);
+
         let removedEscapeObject = JSON.parse(unescape(item));
         let qtd = document.getElementById("quantity"+removedEscapeObject._id).value;
         removedEscapeObject.qtd = qtd || 1;
@@ -76,7 +275,7 @@ function CarrinhoViewController(){
             let activatedInvoice = await this.getInvoice(r.id);
             let itemToRemove = activatedInvoice.findIndex(it => it._id == removedEscapeObject._id);
 
-            console.log("REtorno: ", itemToRemove);
+            //console.log("Retorno: ", itemToRemove); //Check if the item exists already 
             if(itemToRemove >= 0){
                 //Remove exissting Item to be replaced 
                 activatedInvoice.splice(itemToRemove,1);
@@ -84,6 +283,12 @@ function CarrinhoViewController(){
             //Insert the replacing item
             activatedInvoice.push(removedEscapeObject);
             saveItem(r.id,activatedInvoice);
+            setTimeout(() => {
+                this.enableAddToCartButton(idItem);
+                this.markAddedToCart(idItem);
+            }, 400);
+
+            this.addItemToCartItemsList(idItem);
     
         });
         
@@ -106,6 +311,8 @@ function CarrinhoViewController(){
 
     const removeFromView = function(idItem){
         document.getElementById(`item-on-cart-${idItem}`).style.display = "none";
+        document.getElementById("addedToCartMark"+idItem).style.display = "none";
+        carrinho.controller.removeItemFromCartItemsList(idItem);
     }
 
     this.cartItem = function(obj){
@@ -119,7 +326,7 @@ function CarrinhoViewController(){
                 <div class="cart-items bg-white position-relative border-bottom" id="item-on-cart-${obj._id}">
 
                     <button type="button" style="margin-right: 10px;" onclick="carrinho.controller.removeFromCart('${obj._id}')" class="close">
-                        <span aria-hidden="true" style="color: red;">&times;</span>
+                        <span aria-hidden="true" style="color: red; font-size: 1.9rem;">&times;</span>
                     </button>
 
                     <a href="product_details.html" class="position-absolute">
@@ -193,8 +400,13 @@ function CarrinhoViewController(){
             totalItems = totalItems.replace("(","").replace(")","");
 
             document.getElementById("showCartItemCount").innerHTML = `${totalItems} `;
-
             let curInvoice = await this.getInvoice(r.id);
+
+            if(curInvoice.length == 0){
+                this.cartEmptyAlert();
+                return false;
+            }
+
             let itemsToShow = curInvoice.map(it => this.cartItem(it));
             
             document.getElementById("itensOnCart").innerHTML = itemsToShow;
@@ -652,18 +864,38 @@ function CarrinhoViewController(){
                 })
     }
 
+    this.cartEmptyAlert = function(){
+
+        __VIEW_UTILS__.showModalAlert(
+            {
+                failMessage: "O carrinho de compras está vazio", 
+                title: "Sem produtos",
+                onOk: () => {
+                    document.getElementById("carrinhoModalButton").click();
+                    document.getElementById("dateDeliverySelectBtn").click();
+                }
+            })
+    }
+
     this.checkout = function(){
 
         this.getActiveInvoice().then(async (r) => {
 
             const deliveryDate = this.getDeliveryDateTime();
+            const invoice = await this.getInvoice(r.id);
+
             if(!deliveryDate){
                 this.noDeliveryDateAlert();
                 return false;
             }
 
+            if(invoice.length == 0){
+                this.cartEmptyAlert();
+                return false;
+            }
+
+
             const loggedUser = (new UserViewController()).getLoggedUser();
-            const invoice = await this.getInvoice(r.id);
             const newStateInvoice = [...invoice];
             const data = JSON.stringify({userId: loggedUser.id, cartItems: invoice, deliveryDate});
             
@@ -674,15 +906,17 @@ function CarrinhoViewController(){
                     let response = JSON.parse(res);
                     if(response.result.ok){
     
-                        newStateInvoice.unshift({"details": {"status": "close", "onlineId": response.obj.insertedId, "date" : new Date()}});
+                        newStateInvoice.unshift({"details": {"status": "close", "deliveryDate": deliveryDate, "onlineId": response.obj.insertedId, "date" : new Date()}});
                         localStorage.setItem(r.id,JSON.stringify(newStateInvoice));
                         this.closeInvice(r.id);
                         __VIEW_UTILS__.showSpinnerFeedback();
+                        document.getElementById("deliveryTime").value = "";
                         return true;
                         
                     }
                 }catch(e){ console.log("Houve um erro: ", e);}
                 __VIEW_UTILS__.showSpinnerFail();
+                document.getElementById("deliveryTime").value = "";
                 
             });
                         
