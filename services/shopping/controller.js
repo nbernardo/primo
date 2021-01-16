@@ -1,18 +1,42 @@
 const router = require("express").Router();
+const fetch = require("node-fetch");
+
 const {save} = require("./dataccess");
+const commandURL = `http://${process.env.CMD_URL || "localhost:4005/event"}`;
 
 router.post("/", (req, client) => {
 
     console.log(req);
 
-    const {userId, cartItems, deliveryDate} = req.body;
+    const data = ({userId, cartItems, deliveryDate} = req.body);
 
-    save({userId, cartItems, deliveryDate}, (res) => {
-        console.log(res);
-        client.send({result: res.result, obj: res});
-    })
+    const handleSaveOrder = ({err, result}) => {
+        //console.log(res);
+        client.send({result: result.result, obj: result});
+    }
+
+    const handleOrderEmit = () => {
+        save(data, handleSaveOrder);
+    }
+
+    emitOrderEvent(data,handleOrderEmit)
 
 }); 
+
+const emitOrderEvent = (data, callback) => {
+
+    fetch(`${commandURL}/order`, {
+        body: JSON.stringify({...data}),
+        method: "POST",
+        headers: {
+            "Content-type" : "application/json"
+        }
+    })
+    .then(r => {
+        callback();
+    });
+    
+}
 
 
 router.get("/", (req, client) => {
