@@ -212,14 +212,59 @@ function CarrinhoViewController(){
 
     }
 
-    this.addToCart = async function(item, idBtn){
+    this.markAddedToCart = function(idBtn){
+        document.getElementById("addedToCartMark"+idBtn).style.display = "";
+    }
+
+    this.getCurrentCartItems = function(){
+
+        let curItems = localStorage.getItem("curCartItems");
+        if(curItems){
+            return JSON.parse(curItems);
+        }
+        return {};
+    }
+
+    this.addItemToCartItemsList = function(idItem){
+        
+        let itemsList = { ...this.getCurrentCartItems() };
+        itemsList[idItem] = 0;
+        localStorage.setItem("curCartItems",JSON.stringify(itemsList));
+
+    }
+    
+    this.removeItemFromCartItemsList = function(idItem){
+        
+        let itemsList = { ...this.getCurrentCartItems() };
+        let newItemList = JSON.stringify(itemsList);
+        newItemList = newItemList.replace(`"${idItem}":0,`,"").replace(`,"${idItem}":0`,"").replace(`"${idItem}":0`,"");
+
+        console.log({oldItem: itemsList, newItem: newItemList});
+
+        //.replace(`"${idItem}":0,`,"").replace(`"${idItem}":0`,""); //Deleta o item se estives no fim do array
+        localStorage.setItem("curCartItems",newItemList);
+
+    }
+
+    this.loadCartItemsList = function(){
+        
+        setTimeout(() => {
+            let itemsList = { ...this.getCurrentCartItems() };
+            Object.keys(itemsList).forEach(i => {
+                //console.log(i);
+                this.markAddedToCart(i);
+            });
+        },300);
+
+    }
+
+    this.addToCart = async function(item, idItem){
      
-        if(document.getElementById("addCartBtn"+idBtn).classList.contains("no-action")){
+        if(document.getElementById("addCartBtn"+idItem).classList.contains("no-action")){
             return false;
         }
         
-        this.disableAddToCartButton(idBtn);
-        //return;
+        this.disableAddToCartButton(idItem);
 
         let removedEscapeObject = JSON.parse(unescape(item));
         let qtd = document.getElementById("quantity"+removedEscapeObject._id).value;
@@ -230,7 +275,7 @@ function CarrinhoViewController(){
             let activatedInvoice = await this.getInvoice(r.id);
             let itemToRemove = activatedInvoice.findIndex(it => it._id == removedEscapeObject._id);
 
-            console.log("REtorno: ", itemToRemove);
+            //console.log("Retorno: ", itemToRemove); //Check if the item exists already 
             if(itemToRemove >= 0){
                 //Remove exissting Item to be replaced 
                 activatedInvoice.splice(itemToRemove,1);
@@ -238,7 +283,12 @@ function CarrinhoViewController(){
             //Insert the replacing item
             activatedInvoice.push(removedEscapeObject);
             saveItem(r.id,activatedInvoice);
-            setTimeout(() => this.enableAddToCartButton(idBtn), 500);
+            setTimeout(() => {
+                this.enableAddToCartButton(idItem);
+                this.markAddedToCart(idItem);
+            }, 400);
+
+            this.addItemToCartItemsList(idItem);
     
         });
         
@@ -261,6 +311,8 @@ function CarrinhoViewController(){
 
     const removeFromView = function(idItem){
         document.getElementById(`item-on-cart-${idItem}`).style.display = "none";
+        document.getElementById("addedToCartMark"+idItem).style.display = "none";
+        carrinho.controller.removeItemFromCartItemsList(idItem);
     }
 
     this.cartItem = function(obj){
@@ -274,7 +326,7 @@ function CarrinhoViewController(){
                 <div class="cart-items bg-white position-relative border-bottom" id="item-on-cart-${obj._id}">
 
                     <button type="button" style="margin-right: 10px;" onclick="carrinho.controller.removeFromCart('${obj._id}')" class="close">
-                        <span aria-hidden="true" style="color: red;">&times;</span>
+                        <span aria-hidden="true" style="color: red; font-size: 1.9rem;">&times;</span>
                     </button>
 
                     <a href="product_details.html" class="position-absolute">

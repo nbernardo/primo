@@ -16,6 +16,7 @@ function ItemListViewController(){
             const response = JSON.parse(res);
             const dados = await response.data.map(i => this.generateItem(i));
             document.getElementById("vitrine-listItems").innerHTML = dados.join("");
+            carrinho.controller.loadCartItemsList();
 
         });
         
@@ -80,6 +81,11 @@ function ItemListViewController(){
                                         onclick=carrinho.controller.addToCart('${transformLinkObject}','${id}');
                                         class="objectAddLink bg-success text-white py-2 px-2 mb-0 rounded small">
                                         Adicionar 
+                                        <i 
+                                            id="addedToCartMark${id}"
+                                            class="text-white icofont-tick-mark" 
+                                            style="display:none; color: white; font-size: 20px; position: absolute;right: 30px;margin-top: -1px;">
+                                        </i>
                                         <span id="addCartSpinner${id}" class="prowebSpinnintAnimation littleSpinner"></span>
                                         
                                     </p>
