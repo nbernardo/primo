@@ -5,6 +5,7 @@ function ProwebCalendar(){
 
     this.renderCalendarFor = function(viewContainer, obj){
         
+        /*
         __VIEW_UTILS__.loadJS("../component/js/mobiscroll.javascript.min.js");
         __VIEW_UTILS__.loadCss("../component/css/mobiscroll.javascript.min.css");
 
@@ -38,6 +39,12 @@ function ProwebCalendar(){
                 });
 
             }
+            */
+
+
+
+
+
             /*
             mobiscroll.datepicker('#dateTimeDeliver', {
                 controls: ['time'],

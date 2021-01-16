@@ -12,6 +12,7 @@ function CarrinhoViewController(){
     this.invoicesObj = [];
     this.totalAmount = 0;
     this.totalItems = 0;
+    this.totalListInvoices = 0;
 
     this.createInvoice = async function(curInvoice){
 
@@ -46,6 +47,135 @@ function CarrinhoViewController(){
         return await this.invoicesObj.filter(inv => inv.active)[0];
 
     }
+
+    //METHODS TO INVOICE
+    this.getAllInvoices = async function(){
+
+        let invoicesIds = await localStorage.getItem("invoices_");
+        let allInvoices = JSON.parse(invoicesIds);
+
+        const mapInvoice = function(id){
+            return JSON.parse(localStorage.getItem(id))
+        }
+
+        const invocesCard = await allInvoices.map(inv => {
+            let curInvoice = mapInvoice(inv.id);
+            if(curInvoice)
+                return this.calculateInvoiceValue(curInvoice, inv.id)
+            return null;
+        });
+
+        this.totalListInvoices = invocesCard.filter(inv => inv != null).length;
+
+        return this.invoiceViewCard(invocesCard.join(""));
+        
+    }
+
+    //METHODS TO INVOICE
+    this.calculateInvoiceValue = function(inv, idInv){
+        console.log(inv);
+
+        let totalInvoice = 0;
+
+        if(inv.length > 0){
+            let totalItem = parseInt(inv.length) - 1;    
+            for(let item of inv){
+                if(Object.keys(item).includes("_id")){
+                    totalInvoice += (parseInt(item.preco) * parseInt(item.qtd));
+                }
+            }
+            return this.invoceCard({...inv, totalInvoice, totalItem, id: idInv});
+        }
+
+        return null;
+
+    }
+
+    this.invoceCard = function(obj){
+
+        if(obj[0].details){
+            
+        }else{
+            return "";
+        }
+
+        const invoiceSTatus = {
+            "close": `<p class="bg-warning text-white py-1 px-2 rounded small m-0">Em progresso</p>`,
+            "done": `<p class="bg-success text-white py-1 px-2 mb-0 rounded small">Entregue</p>`,
+            "canceled": `<p class="bg-danger text-white py-1 px-2 rounded small m-0">Cancelado</p>`
+        }
+
+        return `
+
+            <div class="order-body">
+                        
+                <div class="pb-3">
+                    <a href="status_canceled.html" class="text-decoration-none text-dark">
+                        <div class="p-3 rounded shadow-sm bg-white">
+                            <div class="d-flex align-items-center mb-3">
+                                ${invoiceSTatus[obj[0].details.status]}
+                                <p class="text-muted ml-auto small m-0"><i class="icofont-clock-time"></i>${obj[0].details.date.split("T")[0]} </p>
+                            </div>
+                            <div class="d-flex">
+                                <p class="text-muted m-0">N. encomenda<br>
+                                    <span class="text-dark font-weight-bold">#${obj.id}</span>
+                                </p>
+                                <p class="text-muted m-0 ml-auto">N. itens<br>
+                                    <span class="text-dark font-weight-bold">${obj.totalItem}</span>
+                                </p>
+                                <p class="text-muted m-0 ml-auto">Total factura<br>
+                                    <span class="text-dark font-weight-bold">${obj.totalInvoice} Kz</span>
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+        
+        `;
+
+    }
+
+    this.invoiceViewCard = function(invoices){
+
+        return `
+        
+        <section class="py-4 osahan-main-body">
+        <div class="container">
+           <div class="row">
+              <div class="col-md-3">
+                 <ul class="nav nav-tabs custom-tabs border-0 flex-column bg-white rounded overflow-hidden shadow-sm p-2 c-t-order" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                       <a class="nav-link border-0 text-dark py-3 active" id="completed-tab" data-toggle="tab" href="#completed" role="tab" aria-controls="completed" aria-selected="true">
+                       <i class="icofont-check-alt mr-2 text-success mb-0"></i> Entregues</a>
+                    </li>
+                    <li class="nav-item border-top" role="presentation">
+                       <a class="nav-link border-0 text-dark py-3" id="progress-tab" data-toggle="tab" href="#progress" role="tab" aria-controls="progress" aria-selected="false">
+                       <i class="icofont-wall-clock mr-2 text-warning mb-0"></i> EM progresso</a>
+                    </li>
+                    <li class="nav-item border-top" role="presentation">
+                       <a class="nav-link border-0 text-dark py-3" id="canceled-tab" data-toggle="tab" href="#canceled" role="tab" aria-controls="canceled" aria-selected="false">
+                       <i class="icofont-close-line mr-2 text-danger mb-0"></i> Canceladas</a>
+                    </li>
+                 </ul>
+              </div>
+              
+              <div class="tab-pane fade show active" style="width: 100%;" id="completed" role="tabpanel" aria-labelledby="completed-tab">
+                ${invoices}
+              </div>
+                
+            </div>
+
+           </div>
+        </div>
+
+
+        `
+
+
+    }
+
 
     this.getInvoice = async function(id){
 

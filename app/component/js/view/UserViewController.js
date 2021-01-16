@@ -215,10 +215,93 @@ function UserViewController(){
 
     }
 
+    this.userProfileHomeButtons = function(){
+
+        let myAccountButtons = `
+
+                    <style>
+
+                        .loggedUserButtons span:first-child{
+                            margin-left:0;
+                        }
+
+                        .loggedUserButtons{
+
+                            flex-direction: column; 
+                            background: #28a745 !important;
+                            text-align: center; 
+                            width: 68px; 
+                            height: 80px; 
+                            display: flex; 
+                            float: left; 
+                            border-radius: 10%; 
+                            margin-top: -10px !important; 
+                            align-items: center;
+                            justify-content: center;
+                            margin-left: 10px !important;
+                            padding-top:2px;
+                        }
+
+                        .loggedUserButtonsIcon{
+ 
+                            text-align: center; 
+                            width: 45px; 
+                            height: 45px; 
+                            display: flex; 
+                            border-radius: 100%;
+                            align-items: center;
+                            justify-content: center;
+                            color: green;
+                            background: white;
+                            font-size: 20px;
+
+                        }
+
+                        .loggedUserButtonsText{
+                            font-size:.65rem !important;
+                            font-weight:bold;
+                            color:white;
+                        }
+
+                    </style>
+
+                    <div id="loggedUserButtons" style="height: 35px;">
+
+                        <span class="text-green m-0 loggedUserButtons">
+                            <a href="#" id="loginModalButton" data-toggle="modal" data-target="#loginModal" class="text-decoration-none text-green loggedUserButtonsIcon">
+                                <i class="text-green icofont-teacher" ></i>
+                            </a>
+                            <span class="loggedUserButtonsText">Meus<br>dados</span>
+                        </span>
+
+                        <span class="text-green m-0 loggedUserButtons" style="left:10px; background: #fd7e14 !important;">
+                            <a href="#" id="loginModalButton" data-toggle="modal" data-target="#loginModal" class="text-decoration-none text-green loggedUserButtonsIcon">
+                                <i class="text-green icofont-badge" style="color: #fd7e14 !important;"></i>
+                            </a>
+                            <span class="loggedUserButtonsText">Meus<br>Pontos</span>
+                        </span>
+
+
+                        <span class="text-green m-0 loggedUserButtons" style="background: #6c757d !important">
+                            <a href="#" id="loginModalButton" onclick="user.controller.getInvoices()"  class="text-decoration-none text-green loggedUserButtonsIcon">
+                                <i class="text-green icofont-listing-number" style="color: #6c757d !important"></i>
+                            </a>
+                            <span class="loggedUserButtonsText">Minhas Encomendas</span>
+                        </span>
+
+                    </div>
+
+        `;
+
+        return myAccountButtons;
+
+    }
+
     this.handleNoAuthButton = function(){
 
-        if(__PROWEBAUTH__.isUserLogged()){
-            document.getElementById("notAuthButton").innerHTML = "";
+        let isUserLogged = __PROWEBAUTH__.isUserLogged();
+        if(isUserLogged){
+            document.getElementById("notAuthButton").innerHTML = this.userProfileHomeButtons();
             return;
         }
 
@@ -241,6 +324,7 @@ function UserViewController(){
                     </span>
 
         `;
+
         try{
             document.getElementById("notAuthButton").innerHTML = buttons;
         }catch(e){}
@@ -392,6 +476,13 @@ function UserViewController(){
         }
 
         return {};
+
+    }
+
+    this.getInvoices = async function(){
+        
+        const invoices = await carrinho.controller.getAllInvoices();
+        __VIEW_UTILS__.showEmptyModel({content: invoices, title: `As últimas ${carrinho.controller.totalListInvoices} encomendas`});
 
     }
 

@@ -32,6 +32,22 @@ function MenuViewController(){
                         <span class="badge badge-danger p-1 ml-1 small">50%</span>
                         </a>
                     </p>
+
+                    <a href="#" style="display: none;" data-toggle="modal" id="carrinhoModalButton" data-target="#carrinhoModal">&nbsp;</a>
+                    <span 
+                       onclick="carrinho.controller.showAppropriateView()" 
+                       class="bg-color-head text-white  rounded  profileButton" 
+                       style="right: 0; width: 70px; height: 42px;">
+                       
+                       <a href="#" class="text-decoration-none text-white">
+                          <i class="text-white icofont-shopping-cart" style="color: white; font-size: 14px;"></i> 
+                          <span id="itensOnCarrinho">
+                             ( <span>...</span> )
+                          </span>
+                       </a>
+                    </span>
+
+                    
                     <a class="toggle ml-3" id="toggleButton" href="#"><i class="icofont-navigation-menu"></i></a>
                 </div>
                 <a href="search.html" class="text-decoration-none" style="display:none;">

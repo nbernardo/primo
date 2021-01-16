@@ -381,6 +381,53 @@ function ViewUtils(){
     }
 
 
+    this.emptyModal = function(){
+
+        return `
+        
+            <div class="modal fade" id="emptyModal" tabindex="-1" role="dialog" aria-labelledby="emptyModalLbl" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="emptyModalLbl">Carrinho de compras</h5>
+                            <button type="button" id="emptyModalCloseBtn" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <div class="modal-body">
+
+                            <!-- CARRINHO CONTENT -->
+
+                            <section class="py-4 osahan-main-body">
+                                
+                            </section>
+
+                        </div>
+                    
+                    </div>
+                </div>
+            </div>
+
+        `;
+
+
+    }
+
+    this.clearEmptyModalContent = function(){
+        document.getElementById("epmtyModalBody").innerHTML = "";
+    }
+
+
+    this.showEmptyModel = function({content, title}){
+
+        document.getElementById("emptyModalLabel").innerHTML = title || "---";
+        document.getElementById("emptyModalButton").click();
+        document.getElementById("epmtyModalBody").innerHTML = content;
+
+    }
+
+
     return this;
 
 
