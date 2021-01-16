@@ -195,8 +195,32 @@ function CarrinhoViewController(){
 
     }
 
-    this.addToCart = async function(item){
+    this.disableAddToCartButton = function(idBtn){
+
+        document.getElementById("addCartBtn"+idBtn).style.backgroundColor = "#28a7457a";
+        document.getElementById("addCartBtn"+idBtn).classList.remove("bg-success");
+        document.getElementById("addCartBtn"+idBtn).classList.add("no-action");
+        document.getElementById("addCartSpinner"+idBtn).style.display = "inline-block";
+
+    }
+
+    this.enableAddToCartButton = function(idBtn){
+
+        document.getElementById("addCartBtn"+idBtn).classList.add("bg-success");
+        document.getElementById("addCartBtn"+idBtn).classList.remove("no-action");
+        document.getElementById("addCartSpinner"+idBtn).style.display = "none";
+
+    }
+
+    this.addToCart = async function(item, idBtn){
      
+        if(document.getElementById("addCartBtn"+idBtn).classList.contains("no-action")){
+            return false;
+        }
+        
+        this.disableAddToCartButton(idBtn);
+        //return;
+
         let removedEscapeObject = JSON.parse(unescape(item));
         let qtd = document.getElementById("quantity"+removedEscapeObject._id).value;
         removedEscapeObject.qtd = qtd || 1;
@@ -214,6 +238,7 @@ function CarrinhoViewController(){
             //Insert the replacing item
             activatedInvoice.push(removedEscapeObject);
             saveItem(r.id,activatedInvoice);
+            setTimeout(() => this.enableAddToCartButton(idBtn), 500);
     
         });
         

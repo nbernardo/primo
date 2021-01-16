@@ -1,5 +1,6 @@
 itemList = {
     controller: new ItemListViewController(),
+    baseUrl: `${BASE_IP}:4002/catalog/item`
 }
 
 
@@ -9,7 +10,7 @@ function ItemListViewController(){
     this.renderListItems = function(){
 
 
-        const url = `${BASE_IP}:4002/catalog/item`;
+        const url = `${itemList.baseUrl}`;
         (new ProwebRequest()).getRequest(url,null, async (res, xhr) => {
 
             const response = JSON.parse(res);
@@ -75,10 +76,12 @@ function ItemListViewController(){
                                     </div>
                                     </div>
                                     <br/>
-                                    <p 
-                                        onclick=carrinho.controller.addToCart('${transformLinkObject}');
+                                    <p  id="addCartBtn${id}"
+                                        onclick=carrinho.controller.addToCart('${transformLinkObject}','${id}');
                                         class="objectAddLink bg-success text-white py-2 px-2 mb-0 rounded small">
-                                        Adicionar
+                                        Adicionar 
+                                        <span id="addCartSpinner${id}" class="prowebSpinnintAnimation littleSpinner"></span>
+                                        
                                     </p>
                                 </div>
                             </a>
