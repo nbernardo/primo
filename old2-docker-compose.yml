@@ -16,7 +16,7 @@ services:
   #    dockerfile: Dockerfile
   #  ports: 
   #    - "80:80"    
-
+ 
   promo:
     depends_on: 
       - mongoservice
@@ -54,31 +54,3 @@ services:
       dockerfile: Dockerfile
     ports: 
       - "4003:4003"
-
-
-  # BEGUIN -> QUERY SERVICE
-  
-  query:
-    depends_on:
-      - querymongo
-    image: queryservice
-    build:
-      context: ./services/query/
-      dockerfile: Dockerfile
-    ports:
-      - "4004:4004"
-    environment:
-      - HOST=querymongo:27004
-
-  querymongo:
-    command: mongod --port 27004
-    build:
-      context: ./services/query/db/
-      dockerfile: Dockerfile
-    image: mongoquery
-    ports:
-      - "27004:27004"
-    volumes: 
-      - "/service/query/data/mongo:/data/db"
-
-    # END -> QUERY SERVICE
