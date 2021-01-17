@@ -1,8 +1,9 @@
 const {MongoClient} = require("mongodb");
-const url = `${'mongodb://mongoservice:27017'}`;
+const url = `mongodb://${process.env.HOST || 'localhost:27004'}`;
 
+console.log(`Command Service mongo is connecting on ${url}`);
 
-module.exports.save = function(query, callback = ({err, result}) => {}){
+const saveOrder = (query,callback = ({err, result}) => {}) => {
 
     MongoClient.connect(url, (err, client) => {
 
@@ -11,7 +12,10 @@ module.exports.save = function(query, callback = ({err, result}) => {}){
             callback({err, result: res});
         })
 
-
     })
 
 }
+
+
+
+module.exports.saveOrder = saveOrder;
