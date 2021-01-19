@@ -6,10 +6,11 @@ router.get("/", (req, resp) => {
 })
 
 router.get("/item/", (req, client) => {
-
+    
     findItems({}, (res, err) => {
 
-        if(err){
+        if(err){ 
+            console.log("Passou ", res);
             client.status(204).send({
                 erros: {...err},
                 result: {...res}

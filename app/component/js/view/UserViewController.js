@@ -88,7 +88,8 @@ function UserViewController(){
             name: userData.nomeCompleto,
             email: userData.email,
             id: userData.id || userData._id,
-            isTrue : userData.logged ? userData.logged : false
+            isTrue : userData.logged ? userData.logged : false,
+            telefone: userData.telefone,
         };
         
     }

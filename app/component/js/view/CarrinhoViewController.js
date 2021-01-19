@@ -2,6 +2,9 @@ const carrinho = {
     controller: new CarrinhoViewController(),
     accessTry: false,
     baseUrl: `${BASE_IP}:4003/shop`,
+    queryUrl: `${BASE_IP}:4004/query/invoice`,
+    activeView : false,
+    itemsByInvoice: {}
 }
 
 function CarrinhoViewController(){
@@ -61,7 +64,7 @@ function CarrinhoViewController(){
         const invocesCard = await allInvoices.map(inv => {
             let curInvoice = mapInvoice(inv.id);
             if(curInvoice)
-                return this.calculateInvoiceValue(curInvoice, inv.id)
+                return this.parseInvoice(curInvoice, inv.id)
             return null;
         });
 
@@ -72,9 +75,44 @@ function CarrinhoViewController(){
     }
 
     //METHODS TO INVOICE
-    this.calculateInvoiceValue = function(inv, idInv){
-        console.log(inv);
+    this.findInvoicesOnline = function(){
 
+        carrinho.itemsByInvoice = {};
+        carrinho.activeView = true;
+
+        (new ProwebRequest()).getRequest(carrinho.queryUrl,null, async (res, xhr) => {
+
+            let allInvoices = JSON.parse(res).filter(inv => inv.cartItems != undefined);
+            
+            const invocesCard = await allInvoices.map(inv => {
+                if(inv){
+                    let parsedInv = this.parseIncomingInvoice(inv);
+                    let invoiceItems = [...parsedInv];
+                    invoiceItems.shift();
+                    carrinho.itemsByInvoice[`${inv.id}-${inv.userId}`] = [invoiceItems];
+                    localStorage.setItem(`${inv.id}-${inv.userId}`, JSON.stringify(invoiceItems));
+                    const deliveryData = {
+                                            "date": inv.deliveryDate,
+                                            "address": inv.userAddress,
+                                            "phone": inv.userPhone,
+                                            "latLng": inv.deliveryLatLng,
+                                            "clientName": inv.userName,
+                                            "status": inv.status
+                                        };
+                    return this.parseInvoice(parsedInv, `${inv.id}-${inv.userId}`, deliveryData, inv.userId);
+                }
+                return null;
+            });
+            document.getElementById("myTabContent").innerHTML = this.invoiceViewCard(invocesCard.join(""), false);
+
+        })
+
+    }
+
+
+    //METHODS TO INVOICE
+    this.parseInvoice = function(inv, idInv, obj = {}, userId = null){
+        console.log("Aqui vai ent:",obj);
         let totalInvoice = 0;
 
         if(inv.length > 0){
@@ -85,41 +123,282 @@ function CarrinhoViewController(){
                     totalInvoice += (parseInt(item.preco) * parseInt(item.qtd));
                 }
             }
-            return this.invoceCard({...inv, totalInvoice, totalItem, id: idInv});
+            return this.invoceCard({...inv, totalInvoice, 
+                                    totalItem, id: idInv, 
+                                    date: obj.date || '', 
+                                    address: obj.address || '', 
+                                    phone: obj.phone || '', 
+                                    latLng: obj.latLng || '', 
+                                    clientName: obj.clientName || '',
+                                    status: obj.status || 'sent',
+                                    userId
+                                });
         }
-
         return null;
-
     }
 
     //METHODS TO INVOICE
+    this.parseIncomingInvoice = function(inv){
+
+        let totalInvoice = 0;
+        let invoiceDetail = {};
+        let invoiceObj = [];
+
+        invoiceDetail.details = {
+            status : (inv.status || 'canceled'),
+            deliveryDate: (inv.deliveryDate || ''),
+            onlineId: (inv._id || '')
+        }
+
+        invoiceObj.push(invoiceDetail);
+
+        for(let id in inv.cartItems){
+            invoiceObj.push(inv.cartItems[id]);
+        }
+
+        return invoiceObj;
+
+    }
+
+
+
+    //METHODS TO INVOICE
+    this.formatInvoiceDate = function(details){
+
+        if(details.date){
+            return details.date.toString().split("T")[0];
+        }        
+        return '';
+
+    }
+    
+    this.stateDeliveringButton = function(status, buttonContainerId, userId){
+
+        console.log(`BTN: deliveringButton${buttonContainerId}`);
+
+        let buttonContainers = document.getElementById(`deliveringButton${buttonContainerId}`);
+        buttonContainers.innerHTML = this.deliveringButtons(status, buttonContainerId, userId);
+        
+    }
+
+    this.stateDeliveringState = function(status, containerId){
+        
+        let statusContainer = document.getElementById(`deliveringStatusFlag${containerId}`);
+        statusContainer.innerHTML = this.invoiceDeliveringStatus(status);
+
+    }
+
+    
+    //METHODS TO INVOICE
+    this.moveInvoiceToNextStep = function(invoiceId, userId, status){
+
+        this.getInvoice(invoiceId).then(inv => {
+            const data = JSON.stringify({
+                id: invoiceId,
+                status: status,
+                userId,
+            });
+            
+            let elmId = `${invoiceId}-${userId}`;
+
+            document.getElementById(`addCartSpinner${elmId}`).style.display = "block";
+
+            if(status == "delivered"){
+                document.getElementById(`confirmButton${elmId}`).classList.remove("bg-success");
+                document.getElementById(`confirmButton${elmId}`).style.background = "background-color: rgba(40, 167, 69, 0.48) !important;";
+            }
+
+            if(status == "ontheway"){
+                document.getElementById(`ontheWayBtn${elmId}`).classList.remove("bg-success");
+                document.getElementById(`ontheWayBtn${elmId}`).style.background = "background-color: rgba(40, 167, 69, 0.48) !important;";
+            }
+
+
+            (new ProwebRequest()).putJSON(`${carrinho.baseUrl}/order/status`,data,(res, xhr) => {
+                console.log("A resposta: ",res);
+                //console.log(`addCartSpinner${invoiceId}-${userId}`);
+                document.getElementById(`addCartSpinner${elmId}`).style.display = "none";
+                
+                if(status == "delivered")
+                    document.getElementById(`confirmButton${elmId}`).classList.add("bg-success");
+                
+                if(status == "ontheway")
+                    document.getElementById(`ontheWayBtn${elmId}`).classList.add("bg-success");
+
+                this.stateDeliveringButton(status,elmId,userId);
+                this.stateDeliveringState(status,elmId);
+
+            })
+            
+        })
+
+    }
+
+
+
+    //METHODS TO INVOICE
+    this.showItemsByInvoice = function(invoiceId){
+
+        this.getInvoice(invoiceId).then((inv) => {
+
+            let itemsToShow = inv.map(it => this.cartItem(it, false));
+            let curInvoice = document.getElementById(`invoceProducts${invoiceId}`);
+
+            if(curInvoice.style.display == ""){
+                curInvoice.style.display = "none";
+            }else{
+
+                curInvoice.style.display = "";
+                if(curInvoice.innerHTML == "")
+                    document.getElementById(`invoceProducts${invoiceId}`).innerHTML = itemsToShow;
+
+            }
+        })
+    }
+
+    
+    //METHODS TO INVOICE
+    this.deliveringButtons = function(type, idInvoice, userId){
+
+        console.log("Ja sabe: ",idInvoice);
+
+        const confirmDeliveryBtn = `
+                <p  
+                    id="confirmButton${idInvoice}"
+                        onclick="carrinho.controller.moveInvoiceToNextStep('${idInvoice.split("-")[0]}', '${userId}', 'delivered')"
+                        style="padding:15px !important; display:flex; width: 160px;"
+                        class="bg-success text-white py-1 px-2 rounded small m-0">
+                    
+                        <i 
+                            style="font-size: 12px !important;"
+                            class="icofont-tick-mark text-white mb-0"></i>
+                        <span id="confirmDeliveryText${idInvoice}" style="display:block; width:">
+                            Confirmar entrega
+                        <span id="addCartSpinner${idInvoice}" class="prowebSpinnintAnimationBlack littleSpinnerBlack"></span>
+                    </span>
+                </p>
+        `;
+
+        const onThewayBtn = `
+                <p  
+                    id="ontheWayBtn${idInvoice}"
+                        onclick="carrinho.controller.moveInvoiceToNextStep('${idInvoice.split("-")[0]}', '${userId}', 'ontheway')"
+                        style="padding:15px !important; display:flex; width: 120px;"
+                        class="bg-info text-white py-1 px-2 rounded small m-0">
+                    
+                        <i 
+                            style="font-size: 20px !important;"
+                            class="icofont-fast-delivery text-white mb-0"></i>
+                        <span id="ontheWayDeliveryText${idInvoice}" style="display:block; width:">
+                            &nbsp;A caminho
+                    </span>
+                    <span id="addCartSpinner${idInvoice}" class="prowebSpinnintAnimationBlack littleSpinnerBlack"></span>
+
+                </p>
+        `;
+
+        const types = {"sent": onThewayBtn, "ontheway": confirmDeliveryBtn, "delivered" : ""};
+
+        return types[type];
+
+
+    }
+
+    
+    
+    
+    
+    //METHODS TO INVOICE
+    this.orderActionButtons = function(idInvoice, userId, status){
+
+
+
+        return `
+                <div class="d-flex" style="margin-top: 20px;">
+                                            
+                    <p
+                        onclick="carrinho.controller.showItemsByInvoice('${idInvoice}')" 
+                        style="padding:15px !important;"
+                        class="bg-secondary text-white py-1 px-2 rounded small m-0">
+                        
+                        <i 
+                            style="font-size: 12px !important;"
+                            class="icofont-eye text-white mb-0"></i>
+                        Ver produtos
+                    </p>
+                    &nbsp;&nbsp;&nbsp;
+                    <span id="deliveringButton${idInvoice}">
+                        ${this.deliveringButtons(status,idInvoice,userId)}                    
+                    </span>
+
+
+
+                </div>
+        `;
+
+    }
+        
+    
+    //METHODS TO INVOICE
+    this.invoiceDeliveringStatus = function(status){
+
+        const statuses = {
+            "sent": `<p class="bg-warning text-white py-1 px-2 rounded small m-0">${carrinho.activeView ? 'Novo pedido' : 'Enviado'}</p>`,
+            "close": `<p class="bg-warning text-white py-1 px-2 rounded small m-0">${carrinho.activeView ? 'Novo pedido' : 'Enviado'}</p>`,
+            "ontheway": `<p class="bg-info text-white py-1 px-2 mb-0 rounded small">Em progresso</p>`,
+            "canceled": `<p style="background: red;" class="text-white py-1 px-2 rounded small m-0">Cancelado</p>`,
+            "delivered": `<p class="bg-success text-white py-1 px-2 rounded small m-0">Entregue</p>`
+        }
+
+        return statuses[status];
+
+    }
+
+
+    //METHODS TO INVOICE
     this.invoceCard = function(obj){
-
+        //console.log(obj);
+        let details = {}
         if(obj[0].details){
-        }else{
-            return "";
-        }
+            details = obj[0].details;
+        }else return "";
+        
+        let invoiceId = undefined;
+        let nomeCliente = obj.clientName ? 
+                        `<div style="margin-left: 20px; text-align:center;">
+                            <p class="text-muted m-0">Cliente</p>
+                            <p class="text-dark font-weight-bold">${obj.clientName} <br> ${obj.phone}</p>
+                         </div>` : "";
 
-        const invoiceSTatus = {
-            "close": `<p class="bg-warning text-white py-1 px-2 rounded small m-0">Em progresso</p>`,
-            "done": `<p class="bg-success text-white py-1 px-2 mb-0 rounded small">Entregue</p>`,
-            "canceled": `<p class="bg-danger text-white py-1 px-2 rounded small m-0">Cancelado</p>`
-        }
+        let addr = obj.address ? 
+                        `<div style="margin-left: 50px; text-align:center;">
+                            <p class="text-muted m-0">Endereço</p> 
+                            <p class="text-dark font-weight-bold">
+                                ${obj.address.replace(",","<br>")}
+                            </p>
+                         </div>` : "";
 
+        if(obj.id) invoiceId = obj.id.toString().split("-")[0] || obj.id;
+        
         return `
 
             <div class="order-body">
                         
                 <div class="pb-3">
-                    <a href="status_canceled.html" class="text-decoration-none text-dark">
+                    <span class="text-decoration-none text-dark">
+                        
                         <div class="p-3 rounded shadow-sm bg-white">
                             <div class="d-flex align-items-center mb-3">
-                                ${invoiceSTatus[obj[0].details.status]}
-                                <p class="text-muted ml-auto small m-0"><i class="icofont-clock-time"></i>${obj[0].details.date.split("T")[0]} </p>
+                                <span id="deliveringStatusFlag${(obj.id || obj._id)}">
+                                    ${this.invoiceDeliveringStatus(details.status)}
+                                </span> 
+                                ${nomeCliente}
+                                ${addr}
+                                <p class="text-muted ml-auto small m-0"><i class="icofont-clock-time"></i>${obj.date || this.formatInvoiceDate(details)} </p>
                             </div>
                             <div class="d-flex">
                                 <p class="text-muted m-0">N. encomenda<br>
-                                    <span class="text-dark font-weight-bold">#${obj.id}</span>
+                                    <span class="text-dark font-weight-bold">#${invoiceId || obj._id}</span>
                                 </p>
                                 <p class="text-muted m-0 ml-auto">N. itens<br>
                                     <span class="text-dark font-weight-bold">${obj.totalItem}</span>
@@ -128,8 +407,18 @@ function CarrinhoViewController(){
                                     <span class="text-dark font-weight-bold">${obj.totalInvoice} Kz</span>
                                 </p>
                             </div>
+
+                            ${(carrinho.activeView) ? this.orderActionButtons(obj.id || obj._id, obj.userId || '', details.status) : ''}
+
+                            <div 
+                                id="invoceProducts${obj.id || obj._id}" 
+                                style="margin-top:10px; display:none;" class="p-3 rounded shadow-sm bg-white"></div>
+    
+                            
                         </div>
-                    </a>
+
+
+                    </span>
                 </div>
 
             </div>
@@ -138,42 +427,63 @@ function CarrinhoViewController(){
 
     }
 
-    this.invoiceViewCard = function(invoices){
+    //METHODS TO INVOICE
+    this.findInvoices = function(){
+
+
+        (new ProwebRequest()).getRequest(carrinho.queryUrl,null, (res, xhr) => {
+
+            console.log(res);
+
+        })
+        
+
+    }
+
+
+    this.invoiceViewCard = function(invoices, showFullContent){
+
+        if(!showFullContent){
+            return `
+                <div class="tab-pane fade show active" style="width: 100%;" id="completed" role="tabpanel" aria-labelledby="completed-tab">
+                    ${invoices}
+                </div>
+            `;
+        }
 
         return `
         
-        <section class="py-4 osahan-main-body">
-        <div class="container">
-           <div class="row">
-              <div class="col-md-3">
-                 <ul class="nav nav-tabs custom-tabs border-0 flex-column bg-white rounded overflow-hidden shadow-sm p-2 c-t-order" id="myTab" role="tablist">
-                    <li class="nav-item" role="presentation">
-                       <a class="nav-link border-0 text-dark py-3 active" id="completed-tab" data-toggle="tab" href="#completed" role="tab" aria-controls="completed" aria-selected="true">
-                       <i class="icofont-check-alt mr-2 text-success mb-0"></i> Entregues</a>
-                    </li>
-                    <li class="nav-item border-top" role="presentation">
-                       <a class="nav-link border-0 text-dark py-3" id="progress-tab" data-toggle="tab" href="#progress" role="tab" aria-controls="progress" aria-selected="false">
-                       <i class="icofont-wall-clock mr-2 text-warning mb-0"></i> EM progresso</a>
-                    </li>
-                    <li class="nav-item border-top" role="presentation">
-                       <a class="nav-link border-0 text-dark py-3" id="canceled-tab" data-toggle="tab" href="#canceled" role="tab" aria-controls="canceled" aria-selected="false">
-                       <i class="icofont-close-line mr-2 text-danger mb-0"></i> Canceladas</a>
-                    </li>
-                 </ul>
-              </div>
-              
-              <div class="tab-pane fade show active" style="width: 100%;" id="completed" role="tabpanel" aria-labelledby="completed-tab">
-                ${invoices}
-              </div>
-                
-            </div>
+            <section class="py-4 osahan-main-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <ul class="nav nav-tabs custom-tabs border-0 flex-column bg-white rounded overflow-hidden shadow-sm p-2 c-t-order" id="myTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                <a class="nav-link border-0 text-dark py-3 active" id="completed-tab" data-toggle="tab" href="#completed" role="tab" aria-controls="completed" aria-selected="true">
+                                <i class="icofont-check-alt mr-2 text-success mb-0"></i> Entregues</a>
+                                </li>
+                                <li class="nav-item border-top" role="presentation">
+                                <a class="nav-link border-0 text-dark py-3" id="progress-tab" data-toggle="tab" href="#progress" role="tab" aria-controls="progress" aria-selected="false">
+                                <i class="icofont-wall-clock mr-2 text-warning mb-0"></i> EM progresso</a>
+                                </li>
+                                <li class="nav-item border-top" role="presentation">
+                                <a class="nav-link border-0 text-dark py-3" id="canceled-tab" data-toggle="tab" href="#canceled" role="tab" aria-controls="canceled" aria-selected="false">
+                                <i class="icofont-close-line mr-2 text-danger mb-0"></i> Canceladas</a>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="tab-pane fade show active" style="width: 100%;" id="completed" role="tabpanel" aria-labelledby="completed-tab">
+                            ${invoices}
+                        </div>
+                            
+                        </div>
 
-           </div>
-        </div>
+                    </div>
+                </div>
+            </section>
 
-
-        `
-
+        `;
 
     }
 
@@ -330,20 +640,30 @@ function CarrinhoViewController(){
         carrinho.controller.removeItemFromCartItemsList(idItem);
     }
 
-    this.cartItem = function(obj){
+    this.cartItem = function(obj, removeButton){
 
         let totalAmount = obj.preco * obj.qtd;
         this.totalAmount += parseInt(totalAmount);
         this.totalItems += parseInt(obj.qtd);
 
+        let rmButtonContent = ``;
+        if(removeButton != false){
+
+            rmButtonContent = `
+            <button type="button" 
+                    style="margin-right: 10px;" 
+                    onclick="carrinho.controller.removeFromCart('${obj._id}')" 
+                    class="close">
+                <span aria-hidden="true" style="color: red; font-size: 1.9rem;">&times;</span>
+            </button>
+            `;
+
+        }
+
         return `
         
                 <div class="cart-items bg-white position-relative border-bottom" id="item-on-cart-${obj._id}">
-
-                    <button type="button" style="margin-right: 10px;" onclick="carrinho.controller.removeFromCart('${obj._id}')" class="close">
-                        <span aria-hidden="true" style="color: red; font-size: 1.9rem;">&times;</span>
-                    </button>
-
+                    ${rmButtonContent}
                     <a href="product_details.html" class="position-absolute">
                     <span class="badge badge-danger m-3">10%</span>
                     </a>
@@ -899,6 +1219,27 @@ function CarrinhoViewController(){
         
     }
 
+    this.formatCheckoutData = function(id,invoice, deliveryDate){
+
+        const addr = JSON.parse(localStorage.getItem("address")).endereco;
+        const formatedAddr = `${addr.destrito}, ${addr.rua} ${addr.casa}`;
+        const loggedUser = (new UserViewController()).getLoggedUser();
+        const data = JSON.stringify({
+                                    userId: loggedUser.id, 
+                                    cartItems: invoice, 
+                                    deliveryDate, 
+                                    id, 
+                                    userName: loggedUser.name, 
+                                    userPhone: loggedUser.telefone,
+                                    userAddress: formatedAddr || '',
+                                    deliveryLatLng: addr.latLng || null,
+                                    status: "sent"
+                                });
+        
+        return data;
+
+    }
+
     this.checkout = function(){
 
         this.getActiveInvoice().then(async (r) => {
@@ -916,9 +1257,8 @@ function CarrinhoViewController(){
                 return false;
             }
 
-            const loggedUser = (new UserViewController()).getLoggedUser();
+            const data = this.formatCheckoutData(r.id, invoice, deliveryDate);
             const newStateInvoice = [...invoice];
-            const data = JSON.stringify({userId: loggedUser.id, cartItems: invoice, deliveryDate});
             
             this.checkoutProcessFeedback();
             (new ProwebRequest()).postJSON(`${carrinho.baseUrl}`,data,(res) => {
