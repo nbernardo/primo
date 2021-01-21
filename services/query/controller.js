@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const {testQuery, findInvoices} = require("./dataccess");
+const {testQuery, findInvoices, findInvoicesByClientId} = require("./dataccess");
 
 router.get("/invoice", (req, client) => {
 
@@ -22,5 +22,27 @@ router.get("/", (req, client) => {
     })
 
 })
+
+
+router.get("/user/invoice/:id", (req, client) => {
+
+    const clientId = req.params.id;
+    console.log(`Id enviado: ${clientId}`);
+
+    findInvoicesByClientId(clientId, ({err, result}) => {
+
+        if(err){
+            client.send({error: true, errContent: err});
+            return false;
+        }
+
+        //let finalResult = result.length;
+        //console.log("CHeio de amor: ",result);
+        client.send(result);
+
+    })
+
+})
+
 
 module.exports = router;

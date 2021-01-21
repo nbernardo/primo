@@ -480,8 +480,33 @@ function UserViewController(){
 
     }
 
+    this.processShowInvoices = function(){
+        
+    }
+
     this.getInvoices = async function(){
         
+        if(navigator.onLine){
+            console.log("Está online:");
+            
+            __VIEW_UTILS__.showSpinnerWithNoEscape({
+                feedback: true,
+                title: "Buscando online...",
+                message1: `Carregando as encomenda!`,
+                message2: `Aguarde um instante`
+            });
+            
+            carrinho.controller.findInvoicesByUser(this.getLoggedUser().id, async (res) => {
+
+                
+                __VIEW_UTILS__.hideSpinner();
+                const invoices = await carrinho.controller.getAllInvoices();
+                __VIEW_UTILS__.showEmptyModel({content: invoices, title: `As últimas ${carrinho.controller.totalListInvoices} encomendas`});
+
+            });
+            return true;
+        }
+
         const invoices = await carrinho.controller.getAllInvoices();
         __VIEW_UTILS__.showEmptyModel({content: invoices, title: `As últimas ${carrinho.controller.totalListInvoices} encomendas`});
 

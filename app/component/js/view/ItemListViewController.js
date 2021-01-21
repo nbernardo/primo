@@ -12,7 +12,7 @@ function ItemListViewController(){
 
         const url = `${itemList.baseUrl}`;
         (new ProwebRequest()).getRequest(url,null, async (res, xhr) => {
-            
+            console.log("Valor é: ", res);
             const response = JSON.parse(res);
             const dados = await response.data.map(i => this.generateItem(i));
             document.getElementById("vitrine-listItems").innerHTML = dados.join("");
