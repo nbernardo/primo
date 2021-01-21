@@ -2,7 +2,7 @@ const carrinho = {
     controller: new CarrinhoViewController(),
     accessTry: false,
     baseUrl: `${BASE_IP}:4003/shop`,
-    queryUrl: `${BASE_IP}:4004/query/invoice`,
+    queryUrl: `${BASE_IP}:4004/query`,
     activeView : false,
     itemsByInvoice: {}
 }
@@ -74,13 +74,72 @@ function CarrinhoViewController(){
         
     }
 
+
+    //METHODS TO INVOICE
+    this.getOnlineInvoicesByUser = async function(userId){
+
+        let invoicesIds = await localStorage.getItem("invoices_");
+        let allInvoices = JSON.parse(invoicesIds);
+
+        const mapInvoice = function(id){
+            return JSON.parse(localStorage.getItem(id))
+        }
+
+        const invocesCard = await allInvoices.map(inv => {
+            let curInvoice = mapInvoice(inv.id);
+            if(curInvoice)
+                return this.parseInvoice(curInvoice, inv.id)
+            return null;
+        });
+
+        this.totalListInvoices = invocesCard.filter(inv => inv != null).length;
+
+        return this.invoiceViewCard(invocesCard.join(""));
+        
+    }
+
+    
+
+    //METHODS TO INVOICE
+    this.findInvoicesByUser = async function(userId, callback){
+
+        (new ProwebRequest()).getRequest(`${carrinho.queryUrl}/user/invoice/${userId}`,null, (res) => {
+            
+            //return this.parseInvoice(curInvoice, inv.id)
+            JSON.parse(res).forEach(async inv => {
+                
+                //console.log(`Status da app: ${inv.status}`);
+                if(inv.status != "sent"){
+
+                    let curInvoice = [...inv.cartItems];
+                    let details = {
+                        "details": {
+                            status: inv.status,
+                            deliveryDate: inv.deliveryDate
+                        }
+                    };
+
+                    curInvoice.unshift(details);
+                    let invObj = JSON.stringify(curInvoice);
+                    await localStorage.setItem(inv.id, invObj);
+
+                }
+
+                setTimeout(() => callback(res), 500);
+
+            })  
+        })
+    }
+
+    
+    
     //METHODS TO INVOICE
     this.findInvoicesOnline = function(){
 
         carrinho.itemsByInvoice = {};
         carrinho.activeView = true;
 
-        (new ProwebRequest()).getRequest(carrinho.queryUrl,null, async (res, xhr) => {
+        (new ProwebRequest()).getRequest(`${carrinho.queryUrl}/invoice`,null, async (res, xhr) => {
 
             let allInvoices = JSON.parse(res).filter(inv => inv.cartItems != undefined);
             
@@ -112,7 +171,7 @@ function CarrinhoViewController(){
 
     //METHODS TO INVOICE
     this.parseInvoice = function(inv, idInv, obj = {}, userId = null){
-        console.log("Aqui vai ent:",obj);
+        console.log("Aqui vai ent:",inv);
         let totalInvoice = 0;
 
         if(inv.length > 0){
@@ -125,12 +184,13 @@ function CarrinhoViewController(){
             }
             return this.invoceCard({...inv, totalInvoice, 
                                     totalItem, id: idInv, 
-                                    date: obj.date || '', 
-                                    address: obj.address || '', 
-                                    phone: obj.phone || '', 
-                                    latLng: obj.latLng || '', 
-                                    clientName: obj.clientName || '',
-                                    status: obj.status || 'sent',
+                                    date: obj.date || (inv.id || ''), 
+                                    address: obj.address || (inv.address ||''), 
+                                    phone: obj.phone || (inv.phone || ''), 
+                                    latLng: obj.latLng || (inv.latLng || ''), 
+                                    clientName: obj.clientName || (inv.clientName || ''),
+                                    status: obj.status || (inv.clientName || 'sent'),
+                                    deliveryDate: obj.deliveryDate || inv.deliveryDate,
                                     userId
                                 });
         }
@@ -167,7 +227,12 @@ function CarrinhoViewController(){
 
         if(details.date){
             return details.date.toString().split("T")[0];
-        }        
+        }
+        
+        if(details.deliveryDate){
+            return details.deliveryDate.toString().split("T")[0];
+        }
+        
         return '';
 
     }
@@ -356,13 +421,41 @@ function CarrinhoViewController(){
 
 
     //METHODS TO INVOICE
+    this.calulateInvoicePoints = function(invoiceItems){
+
+        let totalPoints = 0;
+        for(let x in invoiceItems){
+            if(x != 0 && typeof invoiceItems[x] == "object")
+                if(invoiceItems[x] != null) totalPoints += parseFloat(invoiceItems[x].pontos);
+        }
+
+        console.log(totalPoints);
+        return totalPoints;
+        
+    }
+    
+    
+    //METHODS TO INVOICE
     this.invoceCard = function(obj){
-        //console.log(obj);
+        console.log("Actual obj: ",obj);
+        let nivoicePoint = "";
+        
         let details = {}
         if(obj[0].details){
             details = obj[0].details;
+            if(details.status == "delivered"){
+
+                if(Object.keys(obj[0].details).length == 2){
+                    nivoicePoint = `<div style="padding-bottom:12px; text-align:center;">
+                                        <i class="icofont-award text-success" style="font-size:20px;"></i>&nbsp;
+                                        Pontos ganhos: ${this.calulateInvoicePoints(obj)}
+                                    </div>`;
+                }
+
+            }
         }else return "";
         
+
         let invoiceId = undefined;
         let nomeCliente = obj.clientName ? 
                         `<div style="margin-left: 20px; text-align:center;">
@@ -387,7 +480,8 @@ function CarrinhoViewController(){
                 <div class="pb-3">
                     <span class="text-decoration-none text-dark">
                         
-                        <div class="p-3 rounded shadow-sm bg-white">
+                        <div class="p-3 rounded shadow-sm bg-white" style="padding-top: 0px !important">
+                            ${nivoicePoint}
                             <div class="d-flex align-items-center mb-3">
                                 <span id="deliveringStatusFlag${(obj.id || obj._id)}">
                                     ${this.invoiceDeliveringStatus(details.status)}
@@ -431,7 +525,7 @@ function CarrinhoViewController(){
     this.findInvoices = function(){
 
 
-        (new ProwebRequest()).getRequest(carrinho.queryUrl,null, (res, xhr) => {
+        (new ProwebRequest()).getRequest(`${carrinho.queryUrl}/invoice`,null, (res, xhr) => {
 
             console.log(res);
 

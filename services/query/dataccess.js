@@ -1,5 +1,5 @@
 const {MongoClient} = require("mongodb");
-const url = `mongodb://${process.env.HOST}`;
+const url = `mongodb://${process.env.HOST || 'localhost:27004'}`;
 
 console.log(`O Servico do Mongo será em ${url}`);
 
@@ -49,5 +49,22 @@ const findInvoices = function(callback = ({error, result}) => {}){
 }
 
 
+const findInvoicesByClientId = function(clientId, callback = ({err, result}) => {}){
+
+    MongoClient.connect(url,(err, client) => {
+
+        const table = client.db("promo").collection("shop");
+        table.find({"userId": clientId}, {status: 1, cartItems: 1, id: 1, userId: 1, deliveryDate: 1}).toArray((err, res) => {
+
+            callback({err: err, result: res})
+
+        })
+
+    })
+
+}
+
+
 module.exports.testQuery = testQuery;
 module.exports.findInvoices = findInvoices;
+module.exports.findInvoicesByClientId = findInvoicesByClientId;
