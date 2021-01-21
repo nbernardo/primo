@@ -1,5 +1,6 @@
 const BASE_IP = "http://64.225.11.52";
 const __REQUEST__ = new ProwebRequest();
+const COMMAND_URL = `${BASE_IP}:4005/event`;
 
 function ProwebRequest(){
 
@@ -64,6 +65,23 @@ function ProwebRequest(){
 
         xhr.send(content);
 
+    }
+
+    this.putJSON = function(purl, content, callback){
+
+        let url = this.url;
+        if(purl) url = purl;
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("PUT", url, true);
+        xhr.setRequestHeader("Content-type", "application/json");
+
+        xhr.onreadystatechange = function(){
+            if(xhr.readyState == 4){
+                callback(xhr.responseText, xhr);
+            }
+        }
+        xhr.send(content);
     }
 
     return this;

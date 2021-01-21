@@ -26,3 +26,27 @@
     display: none;
   
 }
+
+
+
+.prowebSpinnintAnimationBlack {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  border: 3px solid rgba(0 0 0 / 30%);
+  border-radius: 50%;
+  border-top-color: rgba(0 0 0 / 70%);
+  animation: spin 1s ease-in-out infinite;
+  -webkit-animation: spinAnimationFrame 1s ease-in-out infinite;
+}
+
+
+.littleSpinnerBlack{
+  right: 29px;
+  position: absolute;
+  margin-top: -20px;
+  width: 40px !important;
+  height: 40px !important;
+  display: none;
+
+}

@@ -15,3 +15,24 @@ module.exports.save = function(query, callback = ({err, result}) => {}){
     })
 
 }
+
+
+
+module.exports.confirmDelivery = function({id, userId, status},callback = ({err, result}) => {}){
+
+    MongoClient.connect(url, (err, client) => {
+
+        const table = client.db("promo").collection("shop");
+        table.updateOne({id, userId}, {$set: {status: status}}, (err, res) => {
+
+            if(err){
+                callback({err: true, result: err});
+                return false;
+            }
+            callback({result: res});
+
+        })
+
+    })
+
+}

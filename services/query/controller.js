@@ -1,5 +1,15 @@
 const router = require("express").Router();
-const {testQuery} = require("./dataccess");
+const {testQuery, findInvoices} = require("./dataccess");
+
+router.get("/invoice", (req, client) => {
+
+    findInvoices(({error, result}) => {
+
+        client.send(result);
+
+    })
+
+})
 
 router.get("/", (req, client) => {
 
@@ -10,7 +20,6 @@ router.get("/", (req, client) => {
         client.send(res);
 
     })
-
 
 })
 

@@ -26,5 +26,28 @@ const testQuery = function(callback){
 
 }
 
+const findInvoices = function(callback = ({error, result}) => {}){
+
+    MongoClient.connect(url, (err, client) => {
+
+        const table = client.db("promo").collection("shop");
+        table.find({"status": {$exists: true}, "cartItems": {$exists: true}}).toArray((err, res) => {
+            
+            if(err){
+                callback({error: true});
+                return;
+            }
+
+            callback({
+                error: false,
+                result: res
+            });
+        });
+
+    })
+
+}
+
 
 module.exports.testQuery = testQuery;
+module.exports.findInvoices = findInvoices;
