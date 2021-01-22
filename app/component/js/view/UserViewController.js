@@ -276,7 +276,7 @@ function UserViewController(){
                         </span>
 
                         <span class="text-green m-0 loggedUserButtons" style="left:10px; background: #fd7e14 !important;">
-                            <a href="#" id="loginModalButton" data-toggle="modal" data-target="#loginModal" class="text-decoration-none text-green loggedUserButtonsIcon">
+                            <a href="#" onclick="user.controller.getUserPoints()" id="loginModalButton"  class="text-decoration-none text-green loggedUserButtonsIcon">
                                 <i class="text-green icofont-badge" style="color: #fd7e14 !important;"></i>
                             </a>
                             <span class="loggedUserButtonsText">Meus<br>Pontos</span>
@@ -484,6 +484,19 @@ function UserViewController(){
         
     }
 
+    this.getUserPoints = function(){
+
+        __VIEW_UTILS__.showSpinnerWithNoEscape({
+            feedback: true,
+            title: "Buscando online...",
+            message1: `Carregando as encomenda!`,
+            message2: `Aguarde um instante`
+        });
+
+        carrinho.controller.findPointsByUser(this.getLoggedUser().id);
+    }
+
+
     this.getInvoices = async function(){
         
         if(navigator.onLine){
@@ -496,19 +509,26 @@ function UserViewController(){
                 message2: `Aguarde um instante`
             });
             
-            carrinho.controller.findInvoicesByUser(this.getLoggedUser().id, async (res) => {
-
+            let res = await carrinho.controller.findInvoicesByUser(this.getLoggedUser().id, () => {});
+    
+            setTimeout(async () => {
                 
                 __VIEW_UTILS__.hideSpinner();
-                const invoices = await carrinho.controller.getAllInvoices();
-                __VIEW_UTILS__.showEmptyModel({content: invoices, title: `As últimas ${carrinho.controller.totalListInvoices} encomendas`});
 
-            });
+                //Wait the loading to desapear
+                setTimeout(async () => {
+                    const invoices = await carrinho.controller.getAllInvoices();
+                    __VIEW_UTILS__.showEmptyModel({content: invoices, title: `As últimas ${carrinho.controller.totalListInvoices} encomendas`});    
+                }, 1000);
+                
+            },500);
+
             return true;
         }
 
         const invoices = await carrinho.controller.getAllInvoices();
         __VIEW_UTILS__.showEmptyModel({content: invoices, title: `As últimas ${carrinho.controller.totalListInvoices} encomendas`});
+
 
     }
 

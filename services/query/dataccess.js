@@ -13,6 +13,7 @@ const testQuery = function(callback){
             return false;
         }
 
+        /*
         const table = client.db("promo").collection("shop");
         table.insertOne({valor : "Primeiro teste da query", tipo: "Shop"}, (err, res) => {
             if(err){
@@ -21,6 +22,7 @@ const testQuery = function(callback){
             }
             callback({data: res});      
         })
+        */
     
     })
 
