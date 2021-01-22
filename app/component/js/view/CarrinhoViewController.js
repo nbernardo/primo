@@ -63,6 +63,7 @@ function CarrinhoViewController(){
 
         const invocesCard = await allInvoices.map(inv => {
             let curInvoice = mapInvoice(inv.id);
+            console.log("Factura actual: ", curInvoice, "com Id: ",inv.id);
             if(curInvoice)
                 return this.parseInvoice(curInvoice, inv.id)
             return null;
@@ -99,35 +100,76 @@ function CarrinhoViewController(){
     }
 
     
-
     //METHODS TO INVOICE
     this.findInvoicesByUser = async function(userId, callback){
 
         (new ProwebRequest()).getRequest(`${carrinho.queryUrl}/user/invoice/${userId}`,null, (res) => {
             
-            //return this.parseInvoice(curInvoice, inv.id)
+            let invoicesList = [... JSON.parse(localStorage.getItem("invoices_"))];
+
+            let activeInvoice = invoicesList.filter(inv => inv.active);
+            invoicesList = [];
+            if(activeInvoice.length == 1)
+                invoicesList.push(activeInvoice[0]);
+
             JSON.parse(res).forEach(async inv => {
                 
-                //console.log(`Status da app: ${inv.status}`);
-                if(inv.status != "sent"){
+                invoicesList.push({id: inv.id, active: false});
 
-                    let curInvoice = [...inv.cartItems];
-                    let details = {
-                        "details": {
-                            status: inv.status,
-                            deliveryDate: inv.deliveryDate
-                        }
-                    };
+                let curInvoice = [...inv.cartItems];
+                let details = {
+                    "details": {
+                        status: inv.status,
+                        deliveryDate: inv.deliveryDate
+                    }
+                };
+                curInvoice.unshift(details);
+                let invObj = JSON.stringify(curInvoice);
+                await localStorage.setItem(inv.id, invObj);
 
-                    curInvoice.unshift(details);
-                    let invObj = JSON.stringify(curInvoice);
-                    await localStorage.setItem(inv.id, invObj);
+            })
+            localStorage.setItem("invoices_", JSON.stringify(invoicesList));
+            setTimeout(() => callback(res), 500);
+        })
+    }
 
-                }
+    const pointsWrapper = function(points, obj){
 
-                setTimeout(() => callback(res), 500);
+        return `
+            <div style="padding:15px;" class="border-bottom">
+                <span class="font-weight-bold">#${obj.invoiceId}</span> - <i class="icofont-clock-time"></i> ${obj.deliveryDate}
+                <div style="margin-top: 6px;">
+                    ${points}
+                </div>
+            </div>
 
-            })  
+        `
+
+    }
+
+
+    //METHODS TO INVOICE
+    this.findPointsByUser = async function(userId){
+
+        (new ProwebRequest()).getRequest(`${carrinho.queryUrl}/user/invoice/${userId}`,null, (res) => {
+          
+            let allInvoices = [];
+
+            JSON.parse(res).forEach(async inv => {
+
+                let pontos = inv.cartItems.map(itm => itm.pontos).reduce( (acum, val) => acum + val);
+                const {id, deliveryDate} = inv;
+                let curInvoice = {invoiceId: id, deliveryDate, pontos};
+                let pointComp = this.invoicePointCard(curInvoice);
+                let viewPointCard = pointsWrapper(pointComp, curInvoice);
+
+                allInvoices.push(viewPointCard);
+            });
+            __VIEW_UTILS__.hideSpinner();    
+
+            setTimeout(() => {
+                __VIEW_UTILS__.showEmptyModel({content: allInvoices.join(""), title: `Meus pontos`});
+            }, 500);
         })
     }
 
@@ -326,11 +368,12 @@ function CarrinhoViewController(){
     this.deliveringButtons = function(type, idInvoice, userId){
 
         console.log("Ja sabe: ",idInvoice);
+        let invoiceId = idInvoice.toString().indexOf("-") > -1 ? idInvoice.split("-")[0] : idInvoice;
 
         const confirmDeliveryBtn = `
                 <p  
                     id="confirmButton${idInvoice}"
-                        onclick="carrinho.controller.moveInvoiceToNextStep('${idInvoice.split("-")[0]}', '${userId}', 'delivered')"
+                        onclick="carrinho.controller.moveInvoiceToNextStep('${invoiceId}', '${userId}', 'delivered')"
                         style="padding:15px !important; display:flex; width: 160px;"
                         class="bg-success text-white py-1 px-2 rounded small m-0">
                     
@@ -347,7 +390,7 @@ function CarrinhoViewController(){
         const onThewayBtn = `
                 <p  
                     id="ontheWayBtn${idInvoice}"
-                        onclick="carrinho.controller.moveInvoiceToNextStep('${idInvoice.split("-")[0]}', '${userId}', 'ontheway')"
+                        onclick="carrinho.controller.moveInvoiceToNextStep('${invoiceId}', '${userId}', 'ontheway')"
                         style="padding:15px !important; display:flex; width: 120px;"
                         class="bg-info text-white py-1 px-2 rounded small m-0">
                     
@@ -376,7 +419,11 @@ function CarrinhoViewController(){
     //METHODS TO INVOICE
     this.orderActionButtons = function(idInvoice, userId, status){
 
-
+        let flowButtons = `
+        <span id="deliveringButton${idInvoice}">
+            ${this.deliveringButtons(status,idInvoice,userId)}
+        </span>
+        `
 
         return `
                 <div class="d-flex" style="margin-top: 20px;">
@@ -392,12 +439,8 @@ function CarrinhoViewController(){
                         Ver produtos
                     </p>
                     &nbsp;&nbsp;&nbsp;
-                    <span id="deliveringButton${idInvoice}">
-                        ${this.deliveringButtons(status,idInvoice,userId)}                    
-                    </span>
-
-
-
+                        ${carrinho.activeView ? flowButtons : ''}                    
+                    
                 </div>
         `;
 
@@ -435,6 +478,24 @@ function CarrinhoViewController(){
     }
     
     
+    this.invoicePointCard = function(obj){
+
+        console.log("Do lado: ",obj);
+
+        totalPontos = 0;
+        if(!obj.invoiceId){
+            totalPontos = this.calulateInvoicePoints(obj);
+        }else
+            totalPontos = obj.pontos.toFixed(2);
+
+        return `<div style="padding-bottom:12px; text-align:center;">
+                    <i class="icofont-award text-success" style="font-size:20px;"></i>&nbsp;
+                    Pontos ganhos: ${totalPontos}
+                </div>`;
+
+    }
+
+
     //METHODS TO INVOICE
     this.invoceCard = function(obj){
         console.log("Actual obj: ",obj);
@@ -446,10 +507,7 @@ function CarrinhoViewController(){
             if(details.status == "delivered"){
 
                 if(Object.keys(obj[0].details).length == 2){
-                    nivoicePoint = `<div style="padding-bottom:12px; text-align:center;">
-                                        <i class="icofont-award text-success" style="font-size:20px;"></i>&nbsp;
-                                        Pontos ganhos: ${this.calulateInvoicePoints(obj)}
-                                    </div>`;
+                    nivoicePoint = this.invoicePointCard(obj);
                 }
 
             }
@@ -502,7 +560,7 @@ function CarrinhoViewController(){
                                 </p>
                             </div>
 
-                            ${(carrinho.activeView) ? this.orderActionButtons(obj.id || obj._id, obj.userId || '', details.status) : ''}
+                            ${this.orderActionButtons(obj.id || obj._id, obj.userId || '', details.status)}
 
                             <div 
                                 id="invoceProducts${obj.id || obj._id}" 
@@ -735,6 +793,8 @@ function CarrinhoViewController(){
     }
 
     this.cartItem = function(obj, removeButton){
+
+        if(obj.details) return false;
 
         let totalAmount = obj.preco * obj.qtd;
         this.totalAmount += parseInt(totalAmount);

@@ -1,18 +1,23 @@
 const router = require("express").Router();
 const fetch = require("node-fetch");
 
+
 const {save, confirmDelivery} = require("./dataccess");
 const commandURL = `http://${process.env.CMD_URL || "localhost:4005/event"}`;
 
 router.post("/", (req, client) => {
 
-    console.log(req);
+    //console.log(req);
 
     const data = ({userId, cartItems, deliveryDate} = req.body);
 
     const handleSaveOrder = ({err, result}) => {
         //console.log(res);
         client.send({result: result.result, obj: result});
+        console.log("Passou no primeiro:");
+        sendSMSToClient("Miguel Antonio");
+        console.log("Aqui vai mais um");
+        
     }
 
     const handleOrderEmit = () => {
@@ -29,7 +34,7 @@ router.put("/order/status", (req, client) => {
     let {id, userId, status} = req.body;
     id = isNaN(id) == false ? parseInt(id) : id;
 
-    console.log({id, userId, status});
+    //console.log({id, userId, status});
     console.log("*** Command Shopping *** - Dados do alteração: ");
     
     const handleConfirmDelivered = ({err, result}) => {
@@ -55,6 +60,56 @@ const emitDeliveredEvent = (data, callback = (result) => {}) => {
     }).then(r => {
         callback(r);
     })
+
+}
+
+
+const sendSMSToClient = function(clientName = null){
+
+
+    const https = require('https');
+
+    let postData = JSON.stringify({
+    'from': 'PPRIMO',
+    'to' : ['+244925927412'],
+    'body': 'Hello World!'
+    });
+
+    let options = {
+        hostname: 'api.bulksms.com',
+        port: 443,
+        path: '/v1/messages',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': postData.length,
+            'Authorization': 'Basic RUUxMzQ1Qjc5RkE4NEUzREFENDg4ODhDNzc3OEIyMDYtMDItMDpocTlTX1BQOENTWEgjbSNfS2FkTzNYOXNTcWpXSQ==' 
+        }
+    };
+
+    let req = https.request(options, (resp) => {
+
+        console.log('statusCode:', resp.statusCode);
+        let data = '';
+            resp.on('data', (chunk) => {
+            data += chunk;
+        });
+
+        resp.on('end', () => {
+            console.log("Response:", data);
+        });
+
+    });
+
+    req.on('error', (e) => {
+        console.error("Houve um erro");
+        console.error(e);
+    });
+
+    req.write(postData);
+    req.end();
+
+
 
 }
 
