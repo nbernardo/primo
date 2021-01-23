@@ -85,13 +85,13 @@ function ItemListViewController(){
                                 -->
                                 <div class="p-3"> 
                                 
-                                <span onclick="carrinho.controller.showProductDetail()">
+                                <span onclick="carrinho.controller.showProductDetail('${id}')">
 
                                     <img src="${imagem}" class="img-fluid item-img w-100 mb-3">
                                     <h6>${nome}</h6>
 
                                 </span>
-                                
+
                                     <div class="d-flex align-items-center">
                                     <h6 class="price m-0 text-success">${preco} Kz</h6> <a data-toggle="collapse" href="#collapseExample${id}" role="button" aria-expanded="false" aria-controls="collapseExample7" class="btn btn-success btn-sm ml-auto">+</a>
                                     

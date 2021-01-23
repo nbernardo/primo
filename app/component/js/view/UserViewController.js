@@ -3,7 +3,8 @@ user = {
     request: new ProwebRequest(),
     baseUrl: `${BASE_IP}:4001/user`,
     pagesPath: "/template/",
-    profileUrl: `${BASE_IP}:3000/template/profile.html`
+    profileUrl: `${BASE_IP}:3000/template/profile.html`,
+    
 }
 
 function UserViewController(){

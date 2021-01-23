@@ -432,6 +432,38 @@ function ViewUtils(){
     }
 
 
+    this.showAboutUs = function(){
+
+        (new MenuViewController()).sideMenuClose();
+
+        __VIEW_UTILS__.showSpinnerWithNoEscape({
+            feedback: true,
+            title: "Registo de endereço",
+            message1: `Endereço registado com sucesso`
+        });
+
+        (new ProwebRequest()).getRequest(`${BASE_IP}:3000/template/about.html`,null,(content) => {
+
+            __VIEW_UTILS__.hideSpinner();
+            
+            setTimeout(() => {
+
+                __VIEW_UTILS__.showEmptyModel({content, title: `Nosso serviços`});
+
+            },500);
+            
+            /*
+            setTimeout(() => {
+
+    
+             }, 500)
+             */
+            
+        })
+
+    }
+
+
     return this;
 
 

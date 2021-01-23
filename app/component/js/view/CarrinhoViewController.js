@@ -5,7 +5,8 @@ const carrinho = {
     queryUrl: `${BASE_IP}:4004/query`,
     activeView : false,
     itemsByInvoice: {},
-    productDetail: `${BASE_IP}:3000/template/product.html`
+    productDetail: `${BASE_IP}:3000/template/product.html`,
+    prodDetailQuery: `${BASE_IP}:4002/catalog/item`
 }
 
 function CarrinhoViewController(){
@@ -51,6 +52,29 @@ function CarrinhoViewController(){
         return await this.invoicesObj.filter(inv => inv.active)[0];
 
     }
+
+
+    this.findProductDetails = function(id, callback){
+
+        (new ProwebRequest()).getRequest(`${carrinho.prodDetailQuery}/${id}`, null, (res) => {
+
+            callback();            
+
+            setTimeout(() => {
+
+                let product = JSON.parse(res);
+                document.getElementById("detailImg").src = product.imagem;
+                document.getElementById("detailPrice").innerHTML = `${product.preco} Kz`;
+                document.getElementById("detailNome").innerHTML = `${product.nome}`;
+    
+                console.log(product);
+
+            },300);
+
+        })
+
+    }
+
 
     //METHODS TO INVOICE
     this.getAllInvoices = async function(){
@@ -149,13 +173,26 @@ function CarrinhoViewController(){
     }
 
 
-    this.showProductDetail = function(){
+    this.showProductDetail = function(id){
 
-        (new ProwebRequest()).getRequest(`${carrinho.productDetail}`,null,(content) => {
-
+        if(!id){
+            let content = `
+                <span class="bg-danger text-white py-3 px-5 rounded" style="display:block; font-weight: bold; font-size:16px; text-align:center;">
+                    Sem detalhes para o produto seleccionado
+                </span>
+            `;
             __VIEW_UTILS__.showEmptyModel({content, title: `Detalhes do produt`, removePadding: true});
-            
-        })
+            return false;
+        }
+
+        carrinho.controller.findProductDetails(`${id}`, () => {
+
+            (new ProwebRequest()).getRequest(`${carrinho.productDetail}`,null,(content) => {
+                __VIEW_UTILS__.showEmptyModel({content, title: `Detalhes do produt`, removePadding: true});
+            })
+    
+        });
+
 
     }
 
