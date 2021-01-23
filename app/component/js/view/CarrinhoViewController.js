@@ -653,6 +653,7 @@ function CarrinhoViewController(){
 
             let totalItems = await this.getInvoice(r.id);
             document.getElementById("itensOnCarrinho").innerHTML = `\(${totalItems.length}\)`;
+            document.getElementById("cartFloatingButton").innerHTML = `${totalItems.length}`;
 
         })
 
@@ -858,6 +859,7 @@ function CarrinhoViewController(){
 
         try{
             document.getElementById("itensOnCarrinho").innerHTML = "(0)";
+            document.getElementById("cartFloatingButton").innerHTML = "0";
         }catch(e){};
 
         document.getElementById("itensOnCart").innerHTML = "";
@@ -1360,7 +1362,7 @@ function CarrinhoViewController(){
                 failMessage: "O carrinho de compras está vazio", 
                 title: "Sem produtos",
                 onOk: () => {
-                    document.getElementById("carrinhoModalButton").click();
+                    //document.getElementById("carrinhoModalButton").click();
                     document.getElementById("dateDeliverySelectBtn").click();
                 }
             })
@@ -1372,6 +1374,17 @@ function CarrinhoViewController(){
         localStorage.setItem("curCartItems","{}");
         
     }
+
+    this.callCartFromFloatButton = function(){
+
+        document.getElementById("emptyBodalCloseBtn").click();
+
+        setTimeout(() => {
+            carrinho.controller.showAppropriateView();
+        },500);
+
+    }
+
 
     this.formatCheckoutData = function(id,invoice, deliveryDate){
 

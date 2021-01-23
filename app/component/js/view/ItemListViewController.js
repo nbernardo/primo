@@ -41,6 +41,27 @@ function ItemListViewController(){
 
     }
 
+
+    this.addQty = function(id){
+
+        let qtyElm = document.getElementById(`quantity${id}`);
+        let curQty = parseInt(qtyElm.value);
+        qtyElm.value = curQty + 1;
+
+    }
+
+    this.reduceQty = function(id){
+
+        let qtyElm = document.getElementById(`quantity${id}`);
+        if(qtyElm.value == 1) return false;
+        let curQty = parseInt(qtyElm.value);
+        qtyElm.value = curQty - 1;
+
+    }
+
+
+    //itemList.controller.reduceQty();
+
     this.generateItem = function(obj){
 
         let nome = obj.nome || "Nome produto";
@@ -68,9 +89,9 @@ function ItemListViewController(){
                                         <div> 
                                             <span class="ml-auto" href="#">
                                                 <form id='myform' class="cart-items-number d-flex" method='POST' action='#'>
-                                                <input type='button' value='-' class='qtyminus btn btn-success btn-sm' field='quantity${id}' />
-                                                <input type='text' name='quantity${id}' id='quantity${id}' value='1' class='qty form-control' />
-                                                <input type='button' value='+' class='qtyplus btn btn-success btn-sm' field='quantity${id}' />
+                                                <input type='button' value='-' class='qtyminus btn btn-success btn-sm' onclick="itemList.controller.reduceQty('${id}');" />
+                                                <input type='text' name='quantity${id}' id='quantity${id}' value='1' class='form-control' />
+                                                <input type='button' value='+' class='qtyplus btn btn-success btn-sm' onclick="itemList.controller.addQty('${id}');" />
                                                 </form>   
                                             </span>
                                         </div>

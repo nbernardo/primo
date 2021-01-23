@@ -216,6 +216,48 @@ function UserViewController(){
 
     }
 
+
+    this.loadUserOnProfileView = function(){
+
+        let loggedUser = this.getLoggedUser();
+
+        document.getElementById("loggerUserName").innerHTML = loggedUser.name;
+        document.getElementById("loggerUserEmail").innerHTML = loggedUser.email;
+        
+        document.getElementById("nomeCompleto").value = loggedUser.name;
+        document.getElementById("telefone").value = loggedUser.telefone;
+        document.getElementById("email").value = loggedUser.email;
+
+    }
+
+    this.showUserProfile = function(){
+
+        (new ProwebRequest()).getRequest(`${BASE_IP}:3000/template/profile.html`,null,(content) => {
+
+            __VIEW_UTILS__.showEmptyModel({content, title: `Minha conta`});
+            
+
+            setTimeout(() => {
+
+                this.loadUserOnProfileView();
+
+                console.log("Spinner e outro");
+                user.controller.renderAddressOnMap()
+    
+                /* RENDERIZA A MODAL PARA PROCESSOS BEM SUCESSIDOS (Ex: Criação de Conta, CHeckout de uma compra)*/
+                __VIEW_UTILS__.generateSuccessModal();
+                      
+                /* RENDERIZA A MODAL PARA INDICAR UM PROCESSO EM EXECUÇÂO */
+                __VIEW_UTILS__.generateSpinningModal();
+    
+             }, 500)
+            
+
+        })
+
+    }
+
+
     this.userProfileHomeButtons = function(){
 
         let myAccountButtons = `
@@ -269,7 +311,7 @@ function UserViewController(){
                     <div id="loggedUserButtons" style="height: 35px;">
 
                         <span class="text-green m-0 loggedUserButtons">
-                            <a href="#" id="loginModalButton" data-toggle="modal" data-target="#loginModal" class="text-decoration-none text-green loggedUserButtonsIcon">
+                            <a href="#" onclick="user.controller.showUserProfile()" id="loginModalButton" class="text-decoration-none text-green loggedUserButtonsIcon">
                                 <i class="text-green icofont-teacher" ></i>
                             </a>
                             <span class="loggedUserButtonsText">Meus<br>dados</span>

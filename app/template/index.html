@@ -31,6 +31,7 @@
       <script src="../component/js/view/ItemListViewController.js?v2"></script>
       <script src="../component/js/utils/ProwebCalendar.js"></script>
       <script src="../component/js/utils/ProwebAuth.js"></script>
+      <script src="../component/js/utils/FormUtil.js" defer></script>
 
       <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
                integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
@@ -59,22 +60,24 @@
 
             <!-- Dark mode -->
             <div class="add-new-user" style="display: none;">
-               <label class="theme-switch" for="checkbox">
-                  <input type="checkbox" id="checkbox" />
+                  <!-- <label class="theme-switch" for="checkbox"> -->
+                  <!-- <input type="checkbox" id="checkbox" />-->
                   <div class="slider round"></div>
-                  <i class="icofont-moon"></i>
+                  <i class="text-white icofont-shopping-cart" style="color: white; font-size: 14px;"></i>
                </label>
                <!-- <em>Enable Dark Mode!</em> -->
             </div>
    
    
-            <div class="theme-switch-wrapper">
+            <div class="theme-switch-wrapper" onclick="carrinho.controller.callCartFromFloatButton()">
                <label class="theme-switch" for="checkbox">
-                  <!-- <input type="checkbox" id="checkbox" /> -->
                   <div class="slider round"></div>
-                  <i class="icofont-user"></i>
+                  <div>
+                     <i class="text-white icofont-shopping-cart" style="color: white; font-size: 20px; margin-top:-1px;"></i>
+                     <div style="font-size: 0.7rem; margin-top: -6px; text-align: center;" id="cartFloatingButton"></div>
+                  </div>
+                  
                </label>
-               <!-- <em>Enable Dark Mode!</em> -->
             </div>
          
 
@@ -391,7 +394,7 @@
                         <!-- Most sales -->
                         <div class="title d-flex align-items-center py-3">
                            <h5 class="m-0">Mais compras ou Serviços</h5>
-                           <a class="ml-auto btn btn-outline-success btn-sm" href="recommend.html">26 more</a>
+                           <a class="ml-auto btn btn-outline-success btn-sm" type="button" href="javascript: return false;">Mais</a>
                         </div>
                         <!-- osahan recommend -->
                         <div class="osahan-recommend">
@@ -840,7 +843,7 @@
             <div class="modal-content">
                <div class="modal-header">
                   <h5 class="modal-title" id="emptyModalLabel">--</h5>
-                  <button onclick="__VIEW_UTILS__.clearEmptyModalContent()" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <button onclick="__VIEW_UTILS__.clearEmptyModalContent()" id="emptyBodalCloseBtn" type="button" class="close" data-dismiss="modal" aria-label="Close">
                      <span aria-hidden="true">&times;</span>
                   </button>
                </div>
