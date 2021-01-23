@@ -38,16 +38,10 @@ module.exports.findById = function(id, callback = (res) => {}){
 
     MongoClient.connect(url,(err, client) => {
 
-        console.log("Chegou cá:", id);
-
         const table = client.db("promo").collection("item");
         table.findOne({_id: ObjectID(id)}).then(res => {
 
-            console.log("Retornou no controller: ", res);
             callback(res);
-            log("Product found: ");
-            log(re);
-
 
         })
 
