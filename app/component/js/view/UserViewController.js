@@ -2,7 +2,8 @@ user = {
     controller: new UserViewController(),
     request: new ProwebRequest(),
     baseUrl: `${BASE_IP}:4001/user`,
-    pagesPath: "/template/"
+    pagesPath: "/template/",
+    profileUrl: `${BASE_IP}:3000/template/profile.html`
 }
 
 function UserViewController(){
@@ -232,11 +233,11 @@ function UserViewController(){
 
     this.showUserProfile = function(){
 
-        (new ProwebRequest()).getRequest(`${BASE_IP}:3000/template/profile.html`,null,(content) => {
+
+        (new ProwebRequest()).getRequest(`${user.profileUrl}`,null,(content) => {
 
             __VIEW_UTILS__.showEmptyModel({content, title: `Minha conta`});
             
-
             setTimeout(() => {
 
                 this.loadUserOnProfileView();

@@ -7,6 +7,14 @@
       <meta name="author" content="">
       <link rel="icon" type="image/png" href="img/logo.svg">
       <title>PPRIMO - Plataforma de Promoção e Intermediação de Mão de Obra</title>
+      
+      <!-- Metro 4 UI -->
+      <link href="../component/js/third/calendar/style.css" rel="stylesheet"/>
+      <link href="../component/js/third/calendar/vanilla-calendar-min.css" rel="stylesheet"/>
+      
+      <!-- <link href="../component/css/third/metro.4ui.css" rel="stylesheet"/> -->
+
+
       <!-- Slick Slider -->
       <link rel="stylesheet" type="text/css" href="vendor/slick/slick.min.css"/>
       <link rel="stylesheet" type="text/css" href="vendor/slick/slick-theme.min.css"/>
@@ -282,7 +290,7 @@
                               <h5 class="m-0">O que deseja?</h5>
                               <a href="#" class="ml-auto btn btn-outline-success btn-sm">Mais</a>
                            </div>
-                           <div class="categories-slider">
+                           <div class="categories-slider" id="categories-slider">
 
                               <div class="col-c">
                                  <div class="bg-white shadow-sm rounded text-center my-2 px-2 py-3 c-it ">
@@ -959,8 +967,17 @@
 
          /* RENDERIZA A VIEW COMPLETA DO CARRINHO DE COMPRA */
          carrinho.controller.renderCartView();
+
+         
+         document.getElementById("categories-slider").getElementsByTagName("div")[0].classList.remove("draggable");
+         document.getElementById("promoLocal1").getElementsByClassName("slick-list")[0].classList.remove("draggable");
+
       </script>
 
+      <script src="../component/js/third/calendar/vanilla-calendar-min.js" ></script>
+
+      <!-- <link href="../component/css/third/metro.4ui.css" rel="stylesheet"/> -->
+      <!-- <script src="../component/js/third/metro.4ui.js"></script> -->
 
 
    </body>
