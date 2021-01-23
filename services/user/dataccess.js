@@ -71,6 +71,23 @@ const remove = (id) => {
 }
 
 
+const userCheck = (userPhone, callback = (res) => {}) => {
+
+    MongoClient.connect(url, (err, client) => {
+
+        const table = client.db("promo").collection("user");
+        table.findOne({telefone: userPhone}).then(res => {
+
+            callback(res);
+
+        });
+
+    })
+
+}
+
+
 module.exports.find = find;
 module.exports.deleteOne = remove;
 module.exports.save = save;
+module.exports.userCheck = userCheck;

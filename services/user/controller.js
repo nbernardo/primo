@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
 
-const {find, deleteOne, save, saveAddress} = require("./dataccess");
+const {find, deleteOne, save, saveAddress, userCheck} = require("./dataccess");
 
 router.get("/", (req, res) => {
 
@@ -138,5 +138,91 @@ router.post("/", (req, resp) => {
     });
 
 })
+
+
+router.get("/checkuser/:userphone", (req, client) => {
+
+    const userPhone = req.params.userphone;
+    userCheck(userPhone, (res) => {
+
+        if(res){
+            client.send({exists: true});
+            return true;
+        }
+        client.send({exists: false});
+
+    })
+
+})
+
+
+router.get("/resetpassword/:userphone", (req, client) => {
+
+    const userPhone = req.params.userphone;
+    userCheck(userPhone, (res) => {
+
+        if(res){
+            client.send({exists: true});
+            return true;
+        }
+        client.send({exists: false});
+
+    })
+
+})
+
+
+
+const sendSMSToClient = function(clientName = null, phoneNumber = ""){
+
+    let userNumber = phoneNumber.toString().replace("+244","");
+    if(userNumber.indexOf("00244") == 0){
+        userNumber = userNumber.replace("00244","");
+    }
+
+    const https = require('https');
+
+    let postData = JSON.stringify({
+    'from': 'PPRIMO',
+    'to' : [`+244${userNumber}`],
+    'body': 'Hello World!'
+    });
+
+    let options = {
+        hostname: 'api.bulksms.com',
+        port: 443,
+        path: '/v1/messages',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': postData.length,
+            'Authorization': 'Basic RUUxMzQ1Qjc5RkE4NEUzREFENDg4ODhDNzc3OEIyMDYtMDItMDpocTlTX1BQOENTWEgjbSNfS2FkTzNYOXNTcWpXSQ==' 
+        }
+    };
+
+    let req = https.request(options, (resp) => {
+
+        console.log('statusCode:', resp.statusCode);
+        let data = '';
+            resp.on('data', (chunk) => {
+            data += chunk;
+        });
+
+        resp.on('end', () => {
+            console.log("Response:", data);
+        });
+
+    });
+
+    req.on('error', (e) => {
+        console.error("Houve um erro");
+        console.error(e);
+    });
+
+    req.write(postData);
+    req.end();
+
+}
+
 
 module.exports = router;
