@@ -253,7 +253,6 @@ function UserViewController(){
     
              }, 500)
             
-
         })
 
     }

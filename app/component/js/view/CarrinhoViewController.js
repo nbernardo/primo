@@ -4,7 +4,8 @@ const carrinho = {
     baseUrl: `${BASE_IP}:4003/shop`,
     queryUrl: `${BASE_IP}:4004/query`,
     activeView : false,
-    itemsByInvoice: {}
+    itemsByInvoice: {},
+    productDetail: `${BASE_IP}:3000/template/product.html`
 }
 
 function CarrinhoViewController(){
@@ -144,6 +145,17 @@ function CarrinhoViewController(){
             </div>
 
         `
+
+    }
+
+
+    this.showProductDetail = function(){
+
+        (new ProwebRequest()).getRequest(`${carrinho.productDetail}`,null,(content) => {
+
+            __VIEW_UTILS__.showEmptyModel({content, title: `Detalhes do produt`, removePadding: true});
+            
+        })
 
     }
 
@@ -927,6 +939,8 @@ function CarrinhoViewController(){
                 let selectedDate = new Date(data.date);
                 this.curDateTime = `${selectedDate.getDate()}/${selectedDate.getMonth()}/${selectedDate.getFullYear()}`;
 
+                document.getElementById("deliveryTime").click();
+
                 console.log(this.curDateTime);
             }
         })
@@ -1582,8 +1596,13 @@ function CarrinhoViewController(){
 
     this.callCartFromFloatButton = function(){
 
-        document.getElementById("emptyBodalCloseBtn").click();
+        
+        if(!document.getElementById("emptyModal").classList.contains("show")){
+            carrinho.controller.showAppropriateView();
+            return true;
+        }
 
+        document.getElementById("emptyBodalCloseBtn").click();
         setTimeout(() => {
             carrinho.controller.showAppropriateView();
         },500);

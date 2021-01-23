@@ -385,7 +385,7 @@ function ViewUtils(){
 
         return `
         
-            <div class="modal fade" id="emptyModal" tabindex="-1" role="dialog" aria-labelledby="emptyModalLbl" aria-hidden="true">
+            <div class="modal fade" id="emptyModal" style="padding: 1rem;" tabindex="-1" role="dialog" aria-labelledby="emptyModalLbl" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -419,11 +419,15 @@ function ViewUtils(){
     }
 
 
-    this.showEmptyModel = function({content, title}){
+    this.showEmptyModel = function({content, title, removePadding}){
 
         document.getElementById("emptyModalLabel").innerHTML = title || "---";
         document.getElementById("emptyModalButton").click();
         document.getElementById("epmtyModalBody").innerHTML = content;
+        
+        if(removePadding){
+            document.getElementById("epmtyModalBody").style.padding = "0px";
+        }
 
     }
 
