@@ -7,6 +7,14 @@
       <meta name="author" content="">
       <link rel="icon" type="image/png" href="img/logo.svg">
       <title>PPRIMO - Plataforma de Promoção e Intermediação de Mão de Obra</title>
+      
+      <!-- Metro 4 UI -->
+      <link href="../component/js/third/calendar/style.css" rel="stylesheet"/>
+      <link href="../component/js/third/calendar/vanilla-calendar-min.css" rel="stylesheet"/>
+      
+      <!-- <link href="../component/css/third/metro.4ui.css" rel="stylesheet"/> -->
+
+
       <!-- Slick Slider -->
       <link rel="stylesheet" type="text/css" href="vendor/slick/slick.min.css"/>
       <link rel="stylesheet" type="text/css" href="vendor/slick/slick-theme.min.css"/>
@@ -31,6 +39,7 @@
       <script src="../component/js/view/ItemListViewController.js?v2"></script>
       <script src="../component/js/utils/ProwebCalendar.js"></script>
       <script src="../component/js/utils/ProwebAuth.js"></script>
+      <script src="../component/js/utils/FormUtil.js" defer></script>
 
       <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
                integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
@@ -59,22 +68,24 @@
 
             <!-- Dark mode -->
             <div class="add-new-user" style="display: none;">
-               <label class="theme-switch" for="checkbox">
-                  <input type="checkbox" id="checkbox" />
+                  <!-- <label class="theme-switch" for="checkbox"> -->
+                  <!-- <input type="checkbox" id="checkbox" />-->
                   <div class="slider round"></div>
-                  <i class="icofont-moon"></i>
+                  <i class="text-white icofont-shopping-cart" style="color: white; font-size: 14px;"></i>
                </label>
                <!-- <em>Enable Dark Mode!</em> -->
             </div>
    
    
-            <div class="theme-switch-wrapper">
+            <div class="theme-switch-wrapper" onclick="carrinho.controller.callCartFromFloatButton()">
                <label class="theme-switch" for="checkbox">
-                  <!-- <input type="checkbox" id="checkbox" /> -->
                   <div class="slider round"></div>
-                  <i class="icofont-user"></i>
+                  <div>
+                     <i class="text-white icofont-shopping-cart" style="color: white; font-size: 20px; margin-top:-1px;"></i>
+                     <div style="font-size: 0.7rem; margin-top: -6px; text-align: center;" id="cartFloatingButton"></div>
+                  </div>
+                  
                </label>
-               <!-- <em>Enable Dark Mode!</em> -->
             </div>
          
 
@@ -279,7 +290,7 @@
                               <h5 class="m-0">O que deseja?</h5>
                               <a href="#" class="ml-auto btn btn-outline-success btn-sm">Mais</a>
                            </div>
-                           <div class="categories-slider">
+                           <div class="categories-slider" id="categories-slider">
 
                               <div class="col-c">
                                  <div class="bg-white shadow-sm rounded text-center my-2 px-2 py-3 c-it ">
@@ -352,14 +363,14 @@
                            <div class="promo-slider pb-0 mb-0" id="promoLocal1">
 
                               <div class="osahan-slider-item mx-2">
-                                 <a href="promo_details.html">
+                                 <span onclick="carrinho.controller.showProductDetail()">
                                     <img src="http://pprimo.online/app/template/img/promos/images/pao_273x180.jpg" class="img-fluid mx-auto rounded promoImageContainer" alt="Responsive image">
-                                 </a>
+                                 </span>
                              </div>
                               <div class="osahan-slider-item mx-2">
-                                 <a href="promo_details.html">
+                                 <span onclick="carrinho.controller.showProductDetail()">
                                     <img src="http://pprimo.online/app/template/img/promos/images/paes_273x180.png" class="img-fluid mx-auto rounded promoImageContainer" alt="Responsive image">
-                                 </a>
+                                 </span>
                              </div>
 
 
@@ -391,25 +402,27 @@
                         <!-- Most sales -->
                         <div class="title d-flex align-items-center py-3">
                            <h5 class="m-0">Mais compras ou Serviços</h5>
-                           <a class="ml-auto btn btn-outline-success btn-sm" href="recommend.html">26 more</a>
+                           <a class="ml-auto btn btn-outline-success btn-sm" type="button" href="javascript: return false;">Mais</a>
                         </div>
                         <!-- osahan recommend -->
                         <div class="osahan-recommend">
                            <div class="row">
                               <div class="col-12 col-md-4 mb-3">
-                                 <a href="product_details.html" class="text-dark text-decoration-none">
+                                 <span class="text-dark text-decoration-none">
                                     <div class="list-card bg-white h-100 rounded overflow-hidden position-relative shadow-sm">
+                                       
                                        <div class="recommend-slider2 rounded mb-0">
-                                          <div class="osahan-slider-item m-2 rounded">
+                                          <div onclick="carrinho.controller.showProductDetail()" class="osahan-slider-item m-2 rounded">
                                              <img src="img/recommend/r1.jpg" class="img-fluid mx-auto rounded shadow-sm" alt="Responsive image">
                                           </div>
-                                          <div class="osahan-slider-item m-2 rounded">
+                                          <div onclick="carrinho.controller.showProductDetail()" class="osahan-slider-item m-2 rounded">
                                              <img src="img/recommend/r2.jpg" class="img-fluid mx-auto rounded shadow-sm" alt="Responsive image">
                                           </div>
-                                          <div class="osahan-slider-item m-2 rounded">
+                                          <div onclick="carrinho.controller.showProductDetail()" class="osahan-slider-item m-2 rounded">
                                              <img src="img/recommend/r3.jpg" class="img-fluid mx-auto rounded shadow-sm" alt="Responsive image">
                                           </div>
                                        </div>
+
                                        <div class="p-3 position-relative">
                                           <h6 class="mb-1 font-weight-bold text-success">Solicitar Manuntenção de viatura ao domicílio
                                           </h6>
@@ -419,22 +432,21 @@
                                                 <li>Troca de Calços</li>
                                              </ul>
                                           </p>
-                                          <div class="d-flex align-items-center">
-                                             <h6 class="m-0">de 7.000 à 20.000 Kz</h6>
-                                 <a class="ml-auto" href="#">
-                                 <form id='myform' class="cart-items-number d-flex" method='POST' action='#'>
-                                 <input type='button' value='-' class='qtyminus btn btn-success btn-sm' field='quantity' />
-                                 <input type='text' name='quantity' value='1' class='qty form-control' />
-                                 <input type='button' value='+' class='qtyplus btn btn-success btn-sm' field='quantity' />
-                                 </form>   
-                                 </a>
+                                       <div class="d-flex align-items-center">
+                                          <h6 class="m-0">de 7.000 à 20.000 Kz</h6>
+                                          <a class="ml-auto" href="#">
+                                             <form id='myform' class="cart-items-number d-flex" method='POST' action='#'>
+                                             <input type='button' value='-' class='qtyminus btn btn-success btn-sm' field='quantity' />
+                                             <input type='text' name='quantity' value='1' class='qty form-control' />
+                                             <input type='button' value='+' class='qtyplus btn btn-success btn-sm' field='quantity' />
+                                             </form>   
+                                          </a>
+                                       </div>
+                                    </div>
                                  </div>
-                                 </div>
-                                 </div>
-                                 </a>
-                              </div>
-                              
-                           </div>
+                              </span>
+                           </div>      
+                        </div>
                         </div>
                      </div>
                   </div>
@@ -840,7 +852,7 @@
             <div class="modal-content">
                <div class="modal-header">
                   <h5 class="modal-title" id="emptyModalLabel">--</h5>
-                  <button onclick="__VIEW_UTILS__.clearEmptyModalContent()" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <button onclick="__VIEW_UTILS__.clearEmptyModalContent()" id="emptyBodalCloseBtn" type="button" class="close" data-dismiss="modal" aria-label="Close">
                      <span aria-hidden="true">&times;</span>
                   </button>
                </div>
@@ -956,8 +968,17 @@
 
          /* RENDERIZA A VIEW COMPLETA DO CARRINHO DE COMPRA */
          carrinho.controller.renderCartView();
+
+         
+         document.getElementById("categories-slider").getElementsByTagName("div")[0].classList.remove("draggable");
+         document.getElementById("promoLocal1").getElementsByClassName("slick-list")[0].classList.remove("draggable");
+
       </script>
 
+      <script src="../component/js/third/calendar/vanilla-calendar-min.js" ></script>
+
+      <!-- <link href="../component/css/third/metro.4ui.css" rel="stylesheet"/> -->
+      <!-- <script src="../component/js/third/metro.4ui.js"></script> -->
 
 
    </body>

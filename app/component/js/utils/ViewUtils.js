@@ -385,7 +385,7 @@ function ViewUtils(){
 
         return `
         
-            <div class="modal fade" id="emptyModal" tabindex="-1" role="dialog" aria-labelledby="emptyModalLbl" aria-hidden="true">
+            <div class="modal fade" id="emptyModal" style="padding: 1rem;" tabindex="-1" role="dialog" aria-labelledby="emptyModalLbl" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -419,11 +419,47 @@ function ViewUtils(){
     }
 
 
-    this.showEmptyModel = function({content, title}){
+    this.showEmptyModel = function({content, title, removePadding}){
 
         document.getElementById("emptyModalLabel").innerHTML = title || "---";
         document.getElementById("emptyModalButton").click();
         document.getElementById("epmtyModalBody").innerHTML = content;
+        
+        if(removePadding){
+            document.getElementById("epmtyModalBody").style.padding = "0px";
+        }
+
+    }
+
+
+    this.showAboutUs = function(){
+
+        (new MenuViewController()).sideMenuClose();
+
+        __VIEW_UTILS__.showSpinnerWithNoEscape({
+            feedback: true,
+            title: "Registo de endereço",
+            message1: `Endereço registado com sucesso`
+        });
+
+        (new ProwebRequest()).getRequest(`${BASE_IP}:3000/template/about.html`,null,(content) => {
+
+            __VIEW_UTILS__.hideSpinner();
+            
+            setTimeout(() => {
+
+                __VIEW_UTILS__.showEmptyModel({content, title: `Nosso serviços`});
+
+            },500);
+            
+            /*
+            setTimeout(() => {
+
+    
+             }, 500)
+             */
+            
+        })
 
     }
 

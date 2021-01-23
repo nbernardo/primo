@@ -41,6 +41,29 @@ function ItemListViewController(){
 
     }
 
+
+    this.addQty = function(id){
+
+        let qtyElm = document.getElementById(`${id}`);
+        let curQty = parseInt(qtyElm.value);
+        qtyElm.value = curQty + 1;
+
+    }
+
+    this.reduceQty = function(id){
+
+        let qtyElm = document.getElementById(`${id}`);
+        if(qtyElm.value == 1) return false;
+        let curQty = parseInt(qtyElm.value);
+        qtyElm.value = curQty - 1;
+
+    }
+
+    //(new ItemListViewController()).reduceQty();
+    //(new ItemListViewController()).addQty();
+
+    //itemList.controller.reduceQty();
+
     this.generateItem = function(obj){
 
         let nome = obj.nome || "Nome produto";
@@ -56,26 +79,34 @@ function ItemListViewController(){
                 <div class="col-6 col-md-3 mb-3">
                     <div class="list-card bg-white h-100 rounded overflow-hidden position-relative shadow-sm">
                         <div class="list-card-image">
-                            <a href="product_details.html" class="text-dark">
+                            <span class="text-dark">
                                 <!-- 
                                     <div class="member-plan position-absolute"><span class="badge m-3 badge-warning">15%</span></div>
                                 -->
-                                <div class="p-3"> <img src="${imagem}" class="img-fluid item-img w-100 mb-3">
+                                <div class="p-3"> 
+                                
+                                <span onclick="carrinho.controller.showProductDetail('${id}')">
+
+                                    <img src="${imagem}" class="img-fluid item-img w-100 mb-3">
                                     <h6>${nome}</h6>
+
+                                </span>
+
                                     <div class="d-flex align-items-center">
                                     <h6 class="price m-0 text-success">${preco} Kz</h6> <a data-toggle="collapse" href="#collapseExample${id}" role="button" aria-expanded="false" aria-controls="collapseExample7" class="btn btn-success btn-sm ml-auto">+</a>
+                                    
                                     <div class="collapse qty_show" id="collapseExample${id}">
                                         <div> 
                                             <span class="ml-auto" href="#">
                                                 <form id='myform' class="cart-items-number d-flex" method='POST' action='#'>
-                                                <input type='button' value='-' class='qtyminus btn btn-success btn-sm' field='quantity${id}' />
-                                                <input type='text' name='quantity${id}' id='quantity${id}' value='1' class='qty form-control' />
-                                                <input type='button' value='+' class='qtyplus btn btn-success btn-sm' field='quantity${id}' />
+                                                <input type='button' value='-' class='qtyminus btn btn-success btn-sm' onclick="itemList.controller.reduceQty('quantity${id}');" />
+                                                <input type='text' name='quantity${id}' id='quantity${id}' value='1' class='form-control' />
+                                                <input type='button' value='+' class='qtyplus btn btn-success btn-sm' onclick="itemList.controller.addQty('quantity${id}');" />
                                                 </form>   
                                             </span>
                                         </div>
                                     </div>
-                                    </div>
+                                </div>
                                     <br/>
                                     <p  id="addCartBtn${id}"
                                         onclick=carrinho.controller.addToCart('${transformLinkObject}','${id}');
@@ -90,7 +121,7 @@ function ItemListViewController(){
                                         
                                     </p>
                                 </div>
-                            </a>
+                            </span>
                         </div>
                     </div>
                 </div>

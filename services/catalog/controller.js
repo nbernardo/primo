@@ -1,9 +1,23 @@
 const router = require("express").Router();
-const {saveItem, findItems} = require("./dataccess");
+const {saveItem, findItems, findById} = require("./dataccess");
 
 router.get("/", (req, resp) => {
     resp.send("** CATALOG ** Service está no ar");
 })
+
+
+router.get("/item/:id", (req, client) => {
+
+    const produtcId = req.params.id;
+    findById(produtcId, (res) => {
+
+        //console.log(`Obteined result: ${res}`);
+        client.send(res)
+
+    })
+
+})
+
 
 router.get("/item/", (req, client) => {
     

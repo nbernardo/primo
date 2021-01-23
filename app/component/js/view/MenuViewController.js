@@ -69,7 +69,7 @@ function MenuViewController(){
         if(__PROWEBAUTH__.isUserLogged() == null) return '';
 
         const loggedInSections = {
-            "meusDados" : `
+            "meusDadosOld" : `
                         <li>
                             <a href="my_account.html"><i class="icofont-ui-user mr-2"></i>Minha conta</a>
                             <!--
@@ -84,18 +84,32 @@ function MenuViewController(){
                             -->
                         </li>
             `, 
-            "meusPontos" : `
+            "meusPontosOld" : `
                     <li>
                         <a href="index.html">
                             <i class="icofont-money-bag mr-3" style="font-size: 20px;"></i> Meus Pontos
                         </a>
                     </li>
             `,
+
+            "meusDados" : ``, 
+            "meusPontos" : ``,
+
         }
 
         return loggedInSections[section];
         
     }
+
+    this.sideMenuClose = function(){
+        document.getElementById("toggleButton").click();
+    }
+
+    this.showLoggedUserInvoices = function(){
+        this.sideMenuClose();
+        user.controller.getInvoices();
+    }
+
 
     this.generateMainMenu = function(){
 
@@ -104,19 +118,25 @@ function MenuViewController(){
                 ${authorizedMenu("meusDados")}
                 ${authorizedMenu("meusPontos")}
 
-                <li><a href="index.html"><i class="icofont-smart-phone mr-2"></i> Início</a></li>
-                <li>
-                <a href="#"><i class="icofont-login mr-2"></i> Autenticação</a>
+                <li><a href="index.html"><i class="icofont-cloud-refresh mr-2" style="font-size: 25px;"></i> Actualizar</a></li>
                 <!--
-                <ul>
-                    <li><a class="dropdown-item" href="signin.html">Login</a></li>
-                    <li><a class="dropdown-item" href="signup.html">Nova conta</a></li>
-                    <li><a href="verification.html">Verificação</a></li>
-                </ul>
+                    <li>
+                        <a href="#"><i class="icofont-login mr-2"></i> Autenticação</a>
+                        <ul>
+                            <li><a class="dropdown-item" href="signin.html">Login</a></li>
+                            <li><a class="dropdown-item" href="signup.html">Nova conta</a></li>
+                            <li><a href="verification.html">Verificação</a></li>
+                        </ul>
+                    </li>
                 -->
+                <!--
+                    <li><a class="dropdown-item" href="cart.html">Carrinho de compras</a></li>
+                -->
+                <li onclick="">
+                    <span onclick="__VIEW_UTILS__.showAboutUs()">
+                        <i class="icofont-cube mr-2" style="font-size:20px;"></i>Nosso serviços
+                    </span>
                 </li>
-                <li><a class="dropdown-item" href="cart.html">Carrinho de compras</a></li>
-                <li><a class="dropdown-item" href="listing.html">Lista de produtos</a></li>
 
                 <!-- 
                     <li><a class="dropdown-item" href="listing.html">Listing</a></li>
@@ -129,16 +149,18 @@ function MenuViewController(){
                 -->
 
                 <li>
-                    <a href="#"><i class="icofont-sub-listing mr-2"></i> Minhas solicitações</a>
-                    <!--
-                    <ul>
-                        <li><a class="dropdown-item" href="my_order.html">Factura</a></li>
-                        <li><a class="dropdown-item" href="status_complete.html">Entregues</a></li>
-                        <li><a class="dropdown-item" href="status_onprocess.html">EM Processo</a></li>
-                        <li><a class="dropdown-item" href="status_canceled.html">Cancelada</a></li>
-                        <li><a class="dropdown-item" href="review.html">Rever</a></li>
-                    </ul>
-                    -->
+                    <span onclick="(new MenuViewController()).showLoggedUserInvoices()">
+                        <i class="icofont-sub-listing mr-2"></i> Minhas solicitações
+                        <!--
+                        <ul>
+                            <li><a class="dropdown-item" href="my_order.html">Factura</a></li>
+                            <li><a class="dropdown-item" href="status_complete.html">Entregues</a></li>
+                            <li><a class="dropdown-item" href="status_onprocess.html">EM Processo</a></li>
+                            <li><a class="dropdown-item" href="status_canceled.html">Cancelada</a></li>
+                            <li><a class="dropdown-item" href="review.html">Rever</a></li>
+                        </ul>
+                        -->
+                    </span>
                 </li>
 
                 <li>
@@ -155,7 +177,7 @@ function MenuViewController(){
         return `
                 <li class="email">
                 <a class="text-success" href="home.html">
-                    <p class="h5 m-0"><i class="icofont-home text-success"></i></p>
+                    <p class="h5 m-0"><i class="icofont-cloud-refresh text-success"></i></p>
                     Início
                 </a>
                 </li>

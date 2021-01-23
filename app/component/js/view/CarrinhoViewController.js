@@ -4,7 +4,9 @@ const carrinho = {
     baseUrl: `${BASE_IP}:4003/shop`,
     queryUrl: `${BASE_IP}:4004/query`,
     activeView : false,
-    itemsByInvoice: {}
+    itemsByInvoice: {},
+    productDetail: `${BASE_IP}:3000/template/product.html`,
+    prodDetailQuery: `${BASE_IP}:4002/catalog/item`
 }
 
 function CarrinhoViewController(){
@@ -50,6 +52,29 @@ function CarrinhoViewController(){
         return await this.invoicesObj.filter(inv => inv.active)[0];
 
     }
+
+
+    this.findProductDetails = function(id, callback){
+
+        (new ProwebRequest()).getRequest(`${carrinho.prodDetailQuery}/${id}`, null, (res) => {
+
+            callback();            
+
+            setTimeout(() => {
+
+                let product = JSON.parse(res);
+                document.getElementById("detailImg").src = product.imagem;
+                document.getElementById("detailPrice").innerHTML = `${product.preco} Kz`;
+                document.getElementById("detailNome").innerHTML = `${product.nome}`;
+    
+                console.log(product);
+
+            },300);
+
+        })
+
+    }
+
 
     //METHODS TO INVOICE
     this.getAllInvoices = async function(){
@@ -144,6 +169,30 @@ function CarrinhoViewController(){
             </div>
 
         `
+
+    }
+
+
+    this.showProductDetail = function(id){
+
+        if(!id){
+            let content = `
+                <span class="bg-danger text-white py-3 px-5 rounded" style="display:block; font-weight: bold; font-size:16px; text-align:center;">
+                    Sem detalhes para o produto seleccionado
+                </span>
+            `;
+            __VIEW_UTILS__.showEmptyModel({content, title: `Detalhes do produt`, removePadding: true});
+            return false;
+        }
+
+        carrinho.controller.findProductDetails(`${id}`, () => {
+
+            (new ProwebRequest()).getRequest(`${carrinho.productDetail}`,null,(content) => {
+                __VIEW_UTILS__.showEmptyModel({content, title: `Detalhes do produt`, removePadding: true});
+            })
+    
+        });
+
 
     }
 
@@ -653,6 +702,7 @@ function CarrinhoViewController(){
 
             let totalItems = await this.getInvoice(r.id);
             document.getElementById("itensOnCarrinho").innerHTML = `\(${totalItems.length}\)`;
+            document.getElementById("cartFloatingButton").innerHTML = `${totalItems.length}`;
 
         })
 
@@ -858,6 +908,7 @@ function CarrinhoViewController(){
 
         try{
             document.getElementById("itensOnCarrinho").innerHTML = "(0)";
+            document.getElementById("cartFloatingButton").innerHTML = "0";
         }catch(e){};
 
         document.getElementById("itensOnCart").innerHTML = "";
@@ -906,8 +957,208 @@ function CarrinhoViewController(){
             document.getElementById("totalItems").innerHTML = `${this.totalItems} itens`
             document.getElementById("carrinhoModalButton").click();
             user.controller.renderAddressOnMap();
+            showCalendar();
 
         })
+
+    }
+
+    const showCalendar = function(){
+
+        //let pastDates = true, availableDates = false, availableWeekDays = false
+            
+        let calendar = new VanillaCalendar({
+            selector: "#deliveryCalendar",
+            months: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
+            shortWeekday: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+            onSelect: (data, elem) => {
+
+                let selectedDate = new Date(data.date);
+                this.curDateTime = `${selectedDate.getDate()}/${selectedDate.getMonth()}/${selectedDate.getFullYear()}`;
+
+                document.getElementById("deliveryTime").click();
+
+                console.log(this.curDateTime);
+            }
+        })
+
+    }
+
+
+    this.timePicker = function(){
+
+        let pickerElm = `
+                <div class="input-wrapper">
+                    <input type="text" id="input" value="06:00:00" readonly />
+                </div>
+                <div class="picker arrows">
+                    <div class="swiper-container hours">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">00</div>
+                        <div class="swiper-slide">01</div>
+                        <div class="swiper-slide">02</div>
+                        <div class="swiper-slide">03</div>
+                        <div class="swiper-slide">04</div>
+                        <div class="swiper-slide">05</div>
+                        <div class="swiper-slide">06</div>
+                        <div class="swiper-slide">07</div>
+                        <div class="swiper-slide">08</div>
+                        <div class="swiper-slide">09</div>
+                        <div class="swiper-slide">10</div>
+                        <div class="swiper-slide">11</div>
+                        <div class="swiper-slide">12</div>
+                        <div class="swiper-slide">13</div>
+                        <div class="swiper-slide">14</div>
+                        <div class="swiper-slide">15</div>
+                        <div class="swiper-slide">16</div>
+                        <div class="swiper-slide">17</div>
+                        <div class="swiper-slide">18</div>
+                        <div class="swiper-slide">19</div>
+                        <div class="swiper-slide">20</div>
+                        <div class="swiper-slide">21</div>
+                        <div class="swiper-slide">22</div>
+                        <div class="swiper-slide">23</div>
+                    </div>
+                    </div>
+                    <div class="swiper-container minutes">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">00</div>
+                        <div class="swiper-slide">01</div>
+                        <div class="swiper-slide">02</div>
+                        <div class="swiper-slide">03</div>
+                        <div class="swiper-slide">04</div>
+                        <div class="swiper-slide">05</div>
+                        <div class="swiper-slide">06</div>
+                        <div class="swiper-slide">07</div>
+                        <div class="swiper-slide">08</div>
+                        <div class="swiper-slide">09</div>
+                        <div class="swiper-slide">10</div>
+                        <div class="swiper-slide">11</div>
+                        <div class="swiper-slide">12</div>
+                        <div class="swiper-slide">13</div>
+                        <div class="swiper-slide">14</div>
+                        <div class="swiper-slide">15</div>
+                        <div class="swiper-slide">16</div>
+                        <div class="swiper-slide">17</div>
+                        <div class="swiper-slide">18</div>
+                        <div class="swiper-slide">19</div>
+                        <div class="swiper-slide">20</div>
+                        <div class="swiper-slide">21</div>
+                        <div class="swiper-slide">22</div>
+                        <div class="swiper-slide">23</div>
+                        <div class="swiper-slide">24</div>
+                        <div class="swiper-slide">25</div>
+                        <div class="swiper-slide">26</div>
+                        <div class="swiper-slide">27</div>
+                        <div class="swiper-slide">28</div>
+                        <div class="swiper-slide">29</div>
+                        <div class="swiper-slide">30</div>
+                        <div class="swiper-slide">31</div>
+                        <div class="swiper-slide">32</div>
+                        <div class="swiper-slide">33</div>
+                        <div class="swiper-slide">34</div>
+                        <div class="swiper-slide">35</div>
+                        <div class="swiper-slide">36</div>
+                        <div class="swiper-slide">37</div>
+                        <div class="swiper-slide">38</div>
+                        <div class="swiper-slide">39</div>
+                        <div class="swiper-slide">40</div>
+                        <div class="swiper-slide">41</div>
+                        <div class="swiper-slide">42</div>
+                        <div class="swiper-slide">43</div>
+                        <div class="swiper-slide">44</div>
+                        <div class="swiper-slide">45</div>
+                        <div class="swiper-slide">46</div>
+                        <div class="swiper-slide">47</div>
+                        <div class="swiper-slide">48</div>
+                        <div class="swiper-slide">49</div>
+                        <div class="swiper-slide">50</div>
+                        <div class="swiper-slide">51</div>
+                        <div class="swiper-slide">52</div>
+                        <div class="swiper-slide">53</div>
+                        <div class="swiper-slide">54</div>
+                        <div class="swiper-slide">55</div>
+                        <div class="swiper-slide">56</div>
+                        <div class="swiper-slide">57</div>
+                        <div class="swiper-slide">58</div>
+                        <div class="swiper-slide">59</div>
+                    </div>
+                    </div>
+                    <div class="swiper-container seconds">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">00</div>
+                        <div class="swiper-slide">01</div>
+                        <div class="swiper-slide">02</div>
+                        <div class="swiper-slide">03</div>
+                        <div class="swiper-slide">04</div>
+                        <div class="swiper-slide">05</div>
+                        <div class="swiper-slide">06</div>
+                        <div class="swiper-slide">07</div>
+                        <div class="swiper-slide">08</div>
+                        <div class="swiper-slide">09</div>
+                        <div class="swiper-slide">10</div>
+                        <div class="swiper-slide">11</div>
+                        <div class="swiper-slide">12</div>
+                        <div class="swiper-slide">13</div>
+                        <div class="swiper-slide">14</div>
+                        <div class="swiper-slide">15</div>
+                        <div class="swiper-slide">16</div>
+                        <div class="swiper-slide">17</div>
+                        <div class="swiper-slide">18</div>
+                        <div class="swiper-slide">19</div>
+                        <div class="swiper-slide">20</div>
+                        <div class="swiper-slide">21</div>
+                        <div class="swiper-slide">22</div>
+                        <div class="swiper-slide">23</div>
+                        <div class="swiper-slide">24</div>
+                        <div class="swiper-slide">25</div>
+                        <div class="swiper-slide">26</div>
+                        <div class="swiper-slide">27</div>
+                        <div class="swiper-slide">28</div>
+                        <div class="swiper-slide">29</div>
+                        <div class="swiper-slide">30</div>
+                        <div class="swiper-slide">31</div>
+                        <div class="swiper-slide">32</div>
+                        <div class="swiper-slide">33</div>
+                        <div class="swiper-slide">34</div>
+                        <div class="swiper-slide">35</div>
+                        <div class="swiper-slide">36</div>
+                        <div class="swiper-slide">37</div>
+                        <div class="swiper-slide">38</div>
+                        <div class="swiper-slide">39</div>
+                        <div class="swiper-slide">40</div>
+                        <div class="swiper-slide">41</div>
+                        <div class="swiper-slide">42</div>
+                        <div class="swiper-slide">43</div>
+                        <div class="swiper-slide">44</div>
+                        <div class="swiper-slide">45</div>
+                        <div class="swiper-slide">46</div>
+                        <div class="swiper-slide">47</div>
+                        <div class="swiper-slide">48</div>
+                        <div class="swiper-slide">49</div>
+                        <div class="swiper-slide">50</div>
+                        <div class="swiper-slide">51</div>
+                        <div class="swiper-slide">52</div>
+                        <div class="swiper-slide">53</div>
+                        <div class="swiper-slide">54</div>
+                        <div class="swiper-slide">55</div>
+                        <div class="swiper-slide">56</div>
+                        <div class="swiper-slide">57</div>
+                        <div class="swiper-slide">58</div>
+                        <div class="swiper-slide">59</div>
+                    </div>
+                    </div>
+                    <div class="vizor"></div>
+                </div>
+        `
+        return pickerElm;
+
+    }
+
+
+    this.showTimePicker = function(){
+
+        document.getElementById("deliveryTimePicker").innerHTML = this.timePicker();
 
     }
 
@@ -1086,9 +1337,13 @@ function CarrinhoViewController(){
                                                         <div class="schedule" id="orderScheduler"></div>
                                                         <div class="text-center mb-1 py-2">
                                                             <!-- <p class="display-2"><i class="icofont-ui-calendar text-success"></i></p> -->
-                                                            <input id="deliveryTime" style="width:98%; margin: 0 auto;" mbsc-input data-input-style="outline" data-label-style="stacked" class="form-control" placeholder="Selecione a hora" />
+                                                            <div id="deliveryCalendar" class="vanilla-calendar" style="margin-bottom: 20px">Local calendario</div>
+                                                            <input id="deliveryTime" type="time" style="width:98%; margin: 0 auto;" mbsc-input data-input-style="outline" data-label-style="stacked" class="form-control" placeholder="Selecione a hora" />
                                                             
+                                                            <span id="deliveryTimePicker"></span>
+
                                                             <input id="delivaryDateTime" type="hidden" />
+
                                                         </div>
                                                     </div>
                                                     <div class="p-3">
@@ -1347,8 +1602,11 @@ function CarrinhoViewController(){
                     failMessage: "Preencha a data e hora de entrega", 
                     title: "Falha ao finalizar",
                     onOk: () => {
-                        document.getElementById("carrinhoModalButton").click();
-                        document.getElementById("dateDeliverySelectBtn").click();
+
+                        setTimeout(() => {
+                            document.getElementById("carrinhoModalButton").click();
+                            document.getElementById("dateDeliverySelectBtn").click();
+                        }, 500)
                     }
                 })
     }
@@ -1360,7 +1618,7 @@ function CarrinhoViewController(){
                 failMessage: "O carrinho de compras está vazio", 
                 title: "Sem produtos",
                 onOk: () => {
-                    document.getElementById("carrinhoModalButton").click();
+                    //document.getElementById("carrinhoModalButton").click();
                     document.getElementById("dateDeliverySelectBtn").click();
                 }
             })
@@ -1372,6 +1630,22 @@ function CarrinhoViewController(){
         localStorage.setItem("curCartItems","{}");
         
     }
+
+    this.callCartFromFloatButton = function(){
+
+        
+        if(!document.getElementById("emptyModal").classList.contains("show")){
+            carrinho.controller.showAppropriateView();
+            return true;
+        }
+
+        document.getElementById("emptyBodalCloseBtn").click();
+        setTimeout(() => {
+            carrinho.controller.showAppropriateView();
+        },500);
+
+    }
+
 
     this.formatCheckoutData = function(id,invoice, deliveryDate){
 
