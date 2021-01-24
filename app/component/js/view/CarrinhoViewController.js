@@ -346,13 +346,15 @@ function CarrinhoViewController(){
 
     
     //METHODS TO INVOICE
-    this.moveInvoiceToNextStep = function(invoiceId, userId, status){
+    this.moveInvoiceToNextStep = function(invoiceId, userId, status, userName, userPhone){
 
         this.getInvoice(invoiceId).then(inv => {
             const data = JSON.stringify({
                 id: invoiceId,
                 status: status,
-                userId,
+                userId: userId,
+                userName: userName,
+                userPhone: userPhone
             });
             
             let elmId = `${invoiceId}-${userId}`;
@@ -414,15 +416,15 @@ function CarrinhoViewController(){
 
     
     //METHODS TO INVOICE
-    this.deliveringButtons = function(type, idInvoice, userId){
+    this.deliveringButtons = function(type, idInvoice, userId, userName, userPhone){
 
-        console.log("Ja sabe: ",idInvoice);
+        console.log("Ja sabe: ",userName);
         let invoiceId = idInvoice.toString().indexOf("-") > -1 ? idInvoice.split("-")[0] : idInvoice;
 
         const confirmDeliveryBtn = `
                 <p  
                     id="confirmButton${idInvoice}"
-                        onclick="carrinho.controller.moveInvoiceToNextStep('${invoiceId}', '${userId}', 'delivered')"
+                        onclick="carrinho.controller.moveInvoiceToNextStep('${invoiceId}', '${userId}', 'delivered','${userName}', '${userPhone}')"
                         style="padding:15px !important; display:flex; width: 160px;"
                         class="bg-success text-white py-1 px-2 rounded small m-0">
                     
@@ -439,7 +441,7 @@ function CarrinhoViewController(){
         const onThewayBtn = `
                 <p  
                     id="ontheWayBtn${idInvoice}"
-                        onclick="carrinho.controller.moveInvoiceToNextStep('${invoiceId}', '${userId}', 'ontheway')"
+                        onclick="carrinho.controller.moveInvoiceToNextStep('${invoiceId}', '${userId}', 'ontheway', '${userName}', '${userPhone}')"
                         style="padding:15px !important; display:flex; width: 120px;"
                         class="bg-info text-white py-1 px-2 rounded small m-0">
                     
@@ -466,11 +468,11 @@ function CarrinhoViewController(){
     
     
     //METHODS TO INVOICE
-    this.orderActionButtons = function(idInvoice, userId, status){
+    this.orderActionButtons = function(idInvoice, userId, status, userName, userPhone){
 
         let flowButtons = `
         <span id="deliveringButton${idInvoice}">
-            ${this.deliveringButtons(status,idInvoice,userId)}
+            ${this.deliveringButtons(status,idInvoice,userId, userName, userPhone)}
         </span>
         `
 
@@ -609,7 +611,7 @@ function CarrinhoViewController(){
                                 </p>
                             </div>
 
-                            ${this.orderActionButtons(obj.id || obj._id, obj.userId || '', details.status)}
+                            ${this.orderActionButtons(obj.id || obj._id, obj.userId || '', details.status, obj.clientName, obj.phone || '')}
 
                             <div 
                                 id="invoceProducts${obj.id || obj._id}" 

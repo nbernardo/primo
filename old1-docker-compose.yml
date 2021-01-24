@@ -46,17 +46,21 @@ services:
       - "4002:4002"
 
   shopping:
-    depends_on: mongoservice
+    depends_on: 
+      - mongoservice
+      - commandservice
     image: shopping
     build:
       context: ./services/shopping/
       dockerfile: Dockerfile
     ports: 
       - "4003:4003"
+    environment:
+      - CMD_URL=commandservice:4005/event
 
 
   # BEGUIN -> QUERY SERVICE
-  
+
   query:
     depends_on:
       - querymongo
@@ -81,3 +85,23 @@ services:
       - "/data/mongo:/data/db"
 
     # END -> QUERY SERVICE
+
+
+
+
+    # BEGUIN -> COMMAND SERVICE
+
+    commandservice:
+      depends_on:
+        - mongoquery
+      build:
+        context: ./services/command/
+        dockerfile: Dockerfile
+      ports:
+        - "4005:4005"
+      environment:
+        - HOST=querymongo:27004
+
+
+
+    # END -> COMMAND SERVICE

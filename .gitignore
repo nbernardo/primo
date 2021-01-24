@@ -1,5 +1,6 @@
 __MACOSX
 documentation
+services/command/node_modules/
 services/catalog/node_modules
 services/order/node_modules
 services/promos/node_modules
@@ -7,6 +8,19 @@ services/promos/mongo/data;*
 services/user/node_modules
 services/user/Dockerfile
 services/promos/Dockerfile
+services/query/node_modules
+services/shopping/node_modules
+services/shopping/utils/
+admin/node_modules/
+
+#ROOT FILES
+prod.docker-compose.yml
+docker-compose.yml
+services/query/docker-compose.yml
+
 client
 app/node_modules
 mongo/*
+mongo/
+mongo-dev/
+app/node_modules
