@@ -4,13 +4,15 @@ user = {
     baseUrl: `${BASE_IP}:4001/user`,
     pagesPath: "/template/",
     profileUrl: `${BASE_IP}:3000/template/profile.html`,
-    
+    aboutUrl: `${BASE_IP}:3000/template/about.html`,
+    resetPasswordView : null,
 }
 
 function UserViewController(){
 
     this.userLat = 0;
     this.userLng = 0;
+    this.resetPasswordView = null;
 
     this.setLat = function(lat){
         this.userLat = lat;
@@ -430,6 +432,180 @@ function UserViewController(){
         }
        
     }
+
+
+    this.checkUser = function(userPhone){
+
+        (new ProwebRequest()).getRequest(`${user.baseUrl}/checkuser/${userPhone}`,null, (res) => {
+
+            console.log(res);
+
+            document.getElementById("existinngNumberError").style.display = "none";
+            document.getElementById("btnCriarUser").disabled = false;
+
+            if(JSON.parse(res).exists){
+                document.getElementById("existinngNumberError").style.display = "";
+                document.getElementById("btnCriarUser").disabled = true;
+            }
+
+        })
+
+    }
+
+
+    this.showResetPasswordForm = function(){
+
+        document.getElementById("resetForm").style.display = "";
+        document.getElementById("loginForm").style.display = "none";
+
+        document.getElementById("resetFormContent").style.display = "";
+        document.getElementById("resetTokenContent").style.display = "none";
+
+    }
+
+    this.showLoginForm = function(){
+        
+        document.getElementById("resetForm").style.display = "none";
+        document.getElementById("loginForm").style.display = "";
+
+        user.resetPasswordView = "login";
+
+    }
+
+    this.requestPasswordReset = function(){
+
+        if(user.resetPasswordView == "sendNewPassword"){
+            this.sendNewPassword();
+            return;
+        }
+
+        if(user.resetPasswordView == "tokenInput"){
+            document.getElementById("invalidToken").style.display = "none";
+            if(this.validatePasswordResetToken()){
+                this.setNewPassword();
+                user.resetPasswordView = "sendNewPassword";
+                return;
+            }
+            //No caso do token ser inválido
+            setTimeout(() => {
+                document.getElementById("invalidToken").style.display = "";
+            },300)
+
+            return;
+        }
+
+        let userPhone = document.getElementById("loginUserReset").value;
+        this.resetPassword(userPhone);
+
+    }
+
+    this.sendNewPassword = function(){
+        
+        __VIEW_UTILS__.showSpinnerWithNoEscape({
+            feedback: true,
+            title: "Validando o token...",
+            message1: `Aguarde...`,
+        });
+
+        let newPassword = document.getElementById("newPassword").value;
+        let generatedToken = localStorage.getItem("myToken").substr(0,6);
+        const data = JSON.stringify({password: newPassword});
+
+        (new ProwebRequest()).postJSON(`${user.baseUrl}/reset/${generatedToken}`,data, (res) => {
+
+            __VIEW_UTILS__.hideSpinner();
+            let result = JSON.parse(res).result.result;
+            if(result.nModified == 1){
+                document.getElementById("resetSuccessOk").style.display = "";
+                setTimeout(() => this.showLoginForm(), 300);
+            }
+
+        });
+
+    }
+
+    /** Usada no backend, não apagar */
+    this.setResetToken = function(){
+
+        document.getElementById("resetFormContent").style.display = "none";
+        document.getElementById("resetTokenContent").style.display = "";
+        user.resetPasswordView = "tokenInput";
+        document.getElementById("resetSuccess").innerHTML = "";
+
+    }
+
+
+    this.setNewPassword = function(){
+
+        document.getElementById("resetTokenContent").style.display = "none";
+        document.getElementById("newPasswordEnter").style.display = "";
+
+    }
+
+    this.goToTokenValidation = function(){
+        
+        this.setResetToken();
+        this.showResetPasswordForm();
+        document.getElementById("newPasswordEnter").style.display = "none";
+        document.getElementById("passwordUserReset").value = "";
+
+        document.getElementById("resetFormContent").style.display = "none";
+        document.getElementById("resetTokenContent").style.display = "";
+
+    }
+
+    this.validatePasswordResetToken = function(){
+
+        __VIEW_UTILS__.showSpinnerWithNoEscape({
+            feedback: true,
+            title: "Validando o token...",
+            message1: `Aguarde...`,
+        });
+
+        let generatedToken = localStorage.getItem("myToken").substr(0,6);
+        //let inputToken = document.getElementById("passwordResetToken").value;
+        let inputToken = document.getElementById("passwordUserReset").value;
+
+        __VIEW_UTILS__.hideSpinner();
+
+        return generatedToken == inputToken;
+
+    } 
+
+    this.resetPassword = function(userPhone){
+
+        __VIEW_UTILS__.showSpinnerWithNoEscape({
+            feedback: true,
+            title: "Processando o pedido...",
+            message1: `Aguarde...`,
+        });
+
+        (new ProwebRequest()).getRequest(`${user.baseUrl}/resetpassword/${userPhone}`,null, (res) => {
+
+            let content = JSON.parse(res);
+            if(!content.error){
+                
+                localStorage.setItem("myToken", content.value);
+                __VIEW_UTILS__.hideSpinner();
+                document.getElementById("resetSuccess").innerHTML = content.result;
+                console.log(res);
+
+            }
+
+            return;
+
+            document.getElementById("existinngNumberError").style.display = "none";
+            document.getElementById("btnCriarUser").disabled = false;
+
+            if(JSON.parse(res).exists){
+                document.getElementById("existinngNumberError").style.display = "";
+                document.getElementById("btnCriarUser").disabled = true;
+            }
+
+        })
+
+    }
+
 
     this.processOnlineLogin = function(user, pass, noUserOff){
 

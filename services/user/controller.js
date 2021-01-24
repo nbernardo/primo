@@ -116,27 +116,44 @@ router.post("/", (req, resp) => {
 
         if(ok){
             const objectId = insertedIds['0'];
-            resp.send({
-                status: "ok",
-                id: objectId
-            });
+            resp.send({status: "ok",id: objectId});
+            sendCreationSMS(telefone, nomeCompleto, resp);
             return;    
         }
 
         if(err){
-            resp.status(204).send({
-                erros: {
-                    ...err
-                },
-                result: {
-                    ... result
-                }
-            });
+            resp.status(204).send({erros: {...err}, result: {... result}});
         }
 
     });
 
 })
+
+
+const sendCreationSMS = function(telefone, nomeCompleto, client){
+
+    let smsObject = {
+            clientName: telefone,
+            phoneNumber: telefone,
+            onError: (msg) => {
+                console.log(`Conta criada: ${msg}`);
+                client.send({error: true, result: `Houve um erro ao enviar o SMS: ${msg}`});
+            },
+            onSuccess: (msg) => {
+                
+                console.log(`Mensagem de sucesso: ${msg}`);
+                client.send({
+                            error: false, 
+                            result: `Conta para ${telefone} foi criada com sucesso`, 
+                            value: ``
+                        });
+            },
+            content: `Caro(a) ${nomeCompleto}, sua conta foi criada com sucesso, desfrute das nossas ofertas.\nTabalhamos para o seu conforto`
+    }
+
+    sendSMSToClient(smsObject);
+
+}
 
 
 router.get("/checkuser/:userphone", (req, client) => {
