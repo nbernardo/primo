@@ -34,10 +34,14 @@ router.put("/order/status", (req, client) => {
     id = isNaN(id) == false ? parseInt(id) : id;
 
     //console.log({id, userId, status});
-    console.log("*** Command Shopping *** - Dados do alteração: ");
-    
     const handleConfirmDelivered = ({err, result}) => {
-        sendOnThewaySMS(userPhone, userName, client, result);
+        if(status == "ontheway"){
+            sendOnThewaySMS(userPhone, userName, client, result, id);
+
+        }else if(status == "delivered"){
+            sendDeliveredSMS(userPhone, userName, client, result, id);
+        }
+
         //client.send(result);
     }
 
@@ -64,7 +68,7 @@ const emitDeliveredEvent = (data, callback = (result) => {}) => {
 }
 
 
-const sendOnThewaySMS = function(telefone, nomeCompleto, client, result){
+const sendOnThewaySMS = function(telefone, nomeCompleto, client, result, invoiceId){
 
     console.log("O numero destino: ",telefone);
 
@@ -80,11 +84,38 @@ const sendOnThewaySMS = function(telefone, nomeCompleto, client, result){
                 console.log(`Mensagem de sucesso: ${msg}`);
                 client.send({
                             error: false, 
-                            result: `O cliente foi ${telefone} foi notificado por SMS que receberá a sua encomenda em breve, por favor, seja responsável`, 
+                            result: `O cliente ${telefone} foi notificado por SMS que receberá a sua encomenda em breve, por favor, seja responsável`, 
                             value: ``
                         });
             },
-            content: `Caro(a) ${nomeCompleto}, estamos trazendo a sua encomenda`
+            content: `Caro(a) ${nomeCompleto}, estamos trazendo a sua encomenda com o id #${invoiceId}.`
+    }
+
+    sendSMSToClient(smsObject);
+
+}
+
+const sendDeliveredSMS = function(telefone, nomeCompleto, client, result, invoiceId){
+
+    console.log("O numero destino: ",telefone);
+
+    let smsObject = {
+            clientName: telefone,
+            phoneNumber: telefone,
+            onError: (msg) => {
+                console.log(`Conta criada: ${msg}`);
+                client.send({error: true, result: `Houve um erro, tene novamente: ${msg}`});
+            },
+            onSuccess: (msg) => {
+                
+                console.log(`Mensagem de sucesso: ${msg}`);
+                client.send({
+                            error: false, 
+                            result: `O cliente ${telefone} foi notificado por SMS sobre a confirmação entrega da encomenda, obrigado por mais esta entrega.`, 
+                            value: ``
+                        });
+            },
+            content: `Caro(a) ${nomeCompleto}, a entrega da sua encomenda com o id #${invoiceId} foi confirmada pelo nosso motoboy.\n\nTrabalhamo para o seu conforto`
     }
 
     sendSMSToClient(smsObject);

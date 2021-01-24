@@ -328,12 +328,12 @@ function CarrinhoViewController(){
 
     }
     
-    this.stateDeliveringButton = function(status, buttonContainerId, userId){
+    this.stateDeliveringButton = function(status, buttonContainerId, userId, userName, userPhone){
 
         console.log(`BTN: deliveringButton${buttonContainerId}`);
 
         let buttonContainers = document.getElementById(`deliveringButton${buttonContainerId}`);
-        buttonContainers.innerHTML = this.deliveringButtons(status, buttonContainerId, userId);
+        buttonContainers.innerHTML = this.deliveringButtons(status, buttonContainerId, userId, userName, userPhone);
         
     }
 
@@ -383,7 +383,7 @@ function CarrinhoViewController(){
                 if(status == "ontheway")
                     document.getElementById(`ontheWayBtn${elmId}`).classList.add("bg-success");
 
-                this.stateDeliveringButton(status,elmId,userId);
+                this.stateDeliveringButton(status,elmId,userId,userName,userPhone);
                 this.stateDeliveringState(status,elmId);
 
             })
