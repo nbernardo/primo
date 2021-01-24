@@ -109,8 +109,6 @@ const sendSMSToClient = function(clientName = null){
     req.write(postData);
     req.end();
 
-
-
 }
 
 
