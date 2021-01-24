@@ -882,7 +882,8 @@
                         <label style="display: none;" class="text-danger requiredLabel">Informe o nome</label>
                      </div>
                      <div class="form-group">
-                        <input type="number" class="form-control entyti-user required" id="telefone" placeholder="* Telefone">
+                        <input type="number" class="form-control entyti-user required" id="telefone" onblur="user.controller.checkUser(this.value)" placeholder="* Telefone">
+                        <div style="display: none;" id="existinngNumberError" class="text-danger requiredLabel">Número já registado</div>
                         <label style="display: none;" class="text-danger requiredLabel">Digite o telefone</label>
                      </div>
                      <div class="form-group">
@@ -924,21 +925,89 @@
                <div class="modal-body">
                   <form>
 
-                     <span
-                        style="display: block; padding-bottom: 10px; color: red;" 
-                        id="mensagemLoginRequired">Precisa fazer o login para ver o carrinho</span>
+                     <span id="loginForm">
 
-                     <div class="form-group">
-                        <input type="text" class="form-control" id="loginUser" placeholder="Telefone">
-                     </div>
-                     <div class="form-group">
-                        <input type="password" class="form-control" id="loginPassword" placeholder="Senha">
-                     </div>
+                        <span
+                           style="display: block; padding-bottom: 10px; color: red;" 
+                           id="mensagemLoginRequired">Precisa fazer o login para ver o carrinho</span>
 
-                     <div class="text-center">
-                        <label style="display: none;" id="loginError" class="text-danger requiredLabel">Utilizador ou senha errada</label>
-                        <button type="button" onclick="user.controller.login()" class="btn btn-success btn-block btn-lg">Entrar</button>
-                     </div>
+                        <div class="form-group">
+                           <input type="text" class="form-control" id="loginUser" placeholder="Telefone">
+                        </div>
+                        <div class="form-group">
+                           <input type="password" class="form-control" id="loginPassword" placeholder="Senha">
+                        </div>
+
+                        <div class="text-center">
+                           <div>
+                              <label style="display: none;" id="resetSuccessOk" class="text-success">Senha alterada com sucesso, pode fazer o login</label>
+                              <label style="display: none;" id="loginError" class="text-danger requiredLabel">Utilizador ou senha errada</label>
+                           </div>
+
+                           <label  style="font-weight: bold; font-size: 13px;" onclick="(new UserViewController()).showResetPasswordForm()">Esqueci minha senha!</label>
+                           <label  style="font-weight: bold; font-size: 13px; margin-top: 15px;" onclick="(new UserViewController()).goToTokenValidation()">Já tenho o token de recuperação!</label>
+                           <button type="button" style="margin-top:15px;" onclick="user.controller.login()" class="btn btn-success btn-block btn-lg">Entrar</button>
+                        </div>
+
+
+                     </span>
+
+                     <span id="resetForm" style="display: none;">
+
+                        <span
+                           style="display: block; padding-bottom: 20px; font-weight: bold;" 
+                           id="mensagemLoginRequired">Recuperação de senha</span>
+                        
+                        <span id="resetFormContent">
+
+                           <span
+                              style="display: block; padding-bottom: 5px" 
+                              id="mensagemLoginRequired">Digite o numero de telefone para recuperar a senha</span>
+   
+                           <div class="form-group">
+                              <input type="text" placeholder="Número de telefone associado a conta" class="form-control" id="loginUserReset" placeholder="Telefone">
+                           </div>
+
+                        </span>                        
+                        
+                        <span id="resetTokenContent" style="display: none;">
+
+                           <span
+                              style="display: block; padding-bottom: 5px; font-size: 15px;" 
+                              id="mensagemLoginRequired" class="text-danger font-weight-bold">Digite o código recebido por SMS</span>
+   
+                           <div class="form-group">
+                              <input type="text" class="form-control" id="passwordUserReset" placeholder="Token de redifinição de senha">
+                              <label style="display: none;" id="invalidToken" class="text-danger">Token inválido, se esqueceu o seu token pode solicitar um novo</label>
+                           </div>
+
+                        </span>
+
+                        <span id="newPasswordEnter" style="display: none;">
+
+                           
+                           <span
+                              style="display: block; padding-bottom: 5px; font-size: 15px;" 
+                              id="mensagemLoginRequired" class="text-success font-weight-bold">
+                              <i class="text-success icofont-simple-smile" style="font-size: 18px;"></i>
+                              Digite a nova senha
+                              <i class="text-success icofont-simple-smile" style="font-size: 18px;"></i>
+                           </span>
+   
+                           <div class="form-group">
+                              <input type="password" placeholder="Nova senha" class="form-control" id="newPassword">
+                           </div>
+
+                        </span>
+                        
+                        <div class="text-center">
+                           <label  style="font-weight: bold; font-size: 15px;" onclick="(new UserViewController()).showLoginForm()">Voltar ao login</label>
+                           <label  style="font-weight: bold; font-size: 15px; margin-top: 10px;" class="text-success" id="resetSuccess"></label>
+                           <button type="button" style="margin-top:15px;" onclick="user.controller.requestPasswordReset()" class="btn btn-success btn-block btn-lg">Enviar</button>
+                        </div>
+
+
+                     </span>
 
                   </form>
                </div>

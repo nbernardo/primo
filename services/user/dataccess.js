@@ -70,6 +70,53 @@ const remove = (id) => {
 }
 
 
+const userCheck = (userPhone, callback = (res) => {}) => {
+
+    MongoClient.connect(url, (err, client) => {
+
+        const table = client.db("promo").collection("user");
+        table.findOne({telefone: userPhone}).then(res => {
+
+            callback(res);
+
+        });
+
+    })
+
+}
+
+const saveResetToken = function(userPhone, userToken){
+
+    MongoClient.connect(url, (err, client) => {
+
+        const table = client.db("promo").collection("user");
+        table.updateOne({telefone: userPhone}, {$set: {userToken: userToken}})
+
+    })
+
+}
+
+const updatePassword = function(userToken, newPassword, callback = (err, res) => {}){
+
+    MongoClient.connect(url, (err, client) => {
+
+        const table = client.db("promo").collection("user");
+        table.updateOne({userToken: userToken}, {$set: {senha: newPassword, userToken: ""}}, (err, res) => {
+
+            callback(err, res);
+
+        });
+
+    })
+
+}
+
+
+
+
 module.exports.find = find;
 module.exports.deleteOne = remove;
 module.exports.save = save;
+module.exports.userCheck = userCheck;
+module.exports.saveResetToken = saveResetToken;
+module.exports.updatePassword = updatePassword;
