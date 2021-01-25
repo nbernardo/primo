@@ -197,6 +197,14 @@ function MenuViewController(){
 
     }
 
+
+    this.showProductsOptions = function(type){
+
+        (new ItemListViewController()).renderListItemsByType(type);
+
+    }
+
+
     return this;
 
 

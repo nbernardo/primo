@@ -9,7 +9,6 @@ function ItemListViewController(){
 
     this.renderListItems = function(){
 
-
         const url = `${itemList.baseUrl}`;
         (new ProwebRequest()).getRequest(url,null, async (res, xhr) => {
             console.log("Valor é: ", res);
@@ -19,7 +18,28 @@ function ItemListViewController(){
             carrinho.controller.loadCartItemsList();
 
         });
-        
+
+    }
+
+    this.renderListItemsByType = function(type){
+
+        const url = `${itemList.baseUrl}/type/${type}`;
+        (new ProwebRequest()).getRequest(url,null, async (res, xhr) => {
+            console.log("Valor é: ", res);
+            const response = JSON.parse(res);
+            const dados = await response.data.map(i => this.generateItem(i));
+            let result = dados.join("");
+            
+            let content = `
+            <div class="pick_today">
+                <div class="row">${result}</div>
+            </div>
+            `
+
+            __VIEW_UTILS__.showEmptyModel({content, title: "Lista de produtos", removePadding: true})
+
+
+        });
 
     }
 
