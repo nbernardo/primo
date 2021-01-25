@@ -8,6 +8,7 @@ services:
       - "27017:27017"
     volumes:
       - ./mongo/data/:/data/db
+      - ./mongo/data/bkp/:/data/bkp
 
   #front:
   #  image: primo:app
@@ -83,7 +84,8 @@ services:
     ports:
       - "27004:27004"
     volumes: 
-      - "/service/query/data/mongo:/data/db"
+      - ./service/query/data/mongo:/data/db
+      - ./service/query/bkp:/data/bkp
 
 
   commandservice:
