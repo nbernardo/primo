@@ -50,6 +50,8 @@ function UserViewController(){
 
     this.isPasswordAndConfOk = function(){
 
+        return true;
+
         let senha = document.getElementById("senha");
         let conf = document.getElementById("senhaConf");
 
@@ -69,15 +71,15 @@ function UserViewController(){
 
     this.clearUserCreationValidation = function(){
         
-        this.passwordFieldsValidation("1px solid #cacdd0");
-        document.getElementById("senhaConf-emptyError").style.display = "none";
+        //this.passwordFieldsValidation("1px solid #cacdd0");
+        //document.getElementById("senhaConf-emptyError").style.display = "none";
     }
 
     this.passwordFieldsValidation = function(color){
 
-        const fieldColor = color;
-        document.getElementById("senha").style.border = fieldColor;
-        document.getElementById("senhaConf").style.border = fieldColor;
+        //const fieldColor = color;
+        //document.getElementById("senha").style.border = fieldColor;
+        //document.getElementById("senhaConf").style.border = fieldColor;
 
     }
 
@@ -161,16 +163,16 @@ function UserViewController(){
         __VIEW_UTILS__.closeModals();
         __VIEW_UTILS__.showSuccessModal({
                 order: false, 
-                message1: `${userObj.nomeCompleto}, parabens, sua conta foi crida e com sucesso, e você já está logado na App`, 
+                message1: `${userObj.nomeCompleto}, parabens, sua conta foi crida e com sucesso, sua senha será enviada dentro de alguns segundos por SMS.`, 
                 message2: "A partir da agora você poderá não só navegar, mas também fazer encomendas a partir da App"
             });
         __VIEW_UTILS__.hideSpinner();
         document.getElementById("btnCriarUser").disabled = false;
 
-        setTimeout(() => {
-            this.handleNoAuthButton();
-            handleUserMenu();
-        },500);
+        //setTimeout(() => {
+        //    this.handleNoAuthButton();
+        //    handleUserMenu();
+        //},500);
 
         this.clearField();
 
@@ -184,14 +186,14 @@ function UserViewController(){
         let passwordValidate = this.isPasswordAndConfOk();
         let userInputValidation = (new ProwebValidation()).validateRequired("entyti-user");
 
-        if(!passwordValidate.result) return false;
+        //if(!passwordValidate.result) return false;
         if(userInputValidation){
             // __VIEW_UTILS__ está localizado em app/component/js/utils
             __VIEW_UTILS__.showSpinnerForViewContainer("accountModal");
             (new ProwebRequest()).postJSON(`${user.baseUrl}`, obj, (res, xhr) => {
                 let result = JSON.parse(res);
                 userObj["id"] = result.id || null;
-                userObj["logged"] = true;
+                //userObj["logged"] = true;
 
                 if(result.status == "ok"){
                     this.saveUserOffline(userObj);
@@ -398,6 +400,8 @@ function UserViewController(){
             document.getElementById("toggleButton").click();
 
         }
+
+        window.location.reload();
 
     }
 
@@ -613,6 +617,8 @@ function UserViewController(){
 
         this.loginOnline(user, pass, (res) => {
             
+            console.log("Login online é: ", res);
+
             console.log("*** Searching online 1 ***");
             let result = JSON.parse(res);
 
@@ -635,6 +641,7 @@ function UserViewController(){
             __VIEW_UTILS__.hideSpinner();
             document.getElementById("loginPassword").value = "";
             document.getElementById("loginUser").value = "";
+            window.location.reload();
 
         })
 
@@ -674,6 +681,7 @@ function UserViewController(){
 
         document.getElementById("loginPassword").value = "";
         document.getElementById("loginUser").value = "";
+        window.location.reload();
 
     }
 

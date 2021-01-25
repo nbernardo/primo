@@ -6,6 +6,7 @@ const carrinho = {
     activeView : false,
     itemsByInvoice: {},
     productDetail: `${BASE_IP}:3000/template/product.html`,
+    gramProductDetail: `${BASE_IP}:3000/template/productGram.html`,
     prodDetailQuery: `${BASE_IP}:4002/catalog/item`
 }
 
@@ -173,7 +174,7 @@ function CarrinhoViewController(){
     }
 
 
-    this.showProductDetail = function(id){
+    this.showProductDetail = function(id, type){
 
         if(!id){
             let content = `
@@ -187,8 +188,44 @@ function CarrinhoViewController(){
 
         carrinho.controller.findProductDetails(`${id}`, () => {
 
-            (new ProwebRequest()).getRequest(`${carrinho.productDetail}`,null,(content) => {
+            (new ProwebRequest()).getRequest(`${type == 'carcut' ? carrinho.gramProductDetail : carrinho.productDetail}`,null,(content) => {
                 __VIEW_UTILS__.showEmptyModel({content, title: `Detalhes do produt`, removePadding: true});
+            })
+    
+        });
+
+
+    }
+
+    this.showProductDetailFromFilter = function(id, type){
+
+        __VIEW_UTILS__.showSpinnerWithNoEscape({
+            feedback: true, title: "Processando, aguarde..."
+        });
+
+        if(!id){
+            let content = `
+                <span class="bg-danger text-white py-3 px-5 rounded" style="display:block; font-weight: bold; font-size:16px; text-align:center;">
+                    Sem detalhes para o produto seleccionado
+                </span>
+            `;
+
+            __VIEW_UTILS__.hideSpinner();
+
+            setTimeout(() => {
+                __VIEW_UTILS__.showEmptyModel({content, title: `Detalhes do produt`, removePadding: true});
+            },500)
+            
+            return false;
+        }
+
+        carrinho.controller.findProductDetails(`${id}`, () => {
+
+            (new ProwebRequest()).getRequest(`${type == 'carcut' ? carrinho.gramProductDetail : carrinho.productDetail}`,null,(content) => {
+
+                __VIEW_UTILS__.hideSpinner();
+                __VIEW_UTILS__.showEmptyModel({content, title: `Detalhes do produt`, removePadding: true, doNotClose: true});
+                
             })
     
         });
