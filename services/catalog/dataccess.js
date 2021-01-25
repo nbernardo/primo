@@ -34,7 +34,7 @@ module.exports.saveItem = function(query, callback = (res, err) => {}){
 }
 
 
-module.exports.findById = function(id, callback = (res) => {}){
+module.exports.findById = function(id = "", callback = (res) => {}){
 
     MongoClient.connect(url,(err, client) => {
 
@@ -56,6 +56,20 @@ module.exports.findItems = function(query, callback = (res, err) => {}){
 
         const db = client.db("promo");
         db.collection("item").find().toArray((err, res) => {
+            callback(res, err);
+        })
+
+    })
+
+}
+
+
+module.exports.findItemsByType = function(type, callback = (res, err) => {}){
+
+    MongoClient.connect(url,(err, client) => {
+
+        const db = client.db("promo");
+        db.collection("item").find({type: type}).toArray((err, res) => {
             callback(res, err);
         })
 
