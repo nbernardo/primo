@@ -9,17 +9,46 @@ function ItemListViewController(){
 
     this.renderListItems = function(){
 
-
         const url = `${itemList.baseUrl}`;
         (new ProwebRequest()).getRequest(url,null, async (res, xhr) => {
             console.log("Valor é: ", res);
             const response = JSON.parse(res);
-            const dados = await response.data.map(i => this.generateItem(i));
+            const dados = await response.data.map(i => {
+                if(i.available) 
+                    return this.generateItem(i);
+            });
             document.getElementById("vitrine-listItems").innerHTML = dados.join("");
             carrinho.controller.loadCartItemsList();
 
         });
-        
+
+    }
+
+    this.renderListItemsByType = function(type){
+
+        __VIEW_UTILS__.showSpinnerWithNoEscape({
+            feedback: true,
+            title: "Buscando online...",
+            message1: `Aguarde...`
+        });
+
+        const url = `${itemList.baseUrl}/type/${type}`;
+        (new ProwebRequest()).getRequest(url,null, async (res, xhr) => {
+            console.log("Valor é: ", res);
+            const response = JSON.parse(res);
+            const dados = await response.data.map(i => this.generateItem(i, 'filter'));
+            let result = dados.join("");
+            
+            let content = `
+            <div class="pick_today">
+                <div class="row">${result}</div>
+            </div>
+            `
+            __VIEW_UTILS__.hideSpinner();
+            __VIEW_UTILS__.showEmptyModel({content, title: "Lista de produtos", removePadding: true, delay: 1000});
+
+
+        });
 
     }
 
@@ -64,7 +93,7 @@ function ItemListViewController(){
 
     //itemList.controller.reduceQty();
 
-    this.generateItem = function(obj){
+    this.generateItem = function(obj, perspective){
 
         let nome = obj.nome || "Nome produto";
         let imagem = obj.imagem || "img/listing/v8.jpg";
@@ -73,6 +102,55 @@ function ItemListViewController(){
 
         let linkObject = JSON.stringify(obj);
         let transformLinkObject = escape(linkObject);
+
+        let addButton = `
+
+            <p  id="addCartBtn${id}"
+                onclick=carrinho.controller.addToCart('${transformLinkObject}','${id}');
+                class="objectAddLink bg-success text-white py-2 px-2 mb-0 rounded small">
+                Adicionar 
+                <i 
+                    id="addedToCartMark${id}"
+                    class="text-white icofont-tick-mark" 
+                    style="display:none; color: white; font-size: 20px; position: absolute;right: 30px;margin-top: -1px;">
+                </i>
+                <span id="addCartSpinner${id}" class="prowebSpinnintAnimation littleSpinner"></span>
+                
+            </p>
+        
+        `;
+
+        let unAvailableButton = `
+
+            <p  id="addCartBtn${id}"
+                class="objectAddLink bg-warning text-white py-2 px-2 mb-0 rounded small">
+                Disponível em breve 
+                <i 
+                    id="addedToCartMark${id}"
+                    class="text-white icofont-tick-mark" 
+                    style="display:none; color: white; font-size: 20px; position: absolute;right: 30px;margin-top: -1px;">
+                </i>
+                <span id="addCartSpinner${id}" class="prowebSpinnintAnimation littleSpinner"></span>
+                
+            </p>
+        
+        `;
+
+
+        let viewDetailsLink = `
+            <span onclick="carrinho.controller.showProductDetail('${id}','${obj.type}')">
+                <img src="${imagem}" class="img-fluid item-img w-100 mb-3">
+                <h6>${nome}</h6>
+            </span>
+        `;
+
+        let viewDetailsFromFilterLink = `
+            <span onclick="carrinho.controller.showProductDetailFromFilter('${id}','${obj.type}')">
+                <img src="${imagem}" class="img-fluid item-img w-100 mb-3">
+                <h6>${nome}</h6>
+            </span>
+        `;
+
 
         return `
         
@@ -85,12 +163,7 @@ function ItemListViewController(){
                                 -->
                                 <div class="p-3"> 
                                 
-                                <span onclick="carrinho.controller.showProductDetail('${id}')">
-
-                                    <img src="${imagem}" class="img-fluid item-img w-100 mb-3">
-                                    <h6>${nome}</h6>
-
-                                </span>
+                                    ${perspective == 'filter' ? viewDetailsFromFilterLink : viewDetailsLink}
 
                                     <div class="d-flex align-items-center">
                                     <h6 class="price m-0 text-success">${preco} Kz</h6> <a data-toggle="collapse" href="#collapseExample${id}" role="button" aria-expanded="false" aria-controls="collapseExample7" class="btn btn-success btn-sm ml-auto">+</a>
@@ -108,18 +181,8 @@ function ItemListViewController(){
                                     </div>
                                 </div>
                                     <br/>
-                                    <p  id="addCartBtn${id}"
-                                        onclick=carrinho.controller.addToCart('${transformLinkObject}','${id}');
-                                        class="objectAddLink bg-success text-white py-2 px-2 mb-0 rounded small">
-                                        Adicionar 
-                                        <i 
-                                            id="addedToCartMark${id}"
-                                            class="text-white icofont-tick-mark" 
-                                            style="display:none; color: white; font-size: 20px; position: absolute;right: 30px;margin-top: -1px;">
-                                        </i>
-                                        <span id="addCartSpinner${id}" class="prowebSpinnintAnimation littleSpinner"></span>
-                                        
-                                    </p>
+                                    <!-- LOCAL ADD BUTTON -->
+                                    ${obj.available ? addButton : unAvailableButton}
                                 </div>
                             </span>
                         </div>

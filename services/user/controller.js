@@ -19,7 +19,7 @@ router.post("/login", (req, client) => {
 
     const {telefone,senha} = req.body;
 
-    console.log("Lá no login");
+    console.log("Lá no login ");
 
     find({query: {telefone}}, ( async (res) => {
 
@@ -29,7 +29,7 @@ router.post("/login", (req, client) => {
             return false;
         }
 
-        if(res.length == 1){
+        if(res.length >= 1){
 
             const isTrue = await bcrypt.compare(senha || "",res[0].senha);
             console.log("Senha valida:");
@@ -105,7 +105,10 @@ router.post("/", (req, resp) => {
 
     const randomSalt = 10;
     const salt = bcrypt.genSaltSync(randomSalt);
-    const senha = bcrypt.hashSync(req.body.senha, salt);
+
+    const senhaGen = Math.random().toString().substr(0,6).replace(".","1");
+
+    const senha = bcrypt.hashSync(senhaGen, salt);
 
     const dados = ({nomeCompleto,telefone,email} = req.body);
     dados.senha = senha;
@@ -117,7 +120,8 @@ router.post("/", (req, resp) => {
         if(ok){
             const objectId = insertedIds['0'];
             resp.send({status: "ok",id: objectId});
-            sendCreationSMS(telefone, nomeCompleto, resp);
+
+            sendCreationSMS({telefone, nomeCompleto, client: resp, senha: senhaGen});
             return;    
         }
 
@@ -130,25 +134,25 @@ router.post("/", (req, resp) => {
 })
 
 
-const sendCreationSMS = function(telefone, nomeCompleto, client){
+const sendCreationSMS = function({telefone, nomeCompleto, client, senha}){
 
     let smsObject = {
             clientName: telefone,
             phoneNumber: telefone,
             onError: (msg) => {
-                console.log(`Conta criada: ${msg}`);
-                client.send({error: true, result: `Houve um erro ao enviar o SMS: ${msg}`});
+                //console.log(`Conta criada: ${msg}`);
+                //client.send({error: true, result: `Houve um erro ao enviar o SMS: ${msg}`});
             },
             onSuccess: (msg) => {
                 
                 console.log(`Mensagem de sucesso: ${msg}`);
-                client.send({
-                            error: false, 
-                            result: `Conta para ${telefone} foi criada com sucesso`, 
-                            value: ``
-                        });
+                //client.send({
+                //            error: false, 
+                //            result: `Conta para ${telefone} foi criada com sucesso`, 
+                //            value: ``
+                //        });
             },
-            content: `Caro(a) ${nomeCompleto}, sua conta foi criada com sucesso, desfrute das nossas ofertas.\nTabalhamos para o seu conforto`
+            content: `Caro(a) ${nomeCompleto}, segue a sua senha abaixo:\n${senha} \n\nTabalhamos para o seu conforto`
     }
 
     sendSMSToClient(smsObject);

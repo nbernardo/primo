@@ -113,6 +113,12 @@ function MenuViewController(){
 
     this.generateMainMenu = function(){
 
+        let logoutButton = `
+            <li>
+                <a href="#a" class="dropdown-item" onclick="user.controller.logout()"><i class="icofont-logout mr-2"></i> Sair</a>
+            </li>
+        `;
+
         return `
             
                 ${authorizedMenu("meusDados")}
@@ -148,24 +154,28 @@ function MenuViewController(){
                     <li><a class="dropdown-item" href="successful.html">Successful</a></li>
                 -->
 
-                <li>
-                    <span onclick="(new MenuViewController()).showLoggedUserInvoices()">
-                        <i class="icofont-sub-listing mr-2"></i> Minhas solicitações
-                        <!--
-                        <ul>
-                            <li><a class="dropdown-item" href="my_order.html">Factura</a></li>
-                            <li><a class="dropdown-item" href="status_complete.html">Entregues</a></li>
-                            <li><a class="dropdown-item" href="status_onprocess.html">EM Processo</a></li>
-                            <li><a class="dropdown-item" href="status_canceled.html">Cancelada</a></li>
-                            <li><a class="dropdown-item" href="review.html">Rever</a></li>
-                        </ul>
-                        -->
-                    </span>
-                </li>
+                ${
+                    __PROWEBAUTH__.isUserLogged() ? 
+                    `
+                        <li>
+                            <span onclick="(new MenuViewController()).showLoggedUserInvoices()">
+                                <i class="icofont-sub-listing mr-2"></i> Minhas solicitações
+                                <!--
+                                <ul>
+                                    <li><a class="dropdown-item" href="my_order.html">Factura</a></li>
+                                    <li><a class="dropdown-item" href="status_complete.html">Entregues</a></li>
+                                    <li><a class="dropdown-item" href="status_onprocess.html">EM Processo</a></li>
+                                    <li><a class="dropdown-item" href="status_canceled.html">Cancelada</a></li>
+                                    <li><a class="dropdown-item" href="review.html">Rever</a></li>
+                                </ul>
+                                -->
+                            </span>
+                        </li>
 
-                <li>
-                    <a href="#a" class="dropdown-item" onclick="user.controller.logout()"><i class="icofont-logout mr-2"></i> Sair</a>
-                </li>
+                    ` : ''
+                }
+
+                ${__PROWEBAUTH__.isUserLogged() ? logoutButton : ''}
 
         `;
 
@@ -196,6 +206,14 @@ function MenuViewController(){
         `;
 
     }
+
+
+    this.showProductsOptions = function(type){
+
+        (new ItemListViewController()).renderListItemsByType(type);
+
+    }
+
 
     return this;
 

@@ -85,7 +85,7 @@ function ViewUtils(){
                                 <div class="col-md-6">
                                 <div class="p-1 text-center">
                                     <i class="icofont-check-circled display-1 text-warning"></i>
-                                    <h3 class="text-white font-weight-bold"><span id="userMessage"></span> 🎉</h3>
+                                    <h4 class="text-white font-weight-bold"><span id="userMessage"></span> 🎉</h4>
                                     <p class="text-white" id="continueUserMessage"></p>
                                     <!-- <p class="text-white">Check your order status in <a href="complete_order.html" class="font-weight-bold text-decoration-none text-white">My Order</a> about next steps information.</p> -->
                                 </div>
@@ -419,12 +419,26 @@ function ViewUtils(){
     }
 
 
-    this.showEmptyModel = function({content, title, removePadding}){
+    this.showEmptyModel = function({content, title, removePadding, doNotClose = false, delay = 0}){
 
+        console.log("Passou o clising de: ",doNotClose);
+        
         document.getElementById("emptyModalLabel").innerHTML = title || "---";
-        document.getElementById("emptyModalButton").click();
+
+        if(doNotClose == false && delay == 0)
+            document.getElementById("emptyModalButton").click();
+        
         document.getElementById("epmtyModalBody").innerHTML = content;
         
+        setTimeout(() => {            
+            //Check if modal is closed
+            if(!document.getElementById("emptyModal").classList.contains("show")){
+                document.getElementById("emptyModalButton").click();
+            }
+
+        },delay);
+        
+
         if(removePadding){
             document.getElementById("epmtyModalBody").style.padding = "0px";
         }
