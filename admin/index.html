@@ -7,6 +7,7 @@
       <meta name="author" content="">
       <link rel="icon" type="image/png" href="img/logo.svg">
       <title>PPRIMO - Plataforma de Promoção e Intermediação de Mão de Obra</title>
+
       <!-- Slick Slider -->
       <link rel="stylesheet" type="text/css" href="vendor/slick/slick.min.css"/>
       <link rel="stylesheet" type="text/css" href="vendor/slick/slick-theme.min.css"/>
@@ -280,15 +281,15 @@
                                     <ul class="nav nav-tabs custom-tabs border-0 flex-column bg-white rounded overflow-hidden shadow-sm p-2 c-t-order" id="myTab" role="tablist">
                                        <li class="nav-item" role="presentation">
                                           <a class="nav-link border-0 text-dark py-3 active" id="completed-tab" data-toggle="tab" href="#completed" role="tab" aria-controls="completed" aria-selected="true">
-                                          <i class="icofont-check-alt mr-2 text-success mb-0"></i> Completed</a>
+                                          <i class="icofont-check-alt mr-2 text-success mb-0"></i> Entregue</a>
                                        </li>
                                        <li class="nav-item border-top" role="presentation">
                                           <a class="nav-link border-0 text-dark py-3" id="progress-tab" data-toggle="tab" href="#progress" role="tab" aria-controls="progress" aria-selected="false">
-                                          <i class="icofont-wall-clock mr-2 text-warning mb-0"></i> On Progress</a>
+                                          <i class="icofont-wall-clock mr-2 text-warning mb-0"></i> A caminho</a>
                                        </li>
                                        <li class="nav-item border-top" role="presentation">
                                           <a class="nav-link border-0 text-dark py-3" id="canceled-tab" data-toggle="tab" href="#canceled" role="tab" aria-controls="canceled" aria-selected="false">
-                                          <i class="icofont-close-line mr-2 text-danger mb-0"></i> Canceled</a>
+                                          <i class="icofont-close-line mr-2 text-danger mb-0"></i> Novo</a>
                                        </li>
                                     </ul>
                                  </div>
@@ -464,8 +465,11 @@
       <script src="http://localhost:3000/component/js/utils/Validation.js"></script>
       <script src="http://localhost:3000/component/js/utils/ViewUtils.js"></script>
       <script src="http://localhost:3000/component/js/view/CarrinhoViewController.js"></script>
+      <script src="http://localhost:3000/component/js/view/AdminViewController.js"></script>
       <script> 
          
+         user.adminView = true;
+
          // REGISTRATION AND LOGIN BUTTONS
          user.controller.handleNoAuthButton();
 

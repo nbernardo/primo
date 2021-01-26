@@ -24,7 +24,7 @@ router.post("/login", (req, client) => {
     find({query: {telefone}}, ( async (res) => {
 
         if((senha == undefined || senha == null || senha == "")){
-            console.log("Senha não enviada");
+            console.log("Senha não enviada: ", senha);
             client.send({status: false, data: []});
             return false;
         }
@@ -214,8 +214,8 @@ router.get("/resetpassword/:userphone", (req, client) => {
                         client.send({
                                     error: false, 
                                     result: `
-                                                Token enviado por SMS para o telefone ${res.telefone}, pressione
-                                                <span onclick="(new UserViewController()).setResetToken()" style="color: black !important;">aqui</span> 
+                                                Token enviado por SMS para o número ${res.telefone}, pressione
+                                                <span style="height: 22px; padding-left:5px; padding-right:5px; border:1px solid green;" onclick="(new UserViewController()).setResetToken()" style="color: black !important;">aqui</span> 
                                                 para digite o código recebido
                                             `, 
                                     token: true,
@@ -269,6 +269,30 @@ const sendSMSToClient = function({
 
 }){
 
+    const tm = require("textmagic-rest-client");
+    let client = new tm("sonybernardo_10@hotmail.com","cwn44VYuCQ1hqva4JKMmUUw0o9Gjr4");
+
+    client.Messages.send({text: `${content}`, phones: `00244${phoneNumber}`, from: "RestPro"}, (err, res) => {
+        
+        if(err){
+            onError(err);
+            return false;
+        }
+
+        onSuccess(res);
+
+        
+    })
+
+}
+
+/*
+const sendSMSToClient = function({
+
+    clientName, phoneNumber, onError, onSuccess, content
+
+}){
+
     console.log(`Conteudo enviado: ${content}`);
     console.log(`Numero: ${phoneNumber}`);
 
@@ -296,7 +320,7 @@ const sendSMSToClient = function({
 
         console.log('statusCode:', resp.statusCode);
         let data = '';
-            resp.on('data', (chunk) => {
+        resp.on('data', (chunk) => {
             data += chunk;
         });
 
@@ -317,7 +341,7 @@ const sendSMSToClient = function({
     req.end();
 
 }
-
+*/
 
 
 module.exports = router;

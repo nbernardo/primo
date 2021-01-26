@@ -88,7 +88,7 @@ const sendOnThewaySMS = function(telefone, nomeCompleto, client, result, invoice
                             value: ``
                         });
             },
-            content: `Caro(a) ${nomeCompleto}, estamos trazendo a sua encomenda com o id #${invoiceId}.`
+            content: `Caro(a) ${nomeCompleto}, sua encomenda com o id #${invoiceId} está a caminho.`
     }
 
     sendSMSToClient(smsObject);
@@ -123,6 +123,32 @@ const sendDeliveredSMS = function(telefone, nomeCompleto, client, result, invoic
 }
 
 
+
+const sendSMSToClient = function({
+
+    clientName, phoneNumber, onError, onSuccess, content
+
+}){
+
+    const tm = require("textmagic-rest-client");
+    let client = new tm("sonybernardo_10@hotmail.com","cwn44VYuCQ1hqva4JKMmUUw0o9Gjr4");
+
+    client.Messages.send({text: `${content}`, phones: `00244${phoneNumber}`, from: "RestPro"}, (err, res) => {
+        
+        if(err){
+            onError(err);
+            return false;
+        }
+
+        onSuccess(res);
+
+        
+    })
+
+}
+
+
+/*
 const sendSMSToClient = function({
 
     clientName, phoneNumber, onError, onSuccess, content
@@ -178,6 +204,7 @@ const sendSMSToClient = function({
     req.end();
 
 }
+*/
 
 
 const emitOrderEvent = (data, callback) => {

@@ -6,6 +6,7 @@ user = {
     profileUrl: `${BASE_IP}:3000/template/profile.html`,
     aboutUrl: `${BASE_IP}:3000/template/about.html`,
     resetPasswordView : null,
+    adminView: false
 }
 
 function UserViewController(){
@@ -13,6 +14,7 @@ function UserViewController(){
     this.userLat = 0;
     this.userLng = 0;
     this.resetPasswordView = null;
+    //this.admiView = window.location.toString().indexOf("admin") >= 0;
 
     this.setLat = function(lat){
         this.userLat = lat;
@@ -358,18 +360,23 @@ function UserViewController(){
         }
 
         let buttons = `
-        
-                    <span class="bg-danger text-white px-3 rounded small m-0 profileButton">
-                        <a href="#" data-toggle="modal" data-target="#accountModal" class="text-decoration-none text-white">
-                        <i class="text-white icofont-badge" style="color: white; font-size: 18px;"></i> Registar-me
-                        </a>
-                    </span>
-                    &nbsp;
-                    <span class="bg-danger text-white  px-3 rounded small m-0 profileButton">
-                        <a href="#" id="loginModalButton" data-toggle="modal" data-target="#loginModal" class="text-decoration-none text-white">
-                        <i class="text-white icofont-ui-user" style="color: white;"></i> Logar
-                        </a>
-                    </span>
+                        ${
+                            //user.adminView -> UserViewController.js
+                            user.adminView ? '' :
+                            `
+                            <span class="bg-danger text-white px-3 rounded small m-0 profileButton">
+                                <a href="#" data-toggle="modal" data-target="#accountModal" class="text-decoration-none text-white">
+                                <i class="text-white icofont-badge" style="color: white; font-size: 18px;"></i> Registar-me
+                                </a>
+                            </span>
+                            &nbsp;
+                            `
+                        }
+                        <span class="bg-danger text-white  px-3 rounded small m-0 profileButton">
+                            <a href="#" id="loginModalButton" data-toggle="modal" data-target="#loginModal" class="text-decoration-none text-white">
+                            <i class="text-white icofont-ui-user" style="color: white;"></i> Logar
+                            </a>
+                        </span>
 
         `;
 
