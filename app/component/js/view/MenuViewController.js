@@ -6,7 +6,18 @@ function MenuViewController(){
 
     this.renderMenu = function(viewTitle = "PPRIMO"){
 
-        document.getElementsByClassName("mobile-nav")[0].innerHTML = this.generateTopBar().replace("(current)",viewTitle);
+        let userName = "";
+        if(user.controller.getLoggedUser().name && user.controller.getLoggedUser().name.split(" ")){
+            userName = user.controller.getLoggedUser().name.split(" ")[0];
+        }
+
+        let logedUser = `
+            <div style="font-size:0.7rem; color:black;">
+                <i class="text-dark icofont-user-alt-7"></i>&nbsp; ${userName}
+            </div>
+        `
+        let viewTitleContent = `${viewTitle}${__PROWEBAUTH__.isUserLogged() ? logedUser : ''}`; 
+        document.getElementsByClassName("mobile-nav")[0].innerHTML = this.generateTopBar().replace("(current)",`${viewTitleContent}`);
         document.getElementsByClassName("bottom-nav")[0].innerHTML = this.generateBottomMenu();
         document.getElementsByClassName("second-nav")[0].innerHTML = this.generateMainMenu();
         
@@ -34,18 +45,25 @@ function MenuViewController(){
                     </p>
 
                     <a href="#" style="display: none;" data-toggle="modal" id="carrinhoModalButton" data-target="#carrinhoModal">&nbsp;</a>
-                    <span 
-                       onclick="carrinho.controller.showAppropriateView()" 
-                       class="bg-color-head text-white  rounded  profileButton" 
-                       style="right: 0; width: 70px; height: 42px;">
-                       
-                       <a href="#" class="text-decoration-none text-white">
-                          <i class="text-white icofont-shopping-cart" style="color: white; font-size: 14px;"></i> 
-                          <span id="itensOnCarrinho">
-                             ( <span>...</span> )
-                          </span>
-                       </a>
-                    </span>
+
+                    ${ 
+                        //user.adminView -> UserViewController.js
+                        user.adminView ? '' :
+                        `
+                        <span 
+                            onclick="carrinho.controller.showAppropriateView()" 
+                            class="bg-color-head text-white  rounded  profileButton" 
+                            style="right: 0; width: 70px; height: 42px;">
+                            
+                            <a href="#" class="text-decoration-none text-white">
+                            <i class="text-white icofont-shopping-cart" style="color: white; font-size: 14px;"></i> 
+                            <span id="itensOnCarrinho">
+                                ( <span>...</span> )
+                            </span>
+                            </a>
+                        </span>
+                        `
+                     }
 
                     
                     <a class="toggle ml-3" id="toggleButton" href="#"><i class="icofont-navigation-menu"></i></a>
@@ -143,6 +161,25 @@ function MenuViewController(){
                         <i class="icofont-cube mr-2" style="font-size:20px;"></i>Nosso serviços
                     </span>
                 </li>
+
+                ${
+                    //user.adminView -> UserViewController.js
+                    user.adminView ? 
+                    `
+                        <li onclick="">
+                            <span onclick="__VIEW_UTILS__.showAboutUs()">
+                                <i class="icofont-page mr-2" style="font-size:20px;"></i>Produtos
+                            </span>
+                        </li>
+
+                        <li onclick="">
+                            <span onclick="__VIEW_UTILS__.showAboutUs()">
+                                <i class="icofont-ui-add mr-2" style="font-size:15px;"></i>Novo Produto
+                            </span>
+                        </li>
+                    ` : 
+                    ''
+                }
 
                 <!-- 
                     <li><a class="dropdown-item" href="listing.html">Listing</a></li>

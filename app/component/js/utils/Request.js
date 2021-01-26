@@ -1,4 +1,4 @@
-const BASE_IP = "http://192.168.1.2";
+const BASE_IP = "http://192.168.1.4";
 const __REQUEST__ = new ProwebRequest();
 const COMMAND_URL = `${BASE_IP}:4005/event`;
 
