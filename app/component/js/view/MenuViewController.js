@@ -167,13 +167,13 @@ function MenuViewController(){
                     user.adminView ? 
                     `
                         <li onclick="">
-                            <span onclick="__VIEW_UTILS__.showAboutUs()">
+                            <span onclick="admin.controller.viewAdminProducts()">
                                 <i class="icofont-page mr-2" style="font-size:20px;"></i>Produtos
                             </span>
                         </li>
 
                         <li onclick="">
-                            <span onclick="__VIEW_UTILS__.showAboutUs()">
+                            <span onclick="admin.controller.addNewProduct()">
                                 <i class="icofont-ui-add mr-2" style="font-size:15px;"></i>Novo Produto
                             </span>
                         </li>
