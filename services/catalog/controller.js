@@ -1,8 +1,29 @@
 const router = require("express").Router();
-const {saveItem, findItems, findById, findItemsByType} = require("./dataccess");
+const {saveItem, findItems, findById, findItemsByType, update} = require("./dataccess");
 
 router.get("/", (req, resp) => {
     resp.send("** CATALOG ** Service está no ar");
+})
+
+
+router.put("/item/:id", (req, client) => {
+
+    let id = req.params.id;
+    const {nomeProduto, precoProduto, categoriaProduto, pontosProduto, available} = req.body;
+    const updateProduct = {
+                            nome: nomeProduto, 
+                            preco: precoProduto, 
+                            type: categoriaProduto, 
+                            pontos: pontosProduto, 
+                            available: available
+                        };
+
+    update(id, updateProduct, (res) => {
+
+        client.send(res);
+
+    });
+
 })
 
 

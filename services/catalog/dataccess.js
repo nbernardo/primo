@@ -76,3 +76,27 @@ module.exports.findItemsByType = function(type, callback = (res, err) => {}){
     })
 
 }
+
+
+module.exports.update = function(id, {nome, preco, pontos, type, available}, callback){
+
+    MongoClient.connect(url, (err, client) => {
+
+        const table = client.db("promo").collection("item");
+        updateFields = {
+            nome,preco,pontos,type,available
+        }
+        
+        table.updateOne({_id: ObjectID(id)},{$set: {...updateFields}},(err, res) => {
+            
+            if(err){
+                callback({err: err});
+                return false;
+            }
+            callback({err: false, result: res});
+
+        })
+
+    })
+
+}
