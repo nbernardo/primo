@@ -8,8 +8,19 @@ const admin = {
 
 function AdminViewController(){
 
+
+    this.hideProductSaveSuccess = function(){
+        document.getElementById("productUpdateOk").style.display = "none";
+    }
+
+    this.showProductSaveSuccess = function(){
+        document.getElementById("productUpdateOk").style.display = "";
+    }
+
+
     this.addNewProduct = function(){
 
+        this.hideProductSaveSuccess();
         admin.productEditing = false;
         document.getElementById("emptyModal").getElementsByClassName("modal-content")[0].style.marginTop = "-129px";
         document.getElementById("itemListBackBtn").style.display = 'none';
@@ -22,6 +33,7 @@ function AdminViewController(){
 
     this.viewAdminProducts = function(){
 
+        this.hideProductSaveSuccess();
         __VIEW_UTILS__.showSpinnerWithNoEscape({
             feedback: true,
             title: "Buscando online...",
@@ -48,7 +60,7 @@ function AdminViewController(){
                 </div>
             `;
             __VIEW_UTILS__.hideSpinner();
-            __VIEW_UTILS__.showEmptyModel({content, title: "Lista de produtos", removePadding: true, delay: 1300});
+            __VIEW_UTILS__.showEmptyModel({content, title: "Lista de produtos", removePadding: true, delay: 1500});
             
 
         });
@@ -67,12 +79,26 @@ function AdminViewController(){
         if(admin.productEditing){
 
             (new ItemListViewController()).updateEditingProduct(() => {
-                __VIEW_UTILS__.hideSpinner();            
+                
+                __VIEW_UTILS__.hideSpinner();
+                setTimeout(() => {
+                    this.showProductSaveSuccess();
+                },500);
+                          
             });
 
         }else{
 
-            
+            (new ItemListViewController()).savegProduct((res, xhr) => {
+
+                console.log("Salvo agora: ", res);
+
+                __VIEW_UTILS__.hideSpinner();
+                setTimeout(() => {
+                    this.showProductSaveSuccess();
+                },500);            
+
+            })
 
         }
 

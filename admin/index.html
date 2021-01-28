@@ -642,9 +642,15 @@
                   <span onclick="itemList.controller.goBackToItemList()" style="display: none;" id="itemListBackBtn">
                      <i class="icofont-arrow-left bg-success text-white" style="font-size: 1.5rem; padding: 5px;border-radius: 6px;"></i>
                   </span>
-                  Edição/Modificação de produto
+                  Editar/Modificar produto
                </h5>
             </div>
+
+            <h6 class="text-success" id="productUpdateOk" style="margin: 17px; display: none;">
+               Produto salvo com sucesso
+               <i class="icofont-tick-mark text-success"></i>
+            </h6>
+
             <div class="modal-body">
                <form action="my_account.html">
                   <div class="form-group">
@@ -653,12 +659,12 @@
                      <label style="display: none;" class="text-danger requiredLabel">Informe o nome</label>
                   </div>
 
-                  <!--
-                     <div class="form-group">
-                        <input type="file" class="form-control entity-product required" id="imagemProduto" placeholder="* Imagem do produto">
-                        <label style="display: none;" class="text-danger requiredLabel">Seleccione a imagem</label>
-                     </div>
-                  -->
+                  
+                  <div class="form-group">
+                     <input type="file" onchange="(new ItemListViewController()).selectItemImg()" class="form-control entity-product required" id="imagemProduto" placeholder="* Imagem do produto">
+                     <label style="display: none;" class="text-danger requiredLabel">Seleccione a imagem</label>
+                  </div>
+                  
 
                   <div class="form-group">
                      <input type="number" class="form-control entity-product required" id="precoProduto" placeholder="* Preço">
@@ -670,7 +676,7 @@
                         <option value="pao">Pães</option>
                         <option value="carcut">Charcutaria</option>
                         <option value="ovos">Ovos</option>
-                        <option value="leite">Leita</option>
+                        <option value="leite">Leite</option>
                         <option value="manteiga">Manteiga</option>
                         <option value="pizza">Pizzas</option>
                      </select>

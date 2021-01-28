@@ -62,8 +62,8 @@ router.get("/item/", (req, client) => {
 
 
 
-router.post("/", (req, client) => {
-    
+router.post("/item", (req, client) => {
+
     saveItem({...req.body}, (res, err) => {
 
         console.log("Passou");
@@ -74,7 +74,6 @@ router.post("/", (req, client) => {
                     erros: {...err},
                     result: {...res}
             });
-
             return false;
         }
 

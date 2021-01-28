@@ -1,6 +1,10 @@
 itemList = {
     controller: new ItemListViewController(),
-    baseUrl: `${BASE_IP}:4002/catalog/item`
+    baseUrl: `${BASE_IP}:4002/catalog/item`,
+    editingObject: null,
+    newItemObject : null,
+    productEdited: false,
+    savingProductImg : null
 }
 
 
@@ -227,13 +231,13 @@ function ItemListViewController(){
         let viewDetailsLink = `
             <span onclick="carrinho.controller.showProductDetail('${id}','${obj.type}')">
                 <img src="${imagem}" class="img-fluid item-img w-100 mb-3">
-                <h6>${nome}</h6>
+                <h6 id="itemNomeProduto${id}">${nome}</h6>
             </span>
         `;
 
 
         let editButton = `
-            <p  id="addCartBtn${id}" style="font-size:1rem"
+            <p  id="editingBojectBtn${id}" style="font-size:1rem"
                 onclick=itemList.controller.editProduct('${escape(JSON.stringify(obj))}');
                 class="objectAddLink  py-2 px-2 mb-0 rounded small">
                  
@@ -259,7 +263,7 @@ function ItemListViewController(){
                                 <div class="p-3"> 
                                     ${viewDetailsLink}
                                     <div class="d-flex align-items-center">
-                                    <h6 class="price m-0 text-success">${preco} Kz</h6>                                     
+                                    <h6 class="price m-0 text-success" id="itemPrecoProduto${id}">${preco} Kz</h6>                                     
                                 </div>
                                     <br/>
                                     <!-- LOCAL ADD BUTTON -->
@@ -280,6 +284,7 @@ function ItemListViewController(){
 
         let curItem = JSON.parse(unescape(obj));
         this.clearProductForm();
+        itemList.editingObject = curItem;
 
         let formContent = document.getElementById("productForm").innerHTML;
         document.getElementById("prevAdminContent").innerHTML = document.getElementById("epmtyModalBody").innerHTML;
@@ -312,7 +317,30 @@ function ItemListViewController(){
 
 
     this.goBackToItemList = function(){
+
         document.getElementById("epmtyModalBody").innerHTML = document.getElementById("prevAdminContent").innerHTML;
+
+        console.log("Os dois: ",itemList.newItemObject);
+
+        try{
+
+            setTimeout(() => {
+                document.getElementById(`editingBojectBtn${document.getElementById("idProduto").value}`).addEventListener('click', () => {
+    
+                    let itemObj = {
+                        ...itemList.editingObject,
+                        nome: itemList.newItemObject.nomeProduto,
+                        preco: itemList.newItemObject.precoProduto,
+                    }
+                    itemList.controller.editProduct(escape(JSON.stringify(itemObj)));
+                    
+                })
+            },200);
+
+        }catch(e){
+            
+        }
+
     }
     
 
@@ -325,23 +353,91 @@ function ItemListViewController(){
             let available = document.getElementsByClassName("availableProduct")[0].checked;
             let idProduct = document.getElementById("idProduto").value;
 
-            let data = JSON.stringify({
+            let itemObj = {
                 nomeProduto: document.getElementById("nomeProduto").value,
                 precoProduto : document.getElementById("precoProduto").value,
                 categoriaProduto : document.getElementById("categoriaProduto").value,
                 pontosProduto : document.getElementById("pontosProduto").value,
                 available
-            });
+            }
+            let data = JSON.stringify(itemObj);
 
             (new ProwebRequest()).putJSON(`${itemList.baseUrl}/${idProduct}`,data,(res, xhr) => {
 
                 console.log("Actualizando: ", res);
+                console.log("O botão: ", `editingBojectBtn${idProduct}`);
+
+                this.resetItemForm();
                 callback();
+                document.getElementById(`itemNomeProduto${idProduct}`).innerHTML = itemObj.nomeProduto;
+                document.getElementById(`itemPrecoProduto${idProduct}`).innerHTML = itemObj.precoProduto;
+                itemList.newItemObject = {
+                    ...itemObj,
+                    idProduct
+                };
     
             });
 
         }
         
+    }    
+
+
+    this.resetItemForm = function(){
+
+        document.getElementById("nomeProduto").value = "";
+        document.getElementById("precoProduto").value = "";
+        document.getElementById("categoriaProduto").value = "";
+        document.getElementById("pontosProduto").value = "";
+
+    }
+
+
+    this.selectItemImg = function(){
+
+        let imgContainer = document.getElementById("imagemProduto");
+        let imgReader = new FileReader();
+
+        imgReader.onload = function(){
+
+            itemList.savingProductImg = imgReader.result;
+            //console.log(imgReader.result);
+
+        }
+
+        imgReader.readAsDataURL(imgContainer.files[0]);
+
+    }
+
+
+    this.savegProduct = function(callback){
+
+        let productInputValidation = (new ProwebValidation()).validateRequired("entity-product");
+        console.log("Passou no: ",productInputValidation);
+        if(productInputValidation){
+
+            let available = document.getElementsByClassName("availableProduct")[0].checked;
+
+            let itemObj = {
+                nome: document.getElementById("nomeProduto").value,
+                preco : document.getElementById("precoProduto").value,
+                type : document.getElementById("categoriaProduto").value,
+                pontos : document.getElementById("pontosProduto").value,
+                imagem: itemList.savingProductImg,
+                available
+            }
+            let data = JSON.stringify(itemObj);
+
+            (new ProwebRequest()).postJSON(`${itemList.baseUrl}`,data,(res, xhr) => {
+
+                callback(res, xhr);
+                this.resetItemForm();
+    
+            });
+            return;
+
+        }
+        __VIEW_UTILS__.hideSpinner();
 
     }
     
