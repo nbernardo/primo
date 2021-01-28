@@ -22,7 +22,7 @@ function ProwebValidation(){
         let allFields = document.getElementsByClassName(fieldClassGroup);
         for(x = 0; x < allFields.length; x++){
 
-            if(allFields[x].classList.contains("required") && allFields[x].value == ""){
+            if(allFields[x].classList.contains("required") && document.getElementById(allFields[x].id).value == ""){
                 allFields[x].style.border = "1px solid #dc3545";
                 allFields[x].parentNode.getElementsByClassName("requiredLabel")[0].style.display = "";
                 errorNumbers++;

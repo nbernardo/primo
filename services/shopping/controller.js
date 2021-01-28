@@ -133,7 +133,7 @@ const sendSMSToClient = function({
     const tm = require("textmagic-rest-client");
     let client = new tm("sonybernardo_10@hotmail.com","cwn44VYuCQ1hqva4JKMmUUw0o9Gjr4");
 
-    client.Messages.send({text: `${content}`, phones: `00244${phoneNumber}`, from: "RestPro"}, (err, res) => {
+    client.Messages.send({text: `${content}`, phones: `00244${phoneNumber}`, from: "PPRIMO"}, (err, res) => {
         
         if(err){
             onError(err);

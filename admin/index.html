@@ -468,22 +468,23 @@
       <script src="http://localhost:3000/component/js/view/AdminViewController.js"></script>
       <script> 
          
-         user.adminView = true;
+         
+            user.adminView = true;
 
-         // REGISTRATION AND LOGIN BUTTONS
-         user.controller.handleNoAuthButton();
+            // REGISTRATION AND LOGIN BUTTONS
+            user.controller.handleNoAuthButton();
 
-         /* SCRIPT EXECUTIONS */
-         //promo.controller.findAndPromos("promoLocal"); 
-         menu.controller.renderMenu("PPRIMO");
+            /* SCRIPT EXECUTIONS */
+            //promo.controller.findAndPromos("promoLocal"); 
+            menu.controller.renderMenu("PPRIMO");
 
-         carrinho.controller.findInvoicesOnline();
-         /*
-         APRESENTA ITENS/PRODUTOS NA VITRINE QUE 
-         PODEM SER ADICIONADOS AO CARRINHO
-         */
-         //itemList.controller.renderListItems();
-         //carrinho.controller.cartItemsCount();
+            carrinho.controller.findInvoicesOnline();
+            /*
+            APRESENTA ITENS/PRODUTOS NA VITRINE QUE 
+            PODEM SER ADICIONADOS AO CARRINHO
+            */
+            //itemList.controller.renderListItems();
+            //carrinho.controller.cartItemsCount();
 
       </script>
 
@@ -626,6 +627,85 @@
          /* RENDERIZA A VIEW COMPLETA DO CARRINHO DE COMPRA */
          //carrinho.controller.renderCartView();
       </script>
+
+
+
+
+
+
+
+      <div id="productForm" style="display: none;">
+
+         <div class="modal-content"  style="padding-top: 15px;">
+            <div class="modal-header">
+               <h5 class="modal-title" id="accountModalLabel">
+                  <span onclick="itemList.controller.goBackToItemList()" style="display: none;" id="itemListBackBtn">
+                     <i class="icofont-arrow-left bg-success text-white" style="font-size: 1.5rem; padding: 5px;border-radius: 6px;"></i>
+                  </span>
+                  Editar/Modificar produto
+               </h5>
+            </div>
+
+            <h6 class="text-success" id="productUpdateOk" style="margin: 17px; display: none;">
+               Produto salvo com sucesso
+               <i class="icofont-tick-mark text-success"></i>
+            </h6>
+
+            <div class="modal-body">
+               <form action="my_account.html">
+                  <div class="form-group">
+                     <input type="hidden" id="idProduto">
+                     <input type="text" class="form-control entity-product required" id="nomeProduto" placeholder="* Nome do produto">
+                     <label style="display: none;" class="text-danger requiredLabel">Informe o nome</label>
+                  </div>
+
+                  
+                  <div class="form-group">
+                     <input type="file" onchange="(new ItemListViewController()).selectItemImg()" class="form-control entity-product required" id="imagemProduto" placeholder="* Imagem do produto">
+                     <label style="display: none;" class="text-danger requiredLabel">Seleccione a imagem</label>
+                  </div>
+                  
+
+                  <div class="form-group">
+                     <input type="number" class="form-control entity-product required" id="precoProduto" placeholder="* Preço">
+                     <label style="display: none;" class="text-danger requiredLabel">Digite o preço</label>
+                  </div>
+                  <div class="form-group">
+                     <select class="custom-select form-control entity-product required" id="categoriaProduto">
+                        <option value="">* Categoria</option>
+                        <option value="pao">Pães</option>
+                        <option value="carcut">Charcutaria</option>
+                        <option value="ovos">Ovos</option>
+                        <option value="leite">Leite</option>
+                        <option value="manteiga">Manteiga</option>
+                        <option value="pizza">Pizzas</option>
+                     </select>
+                     <label style="display: none;" class="text-danger requiredLabel">Seleccione a categoria</label>
+                  </div>
+                  <div class="form-group">
+                     <input type="text" class="form-control entity-product" id="pontosProduto" placeholder="Pontos a cada compra">
+                  </div>
+                  <div class="form-group">
+                     <label>Disponível?</label>
+                     <input type="radio"  name="isAvailable" class="availableProduct" value="1"> Sim
+                     <input type="radio"  name="isAvailable" class="availableProduct" value="2"> Não
+                  </div>
+               </form>
+            </div>
+            <div class="modal-footer p-0 border-0">
+               <div class="col-6 m-0 p-0">                 
+                  <button type="button" class="btn border-top btn-lg btn-block" data-dismiss="modal">Fechar</button>
+               </div>
+               <div class="col-6 m-0 p-0">     
+                  <button type="button" class="btn btn-success btn-lg btn-block" id="btnSaveProduct" onclick="(new AdminViewController()).saveProduct()">Salvar</button>
+               </div>
+            </div>
+         </div>
+
+      </div>
+
+
+      <div id="prevAdminContent" style="display: none;"></div>
 
 
 
