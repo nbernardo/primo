@@ -35,6 +35,14 @@ function UserViewController(){
             values[fields[x].id] = fields[x].value;
         }
 
+        let addressFields = __FORM_UTIL__.getFieldValueByClass("entity-userAddressReg");
+
+        let endereco = {
+            ...addressFields
+        }
+
+        values.endereco = endereco;
+
         return values;
 
     }
@@ -199,6 +207,7 @@ function UserViewController(){
 
                 if(result.status == "ok"){
                     this.saveUserOffline(userObj);
+                    this.saveAddressOffline(JSON.stringify(userObj.endereco));
                 }else{
                     //Houve um problema
                 }
@@ -567,21 +576,18 @@ function UserViewController(){
 
     this.validatePasswordResetToken = function(){
 
-        __VIEW_UTILS__.showSpinnerWithNoEscape({
-            feedback: true,
-            title: "Validando o token...",
-            message1: `Aguarde...`,
-        });
+        try{
 
-        let generatedToken = localStorage.getItem("myToken").substr(0,6);
-        //let inputToken = document.getElementById("passwordResetToken").value;
-        let inputToken = document.getElementById("passwordUserReset").value;
+            let generatedToken = localStorage.getItem("myToken").substr(0,6);
+            //let inputToken = document.getElementById("passwordResetToken").value;
+            let inputToken = document.getElementById("passwordUserReset").value;
+            return generatedToken == inputToken;
 
-        __VIEW_UTILS__.hideSpinner();
+        }catch(e){
 
-        return generatedToken == inputToken;
+        }
 
-    } 
+    }
 
     this.resetPassword = function(userPhone){
 

@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 4003;
 
 const app = express();
 app.use(cors());
-app.use(bodyParser.json({limit: '200mb'}));
+app.use(bodyParser.json({limit: '500mb'}));
 
 app.use("/shop",Shop);
 
