@@ -152,7 +152,7 @@ const sendCreationSMS = function({telefone, nomeCompleto, client, senha}){
                 //            value: ``
                 //        });
             },
-            content: `Caro(a) ${nomeCompleto}, segue a sua senha abaixo:\n${senha} \n\nTabalhamos para o seu conforto`
+            content: `Senha: ${senha}\n\nPressione em https://pprimo.online/ para aceder a app no browser. \n\n*Tabalhamos para o seu conforto*`
     }
 
     sendSMSToClient(smsObject);

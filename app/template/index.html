@@ -5,7 +5,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
       <meta name="description" content="">
       <meta name="author" content="">
-      <link rel="icon" type="image/png" href="img/logo.svg">
+      <link rel="icon" type="image/png" href="img/pprimus.png">
       <title>PPRIMO - Plataforma de Promoção e Intermediação de Mão de Obra</title>
       
       <!-- Metro 4 UI -->
@@ -95,7 +95,7 @@
       <!-- Nav bar -->
       <div class="bg-white shadow-sm osahan-main-nav">
          <nav class="navbar navbar-expand-lg navbar-light bg-white osahan-header py-0 container">
-            <a class="navbar-brand mr-0" href="home.html"><img class="img-fluid logo-img rounded-pill border shadow-sm" src="img/logo.svg"></a>
+            <a class="navbar-brand mr-0" href="index.html"><img class="img-fluid logo-img rounded-pill border shadow-sm" src="img/pprimus.png"></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
             </button>
@@ -847,7 +847,7 @@
       <a href="#" id="emptyModalButton" style="display: none;" data-toggle="modal" data-target="#emptyModal" class="text-decoration-none text-green loggedUserButtonsIcon">
          <i class="text-green icofont-badge" style="color: #fd7e14 !important;"></i>
       </a>
-      <div class="modal fade" id="emptyModal" tabindex="-1" role="dialog" aria-labelledby="emptyModalLabel" aria-hidden="true">
+      <div class="modal fade" id="emptyModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="emptyModalLabel" aria-hidden="true">
          <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                <div class="modal-header">
@@ -866,7 +866,7 @@
 
 
       <!-- ACCOUNT MODAL -->
-      <div class="modal fade" id="accountModal" tabindex="-1" role="dialog" aria-labelledby="accountModalLabel" aria-hidden="true">
+      <div class="modal fade" id="accountModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="accountModalLabel" aria-hidden="true">
          <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                <div class="modal-header">
@@ -878,7 +878,7 @@
                <div class="modal-body">
                   <form action="my_account.html">
                      <div class="form-group">
-                        <input type="text" class="form-control entyti-user required" id="nomeCompleto" placeholder="* Nome completo">
+                        <input type="search" autocomplete="off" class="form-control entyti-user required" id="nomeCompleto" placeholder="* Nome completo">
                         <label style="display: none;" class="text-danger requiredLabel">Informe o nome</label>
                      </div>
                      <div class="form-group">
@@ -887,7 +887,32 @@
                         <label style="display: none;" class="text-danger requiredLabel">Digite o telefone</label>
                      </div>
                      <div class="form-group">
-                        <input type="email" class="form-control entyti-user" id="email" placeholder="Email">
+                        <input type="email" autocomplete="off" class="form-control entyti-user" id="email" placeholder="Email">
+                     </div>
+
+                     <div class="form-group" style="padding-top: 15px; font-weight: bold;">
+                        <label class="text-black">Endereço</label>
+                     </div>
+
+                     <div class="form-group">
+                        <select data-field="destrito" class="form-control entyti-user required entity-userAddressReg" id="bairro">
+                           <option value="">* Bairro</option>
+                           <option value="Benfica/Kifica">Benfica/Kifica</option>
+                           <option value="Patriota">Patriota</option>
+                           <option value="outro">Outro</option>
+                        </select>
+                        <label style="display: none;" class="text-danger requiredLabel">Digite/Seleccione o bairro</label>
+                     </div>
+
+                     <div class="form-group" style="display: flex; flex-direction: row;">
+                        <span>
+                           <input type="search" autocomplete="off" data-field="rua" class="form-control entyti-user required entity-userAddressReg" id="rua" placeholder="* Rua">
+                           <label style="display: none;" class="text-danger requiredLabel">Digite a rua</label>
+                        </span>
+                        <span>
+                           <input type="search" autocomplete="off" data-field="casa" class="form-control entyti-user required entity-userAddressReg" id="casa" placeholder="* Casa nº">
+                           <label style="display: none;" class="text-danger requiredLabel">Digite o nº da casa</label>
+                        </span>
                      </div>
                      <!--
                         
@@ -917,7 +942,7 @@
       </div>
 
       <!-- LOGIN MODAL -->
-      <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+      <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="loginModalLabel" aria-hidden="true">
          <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                <div class="modal-header">
@@ -927,7 +952,7 @@
                   </button>
                </div>
                <div class="modal-body">
-                  <form>
+                  <form autocomplete="off">
 
                      <span id="loginForm">
 
@@ -936,10 +961,10 @@
                            id="mensagemLoginRequired">Precisa fazer o login para ver o carrinho</span>
 
                         <div class="form-group">
-                           <input type="text" class="form-control" id="loginUser" placeholder="Telefone">
+                           <input type="tel" autocomplete="off" class="form-control" id="loginUser" placeholder="Telefone">
                         </div>
                         <div class="form-group">
-                           <input type="password" class="form-control" id="loginPassword" placeholder="Senha">
+                           <input type="password" autocomplete="off" class="form-control" id="loginPassword" placeholder="Senha">
                         </div>
 
                         <div class="text-center">

@@ -952,10 +952,10 @@ function CarrinhoViewController(){
 
         document.getElementById("itensOnCart").innerHTML = "";
 
-        document.getElementById("totalFactura").innerHTML = `0 Kz`;
-        document.getElementById("endTotalAmount").innerHTML = `0 Kz`;
-        document.getElementById("totalValor").innerHTML = `0 Kz`;
-        document.getElementById("totalItems").innerHTML = `0 itens`
+        if(document.getElementById("totalFactura")) document.getElementById("totalFactura").innerHTML = `0 Kz`;
+        if(document.getElementById("endTotalAmount")) document.getElementById("endTotalAmount").innerHTML = `0 Kz`;
+        if(document.getElementById("totalValor")) document.getElementById("totalValor").innerHTML = `0 Kz`;
+        if(document.getElementById("totalItems")) document.getElementById("totalItems").innerHTML = `0 itens`
         user.controller.renderAddressOnMap();
 
     }
@@ -990,10 +990,10 @@ function CarrinhoViewController(){
             
             document.getElementById("itensOnCart").innerHTML = itemsToShow;
 
-            document.getElementById("totalFactura").innerHTML = `${this.totalAmount} Kz`;
-            document.getElementById("endTotalAmount").innerHTML = `${this.totalAmount} Kz`;
-            document.getElementById("totalValor").innerHTML = `${this.totalAmount} Kz`;
-            document.getElementById("totalItems").innerHTML = `${this.totalItems} itens`
+            if(document.getElementById("totalFactura")) document.getElementById("totalFactura").innerHTML = `${this.totalAmount} Kz`;
+            if(document.getElementById("endTotalAmount")) document.getElementById("endTotalAmount").innerHTML = `${this.totalAmount} Kz`;
+            if(document.getElementById("totalValor")) document.getElementById("totalValor").innerHTML = `${this.totalAmount} Kz`;
+            if(document.getElementById("totalItems")) document.getElementById("totalItems").innerHTML = `${this.totalItems} itens`
             document.getElementById("carrinhoModalButton").click();
             user.controller.renderAddressOnMap();
             showCalendar();
@@ -1277,17 +1277,20 @@ function CarrinhoViewController(){
 
                                                     <div id="itensOnCart"></div>
 
-                                                    <div onclick="carrinho.controller.getDeliveryAddress()">
-                                                        <a href="#" class="text-decoration-none btn btn-block p-3" type="button" data-toggle="collapse" data-target="#collapsetwo" aria-expanded="true" aria-controls="collapsetwo">
+                                                     
+                                                    <!--<div onclick="carrinho.controller.getDeliveryAddress()">-->
+                                                    <div>
+                                                        <span class="text-decoration-none btn btn-block p-3" type="button" data-toggle="collapse">
                                                             <div class="rounded shadow bg-success d-flex align-items-center p-3 text-white">
                                                                 <div class="more">
                                                                     <h6 class="m-0">Total da factura <span id="totalFactura"></span></h6>
-                                                                    <p class="small m-0">Ver o endereço de recebimento</p>
+                                                                    <p class="small m-0"></p>
                                                                 </div>
                                                                 <div class="ml-auto"><i class="icofont-simple-right"></i></div>
                                                             </div>
                                                         </a>
                                                     </div>
+                                                    
 
                                                 </div>
                                             </div>
@@ -1298,17 +1301,19 @@ function CarrinhoViewController(){
                                         <div class="card border-0 osahan-accor rounded shadow-sm overflow-hidden mt-3">
                                             <!-- address header -->
                                             <div class="card-header bg-white border-0 p-0" id="headingtwo">
+                                                <!--
                                                 <h2 class="mb-0">
                                                     <button onclick="carrinho.controller.getDeliveryAddress()" class="btn d-flex align-items-center bg-white btn-block text-left btn-lg h5 px-3 py-4 m-0" type="button" data-toggle="collapse" data-target="#collapsetwo" aria-expanded="true" aria-controls="collapsetwo">
                                                     
                                                         <span class="c-number">2</span> Endereço de entrega 
-                                                        <!--
+                                                        
                                                         <a href="#"  data-toggle="modal" data-target="#exampleModal" class="text-decoration-none text-success ml-auto"> 
                                                             <i class="icofont-plus-circle mr-1"></i>Confirmar o endereço
                                                         </a>
-                                                        -->
+                                                        
                                                     </button>
                                                 </h2>
+                                                -->
                                             </div>
                                             <!-- body address -->
                                             <div id="collapsetwo" class="collapse" aria-labelledby="headingtwo" data-parent="#accordionExample">
@@ -1364,13 +1369,13 @@ function CarrinhoViewController(){
                                             <div class="card-header bg-white border-0 p-0" id="headingthree">
                                                 <h2 class="mb-0">
                                                     <button id="dateDeliverySelectBtn" class="btn d-flex align-items-center bg-white btn-block text-left btn-lg h5 px-3 py-4 m-0" type="button" data-toggle="collapse" data-target="#collapsethree" aria-expanded="true" aria-controls="collapsethree">
-                                                        <span class="c-number">3</span> Data de entrega
+                                                        <span class="c-number">2</span> Data de entrega
                                                     </button>
                                                 </h2>
                                             </div>
 
                                             <!-- body delivery --> 
-                                            <div id="collapsethree" class="collapse" aria-labelledby="headingthree" data-parent="#accordionExample">
+                                            <div id="collapsethree" class="collapse show" aria-labelledby="headingthree" data-parent="#accordionExample">
                                                 <div class="card-body p-0 border-top">
                                                     <div class="osahan-order_address">
                                                         <div class="schedule" id="orderScheduler"></div>
@@ -1513,10 +1518,10 @@ function CarrinhoViewController(){
                                     <div class="sticky_sidebar">
                                         <div class="bg-white rounded overflow-hidden shadow-sm mb-3 checkout-sidebar">
                                             <div class="d-flex align-items-center osahan-cart-item-profile border-bottom bg-white p-3">
-                                            <img alt="osahan" src="img/starter1.jpg" class="mr-3 rounded-circle img-fluid">
+                                            <img alt="osahan" src="img/pprimus.png" class="mr-3 rounded-circle img-fluid">
                                             <div class="d-flex flex-column">
                                                 <h6 class="mb-1 font-weight-bold">PPRIMO</h6>
-                                                <p class="mb-0 small text-muted"><i class="feather-map-pin"></i> FAZEMOS POR SI </p>
+                                                <p class="mb-0 small text-muted"><i class="feather-map-pin"></i> TRABALHAMOS PARA O SEUC CONFORTO </p>
                                             </div>
                                             </div>
                                             <div>

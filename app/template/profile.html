@@ -320,7 +320,12 @@
                                             <div class="schedule" id="orderScheduler"></div>
                                             <div class="mb-1 py-2">
                                                 <!-- <p class="display-2"><i class="icofont-ui-calendar text-success"></i></p> -->
-                                                <input id="userDestrito" data-field="destrito" style="width:98%; margin: 0 auto;" mbsc-input data-input-style="outline" data-label-style="stacked" class="form-control entity-userAddress" placeholder="Distrito (Ex: Benfica-Kifica, Lar do Patriota)" />
+                                                <select id="userDestrito" data-field="destrito" class="form-control entyti-user required entity-userAddressReg" id="bairro">
+                                                   <option value="">* Bairro</option>
+                                                   <option value="Benfica/Kifica">Benfica/Kifica</option>
+                                                   <option value="Patriota">Patriota</option>
+                                                   <option value="outro">Outro</option>
+                                                </select>
                                                 <input id="userRua" data-field="rua" style="width:98%; margin: 10px auto;" mbsc-input data-input-style="outline" data-label-style="stacked" class="form-control entity-userAddress" placeholder="Rua" />
                                                 <input id="userCasa" data-field="casa" style="width:98%; margin: 10px auto;" mbsc-input data-input-style="outline" data-label-style="stacked" class="form-control entity-userAddress" placeholder="Casa Nº" />
                                                 
@@ -330,7 +335,7 @@
                                                     O MAPA É RENDERIDAZO PELA CHAMADA DO
                                                     CÓDIGO user.controller.renderAddressOnMap()
                                                  -->
-                                                 <div id="localMap"></div>
+                                                 <div id="localMap" style="height: 175px;"></div>
                                             </div>
                                         </div>
                                         <div class="p-3">

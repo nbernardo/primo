@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 const BASE_IP = "http://64.225.11.52";
+=======
+const BASE_IP = "http://192.168.1.5";
+>>>>>>> 140c58aa6bb7a002e3c4b2b0fb4096c27c317fed
 const __REQUEST__ = new ProwebRequest();
 const COMMAND_URL = `${BASE_IP}:4005/event`;
 
