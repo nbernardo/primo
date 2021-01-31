@@ -20,6 +20,12 @@ function AdminViewController(){
 
     this.addNewProduct = function(){
 
+
+        document.getElementById("imagemProduto").classList.add("required");
+        try{
+            document.getElementById("imagemProduto").parentNode.style.display = "";
+        }catch(e){}
+
         this.hideProductSaveSuccess();
         admin.productEditing = false;
         document.getElementById("emptyModal").getElementsByClassName("modal-content")[0].style.marginTop = "-129px";

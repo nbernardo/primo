@@ -907,9 +907,11 @@ function CarrinhoViewController(){
         
                 <div class="cart-items bg-white position-relative border-bottom" id="item-on-cart-${obj._id}">
                     ${rmButtonContent}
+                    <!--
                     <a href="product_details.html" class="position-absolute">
-                    <span class="badge badge-danger m-3">10%</span>
+                        <span class="badge badge-danger m-3">10%</span>
                     </a>
+                    -->
                     <div class="d-flex  align-items-center p-3">
                         <a href="product_details.html"><img src="${obj.imagem}" class="img-fluid"></a>
                         <span class="ml-3 text-dark text-decoration-none w-100">

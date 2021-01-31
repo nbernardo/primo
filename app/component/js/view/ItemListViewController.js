@@ -282,6 +282,11 @@ function ItemListViewController(){
 
     this.editProduct = function(obj){
 
+        document.getElementById("imagemProduto").classList.remove("required");
+        try{
+            document.getElementById("imagemProduto").parentNode.style.display = "none";
+        }catch(e){}
+
         let curItem = JSON.parse(unescape(obj));
         this.clearProductForm();
         itemList.editingObject = curItem;
