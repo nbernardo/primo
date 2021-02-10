@@ -23,6 +23,27 @@ const find = ({table, database, query}, callback) => {
 
 }
 
+const findClientUser = ({table, database, query}, callback) => {
+
+    MongoClient.connect(url, {useUnifiedTopology: true}, (err, client) => {
+
+        const _query = query || "";
+        const useDb = client.db(database || "promo");
+        useDb.collection(table || "user").find({admin: {$ne: true}}).toArray((err, data) => {
+
+            if(err){
+                console.log("Houve um erro ao buscar os dados");
+                return;
+            }
+            client.close();
+            callback(data);
+
+        })
+    
+    });
+
+}
+
 const save = (objValue, callback) => {
 
     MongoClient.connect(url, (err, client) => {
@@ -121,3 +142,4 @@ module.exports.save = save;
 module.exports.userCheck = userCheck;
 module.exports.saveResetToken = saveResetToken;
 module.exports.updatePassword = updatePassword;
+module.exports.findClientUser = findClientUser;

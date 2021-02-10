@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
 
-const {find, deleteOne, save, saveAddress, userCheck, saveResetToken, updatePassword} = require("./dataccess");
+const {find, deleteOne, save, saveAddress, userCheck, saveResetToken, updatePassword, findClientUser} = require("./dataccess");
 
 router.get("/", (req, res) => {
 
@@ -43,15 +43,28 @@ router.post("/login", (req, client) => {
         }
         client.send({status: false, data: []})
 
-        /*
-        if(isPassCorrect){
-            client.send(res);
-        }else
+    }))
+
+})
+
+
+router.get("/customer", (req, client) => {
+
+    console.log("Busca de customers ");
+    
+    findClientUser({}, ( async (res) => {
+
+        if(res.length >= 1){
+
+            console.log("Encontrou:");
             client.send({
-                status: false,
-                msg: `Utilizador ou senha inválida`
+                status: true,
+                data: res,
             });
-            */
+            return true;
+
+        }
+        client.send({status: false, data: []})
 
     }))
 
