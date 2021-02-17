@@ -34,9 +34,9 @@
 
       <script src="../component/js/utils/Request.js?v3"></script>
       <script src="../component/js/utils/HtmlComponent.js"></script>
-      <script src="../component/js/view/PromoViewController.js?v2"></script>
-      <script src="../component/js/view/MenuViewController.js"></script>
-      <script src="../component/js/view/ItemListViewController.js?v2"></script>
+      <script src="../component/js/view/PromoViewController.js?v29"></script>
+      <script src="../component/js/view/MenuViewController.js?v29"></script>
+      <script src="../component/js/view/ItemListViewController.js?v29"></script>
       <script src="../component/js/utils/ProwebCalendar.js"></script>
       <script src="../component/js/utils/ProwebAuth.js"></script>
       <script src="../component/js/utils/FormUtil.js" defer></script>
@@ -45,547 +45,725 @@
                integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
                crossorigin="" defer></script>
 
+      <style>
+
+         @media screen and (min-width: 769px) {
+            
+            #whouleContent{
+               display: none;
+            }
+
+            body, html{
+               height: 100%;
+            }
+
+            #noContent{
+               display: flex;
+               height: 100%;
+               align-items: center;
+               justify-content: center;
+               text-align: center;
+               padding:90px;
+            }
+
+         }         
+         
+         @media screen and (max-width: 768px) {
+            
+            #whouleContent{
+               display: block;
+            }
+
+            #noContent{
+               display: none;
+            }
+
+         }
+
+
+      </style>
+
    </head>
    <body class="fixed-bottom-padding">
-      <div class="border-bottom p-3 d-none mobile-nav">
 
-         <a href="search.html" class="text-decoration-none">
-            
-            <!-- Filtro de produtos -->
-            <!--
-               <div class="input-group mt-3 rounded shadow-sm overflow-hidden bg-white">
-                  <div class="input-group-prepend">
-                     <button class="border-0 btn btn-outline-secondary text-success bg-white"><i class="icofont-search"></i></button>
+      <div id="noContent">
+
+         <h3>
+
+            <img src="img/pprimo.png" width="600"/>
+            <br>
+            Site em contrução, aceda no seu dispositivo móvel/telefone 
+            o endereço <b>pprimo.online</b> para poder desfrutar dos
+            nossos serviços a partir da web app mobile
+         </h3>
+
+      </div>
+
+
+      <span id="whouleContent">
+
+         <div class="border-bottom p-3 d-none mobile-nav">
+
+            <a href="search.html" class="text-decoration-none">
+               
+               <!-- Filtro de produtos -->
+               <!--
+                  <div class="input-group mt-3 rounded shadow-sm overflow-hidden bg-white">
+                     <div class="input-group-prepend">
+                        <button class="border-0 btn btn-outline-secondary text-success bg-white"><i class="icofont-search"></i></button>
+                     </div>
+                     <input type="text" class="shadow-none border-0 form-control pl-0" placeholder="Search for Products.." aria-label="" aria-describedby="basic-addon1">
                   </div>
-                  <input type="text" class="shadow-none border-0 form-control pl-0" placeholder="Search for Products.." aria-label="" aria-describedby="basic-addon1">
+               -->
+
+            </a>
+         </div>
+
+         <div>
+
+               <!-- Dark mode -->
+               <div class="add-new-user" style="display: none;">
+                     <!-- <label class="theme-switch" for="checkbox"> -->
+                     <!-- <input type="checkbox" id="checkbox" />-->
+                     <div class="slider round"></div>
+                     <i class="text-white icofont-shopping-cart" style="color: white; font-size: 14px;"></i>
+                  </label>
+                  <!-- <em>Enable Dark Mode!</em> -->
                </div>
-            -->
-
-         </a>
-      </div>
-
-      <div>
-
-            <!-- Dark mode -->
-            <div class="add-new-user" style="display: none;">
-                  <!-- <label class="theme-switch" for="checkbox"> -->
-                  <!-- <input type="checkbox" id="checkbox" />-->
-                  <div class="slider round"></div>
-                  <i class="text-white icofont-shopping-cart" style="color: white; font-size: 14px;"></i>
-               </label>
-               <!-- <em>Enable Dark Mode!</em> -->
-            </div>
-   
-   
-            <div class="theme-switch-wrapper" onclick="carrinho.controller.callCartFromFloatButton()">
-               <label class="theme-switch" for="checkbox">
-                  <div class="slider round"></div>
-                  <div>
-                     <i class="text-white icofont-shopping-cart" style="color: white; font-size: 20px; margin-top:-1px;"></i>
-                     <div style="font-size: 0.7rem; margin-top: -6px; text-align: center;" id="cartFloatingButton"></div>
-                  </div>
-                  
-               </label>
-            </div>
-         
-
-      </div>
-
-      <!-- End Dark mode -->
-      <!-- Nav bar -->
-      <div class="bg-white shadow-sm osahan-main-nav">
-         <nav class="navbar navbar-expand-lg navbar-light bg-white osahan-header py-0 container">
-            <a class="navbar-brand mr-0" href="index.html"><img class="img-fluid logo-img rounded-pill border shadow-sm" src="img/pprimus.png"></a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="ml-3 d-flex align-items-center">
-               <div class="dropdown mr-3">
-                  <a class="text-dark dropdown-toggle d-flex align-items-center osahan-location-drop" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                     <div><i class="icofont-location-pin d-flex align-items-center bg-light rounded-pill p-2 icofont-size border shadow-sm mr-2"></i></div>
+      
+      
+               <div class="theme-switch-wrapper" onclick="carrinho.controller.callCartFromFloatButton()">
+                  <label class="theme-switch" for="checkbox">
+                     <div class="slider round"></div>
                      <div>
-                        <p class="text-muted mb-0 small">Select Location</p>
-                        Maharashtra India...
+                        <i class="text-white icofont-shopping-cart" style="color: white; font-size: 20px; margin-top:-1px;"></i>
+                        <div style="font-size: 0.7rem; margin-top: -6px; text-align: center;" id="cartFloatingButton"></div>
                      </div>
-                  </a>
-                  <div class="dropdown-menu osahan-select-loaction p-3" aria-labelledby="navbarDropdown">
-                     <span>Select your city to start shopping</span>
-                     <form class="form-inline my-2">
-                        <!-- <input class="form-control form-control-lg mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                           <button class="btn btn-outline-success btn-block" type="submit">Search</button> -->
-                        <div class="input-group p-0 col-lg-12">
-                           <input type="text" class="form-control form-control-sm" id="inlineFormInputGroupUsername2" placeholder="Search Location">
-                           <div class="input-group-prepend">
-                              <div class="btn btn-success rounded-right btn-sm"><i class="icofont-location-arrow"></i> Detect</div>
-                           </div>
+                     
+                  </label>
+               </div>
+            
+
+         </div>
+
+         <!-- End Dark mode -->
+         <!-- Nav bar -->
+         <div class="bg-white shadow-sm osahan-main-nav">
+            <nav class="navbar navbar-expand-lg navbar-light bg-white osahan-header py-0 container">
+               <a class="navbar-brand mr-0" href="index.html"><img class="img-fluid logo-img rounded-pill border shadow-sm" src="img/pprimus.png"></a>
+               <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+               <span class="navbar-toggler-icon"></span>
+               </button>
+               <div class="ml-3 d-flex align-items-center">
+                  <div class="dropdown mr-3">
+                     <a class="text-dark dropdown-toggle d-flex align-items-center osahan-location-drop" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <div><i class="icofont-location-pin d-flex align-items-center bg-light rounded-pill p-2 icofont-size border shadow-sm mr-2"></i></div>
+                        <div>
+                           <p class="text-muted mb-0 small">Select Location</p>
+                           Maharashtra India...
                         </div>
-                     </form>
-                     <div class="city pt-2">
-                        <h6>Top Citys</h6>
-                        <p class="border-bottom m-0 py-1"><a href="#" class="text-dark">Banglore</a></p>
-                        <p class="border-bottom m-0 py-1"><a href="#" class="text-dark">Noida</a></p>
-                        <p class="border-bottom m-0 py-1"><a href="#" class="text-dark">Delhi</a></p>
-                        <p class="m-0 py-1"><a href="#" class="text-dark">Mumbai</a></p>
+                     </a>
+                     <div class="dropdown-menu osahan-select-loaction p-3" aria-labelledby="navbarDropdown">
+                        <span>Select your city to start shopping</span>
+                        <form class="form-inline my-2">
+                           <!-- <input class="form-control form-control-lg mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                              <button class="btn btn-outline-success btn-block" type="submit">Search</button> -->
+                           <div class="input-group p-0 col-lg-12">
+                              <input type="text" class="form-control form-control-sm" id="inlineFormInputGroupUsername2" placeholder="Search Location">
+                              <div class="input-group-prepend">
+                                 <div class="btn btn-success rounded-right btn-sm"><i class="icofont-location-arrow"></i> Detect</div>
+                              </div>
+                           </div>
+                        </form>
+                        <div class="city pt-2">
+                           <h6>Top Citys</h6>
+                           <p class="border-bottom m-0 py-1"><a href="#" class="text-dark">Banglore</a></p>
+                           <p class="border-bottom m-0 py-1"><a href="#" class="text-dark">Noida</a></p>
+                           <p class="border-bottom m-0 py-1"><a href="#" class="text-dark">Delhi</a></p>
+                           <p class="m-0 py-1"><a href="#" class="text-dark">Mumbai</a></p>
+                        </div>
+                     </div>
+                  </div>
+                  <!-- search  -->
+                  <div class="input-group mr-sm-2 col-lg-12">
+                     <input type="text" class="form-control" id="inlineFormInputGroupUsername2" placeholder="Search for Products..">
+                     <div class="input-group-prepend">
+                        <div class="btn btn-success rounded-right"><i class="icofont-search"></i></div>
                      </div>
                   </div>
                </div>
-               <!-- search  -->
-               <div class="input-group mr-sm-2 col-lg-12">
-                  <input type="text" class="form-control" id="inlineFormInputGroupUsername2" placeholder="Search for Products..">
-                  <div class="input-group-prepend">
-                     <div class="btn btn-success rounded-right"><i class="icofont-search"></i></div>
+               <div class="ml-auto d-flex align-items-center">
+                  <!-- login/signup -->
+                  <a href="#" data-toggle="modal" data-target="#login" class="mr-2 text-dark bg-light rounded-pill p-2 icofont-size border shadow-sm">
+                  <i class="icofont-login"></i>
+                  </a>
+                  <!-- notification -->
+                  <div class="dropdown">
+                     <a href="#" class="text-dark dropdown-toggle not-drop" id="dropdownMenuNotification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="icofont-notification d-flex align-items-center bg-light rounded-pill p-2 icofont-size border shadow-sm">
+                           <!-- <p class="mt-n2 mb-0 font-weight-bold text-success">2</p> -->
+                        </i>
+                     </a>
+                     <div class="dropdown-menu dropdown-menu-right p-0 osahan-notifications-main" aria-labelledby="dropdownMenuNotification">
+                        <!-- notification 1 -->
+                        <div class="osahan-notifications bg-white border-bottom p-2">
+                           <div class="position-absolute ml-n1 py-2"><i class="icofont-check-circled text-white bg-success rounded-pill p-1"></i></div>
+                           <a href="status_complete.html" class="text-decoration-none text-dark">
+                              <div class="notifiction small">
+                                 <div class="ml-3">
+                                    <p class="font-weight-bold mb-1">Yay! Order Complete</p>
+                                    <p class="small m-0"><i class="icofont-ui-calendar"></i> Today, 05:14 AM</p>
+                                 </div>
+                              </div>
+                           </a>
+                        </div>
+                        <!-- notification 2 -->
+                        <div class="osahan-notifications bg-white border-bottom p-2">
+                           <a href="status_onprocess.html" class="text-decoration-none text-muted">
+                              <div class="notifiction small">
+                                 <div class="ml-3">
+                                    <p class="font-weight-bold mb-1">Yipiee. order Success</p>
+                                    <p class="small m-0"><i class="icofont-ui-calendar"></i> Monday, 08:30 PM</p>
+                                 </div>
+                              </div>
+                           </a>
+                        </div>
+                        <!-- notification 3 -->
+                        <div class="osahan-notifications bg-white p-2">
+                           <a href="status_onprocess.html" class="text-decoration-none text-muted">
+                              <div class="notifiction small">
+                                 <div class="ml-3">
+                                    <p class="font-weight-bold mb-1">New Promos Coming</p>
+                                    <p class="small m-0"><i class="icofont-ui-calendar"></i> Sunday, 10:30 AM</p>
+                                 </div>
+                              </div>
+                           </a>
+                        </div>
+                     </div>
+                  </div>
+                  <!-- cart -->
+                  <a href="cart.html" class="ml-2 text-dark bg-light rounded-pill p-2 icofont-size border shadow-sm">
+                  <i class="icofont-shopping-cart"></i>
+                  </a>
+               </div>
+            </nav>
+            <!-- Menu bar -->
+            <div class="bg-color-head">
+               <div class="container menu-bar d-flex align-items-center">
+                  <ul class="list-unstyled form-inline mb-0">
+                     <li class="nav-item active">
+                        <a class="nav-link text-white pl-0" href="home.html">Home <span class="sr-only">(current)</span></a>
+                     </li>
+                     <li class="nav-item dropdown">
+                        <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Products
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                           <a class="dropdown-item" href="listing.html">Listing</a>
+                           <a class="dropdown-item" href="product_details.html">Detail</a>
+                           <div class="dropdown-divider"></div>
+                           <a class="dropdown-item" href="picks_today.html">Trending</a>
+                           <a class="dropdown-item" href="recommend.html">Recommended</a>
+                           <a class="dropdown-item" href="fresh_vegan.html">Most Popular</a>
+                        </div>
+                     </li>
+                     <li class="nav-item dropdown">
+                        <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Checkout Process
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                           <a class="dropdown-item" href="cart.html">Cart</a>
+                           <a class="dropdown-item" href="checkout.html">Checkout</a>
+                           <a class="dropdown-item" href="successful.html">Successful</a>
+                        </div>
+                     </li>
+                     <li class="nav-item dropdown">
+                        <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        My Order
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                           <a class="dropdown-item" href="my_order.html">My order</a>
+                           <a class="dropdown-item" href="status_complete.html">Status Complete</a>
+                           <a class="dropdown-item" href="status_onprocess.html">Status on Process</a>
+                           <a class="dropdown-item" href="status_canceled.html">Status Canceled</a>
+                           <a class="dropdown-item" href="review.html">Review</a>
+                        </div>
+                     </li>
+                     <li class="nav-item dropdown">
+                        <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Extra Pages
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                           <a class="dropdown-item" href="verification.html">Verification</a>
+                           <a class="dropdown-item" href="promos.html">Promos</a>
+                           <a class="dropdown-item" href="promo_details.html">Promo Details</a>
+                           <a class="dropdown-item" href="terms_conditions.html">Terms & Conditions</a>
+                           <a class="dropdown-item" href="privacy.html">Privacy</a>
+                           <a class="dropdown-item" href="terms&conditions.html">Conditions</a>
+                           <a class="dropdown-item" href="help_support.html">Help Support</a>
+                           <a class="dropdown-item" href="help_ticket.html">Help Ticket</a>
+                           <a class="dropdown-item" href="refund_payment.html">Refund Payment</a>
+                           <a class="dropdown-item" href="faq.html">FAQ</a>
+                           <a class="dropdown-item" href="signin.html">Sign In</a>
+                           <a class="dropdown-item" href="signup.html">Sign Up</a>
+                           <a class="dropdown-item" href="search.html">Search</a>
+                        </div>
+                     </li>
+                  </ul>
+                  <div class="list-unstyled form-inline mb-0 ml-auto">
+                     <a href="picks_today.html" class="text-white px-3 py-2">Trending</a>
+                     <a href="promos.html" class="text-white bg-offer px-3 py-2"><i class="icofont-sale-discount h6"></i>Promos</a>
                   </div>
                </div>
             </div>
-            <div class="ml-auto d-flex align-items-center">
-               <!-- login/signup -->
-               <a href="#" data-toggle="modal" data-target="#login" class="mr-2 text-dark bg-light rounded-pill p-2 icofont-size border shadow-sm">
-               <i class="icofont-login"></i>
-               </a>
-               <!-- notification -->
-               <div class="dropdown">
-                  <a href="#" class="text-dark dropdown-toggle not-drop" id="dropdownMenuNotification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                     <i class="icofont-notification d-flex align-items-center bg-light rounded-pill p-2 icofont-size border shadow-sm">
-                        <!-- <p class="mt-n2 mb-0 font-weight-bold text-success">2</p> -->
-                     </i>
-                  </a>
-                  <div class="dropdown-menu dropdown-menu-right p-0 osahan-notifications-main" aria-labelledby="dropdownMenuNotification">
-                     <!-- notification 1 -->
-                     <div class="osahan-notifications bg-white border-bottom p-2">
-                        <div class="position-absolute ml-n1 py-2"><i class="icofont-check-circled text-white bg-success rounded-pill p-1"></i></div>
-                        <a href="status_complete.html" class="text-decoration-none text-dark">
-                           <div class="notifiction small">
-                              <div class="ml-3">
-                                 <p class="font-weight-bold mb-1">Yay! Order Complete</p>
-                                 <p class="small m-0"><i class="icofont-ui-calendar"></i> Today, 05:14 AM</p>
-                              </div>
-                           </div>
-                        </a>
-                     </div>
-                     <!-- notification 2 -->
-                     <div class="osahan-notifications bg-white border-bottom p-2">
-                        <a href="status_onprocess.html" class="text-decoration-none text-muted">
-                           <div class="notifiction small">
-                              <div class="ml-3">
-                                 <p class="font-weight-bold mb-1">Yipiee. order Success</p>
-                                 <p class="small m-0"><i class="icofont-ui-calendar"></i> Monday, 08:30 PM</p>
-                              </div>
-                           </div>
-                        </a>
-                     </div>
-                     <!-- notification 3 -->
-                     <div class="osahan-notifications bg-white p-2">
-                        <a href="status_onprocess.html" class="text-decoration-none text-muted">
-                           <div class="notifiction small">
-                              <div class="ml-3">
-                                 <p class="font-weight-bold mb-1">New Promos Coming</p>
-                                 <p class="small m-0"><i class="icofont-ui-calendar"></i> Sunday, 10:30 AM</p>
-                              </div>
-                           </div>
-                        </a>
-                     </div>
-                  </div>
-               </div>
-               <!-- cart -->
-               <a href="cart.html" class="ml-2 text-dark bg-light rounded-pill p-2 icofont-size border shadow-sm">
-               <i class="icofont-shopping-cart"></i>
-               </a>
+         </div>
+         <!-- bread_cum -->
+         <nav aria-label="breadcrumb" class="breadcrumb mb-0 d-none">
+            <div class="container">
+               <ol class="d-flex align-items-center mb-0 p-0">
+                  <li class="breadcrumb-item"><a href="#" class="text-success">Home</a></li>
+                  <li class="breadcrumb-item active" aria-current="page"></li>
+               </ol>
             </div>
          </nav>
-         <!-- Menu bar -->
-         <div class="bg-color-head">
-            <div class="container menu-bar d-flex align-items-center">
-               <ul class="list-unstyled form-inline mb-0">
-                  <li class="nav-item active">
-                     <a class="nav-link text-white pl-0" href="home.html">Home <span class="sr-only">(current)</span></a>
-                  </li>
-                  <li class="nav-item dropdown">
-                     <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                     Products
-                     </a>
-                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="listing.html">Listing</a>
-                        <a class="dropdown-item" href="product_details.html">Detail</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="picks_today.html">Trending</a>
-                        <a class="dropdown-item" href="recommend.html">Recommended</a>
-                        <a class="dropdown-item" href="fresh_vegan.html">Most Popular</a>
-                     </div>
-                  </li>
-                  <li class="nav-item dropdown">
-                     <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                     Checkout Process
-                     </a>
-                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="cart.html">Cart</a>
-                        <a class="dropdown-item" href="checkout.html">Checkout</a>
-                        <a class="dropdown-item" href="successful.html">Successful</a>
-                     </div>
-                  </li>
-                  <li class="nav-item dropdown">
-                     <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                     My Order
-                     </a>
-                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="my_order.html">My order</a>
-                        <a class="dropdown-item" href="status_complete.html">Status Complete</a>
-                        <a class="dropdown-item" href="status_onprocess.html">Status on Process</a>
-                        <a class="dropdown-item" href="status_canceled.html">Status Canceled</a>
-                        <a class="dropdown-item" href="review.html">Review</a>
-                     </div>
-                  </li>
-                  <li class="nav-item dropdown">
-                     <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                     Extra Pages
-                     </a>
-                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="verification.html">Verification</a>
-                        <a class="dropdown-item" href="promos.html">Promos</a>
-                        <a class="dropdown-item" href="promo_details.html">Promo Details</a>
-                        <a class="dropdown-item" href="terms_conditions.html">Terms & Conditions</a>
-                        <a class="dropdown-item" href="privacy.html">Privacy</a>
-                        <a class="dropdown-item" href="terms&conditions.html">Conditions</a>
-                        <a class="dropdown-item" href="help_support.html">Help Support</a>
-                        <a class="dropdown-item" href="help_ticket.html">Help Ticket</a>
-                        <a class="dropdown-item" href="refund_payment.html">Refund Payment</a>
-                        <a class="dropdown-item" href="faq.html">FAQ</a>
-                        <a class="dropdown-item" href="signin.html">Sign In</a>
-                        <a class="dropdown-item" href="signup.html">Sign Up</a>
-                        <a class="dropdown-item" href="search.html">Search</a>
-                     </div>
-                  </li>
-               </ul>
-               <div class="list-unstyled form-inline mb-0 ml-auto">
-                  <a href="picks_today.html" class="text-white px-3 py-2">Trending</a>
-                  <a href="promos.html" class="text-white bg-offer px-3 py-2"><i class="icofont-sale-discount h6"></i>Promos</a>
-               </div>
-            </div>
-         </div>
-      </div>
-      <!-- bread_cum -->
-      <nav aria-label="breadcrumb" class="breadcrumb mb-0 d-none">
-         <div class="container">
-            <ol class="d-flex align-items-center mb-0 p-0">
-               <li class="breadcrumb-item"><a href="#" class="text-success">Home</a></li>
-               <li class="breadcrumb-item active" aria-current="page"></li>
-            </ol>
-         </div>
-      </nav>
-      <section class="py-4 osahan-main-body">
-         <div class="container">
-            <div class="row">
-               <div class="col-lg-12">
-                  <!-- home page -->
-                  <div class="osahan-home-page">
-                     <!-- body -->
-                     <div class="osahan-body" style="margin-top: -10px;">
+         <section class="py-4 osahan-main-body">
+            <div class="container">
+               <div class="row">
+                  <div class="col-lg-12">
+                     <!-- home page -->
+                     <div class="osahan-home-page">
+                        <!-- body -->
+                        <div class="osahan-body" style="margin-top: -10px;">
 
-                        <span id="notAuthButton"></span>
+                           <span id="notAuthButton"></span>
 
-                        &nbsp;
-                        
-                        <!-- categories -->
-                        <div class="pt-3 pb-2  osahan-categories" style="margin-top: 20px;">
-                           <div class="d-flex align-items-center mb-2">
-                              <h5 class="m-0">O que deseja?</h5>
-                              <a href="#" class="ml-auto btn btn-outline-success btn-sm">Mais</a>
-                           </div>
-                           <div class="categories-slider" id="categories-slider">
-
-                              <div class="col-c">
-                                 <div class="bg-white shadow-sm rounded text-center my-2 px-2 py-3 c-it ">
-                                    <span onclick="(new MenuViewController()).showProductsOptions('carcut')">
-
-                                       <img src="img/categorie/3.svg" class="img-fluid px-2 mx-auto">
-                                       <p class="m-0 pt-2 text-muted text-center">Fiambre<br>e Queijo</p>
-
-                                    </a>
-                                 </div>
-                              </div>
-
-                              <div class="col-c" >
-                                 <div class="bg-white shadow-sm rounded text-center my-2 px-2 py-3 c-it disabled-des">
-                                    <span onclick="">
-                                       <img src="img/categorie/5.svg" class="img-fluid px-2 mx-auto">
-                                       <p class="m-0 pt-2 text-muted text-center">Leite <br>e ovos</p>
-                                    </span>
-                                 </div>
-                              </div>
-
-                              <div class="col-c" >
-                                 <div class="bg-white shadow-sm rounded text-center my-2 px-2 py-3 c-it disabled-des">
-                                    <span onclick="">
-                                       <img src="img/categorie/1.svg" class="img-fluid px-2 mx-auto">
-                                       <p class="m-0 pt-2 text-muted text-center">Legumes<br>Frescos</p>
-                                    </span>
-                                 </div>
-                              </div>
-
-                              <div class="col-c" >
-                                 <div class="bg-white shadow-sm rounded text-center my-2 px-2 py-3 c-it disabled-des">
-                                    <span onclick="">
-                                       <img src="img/categorie/2.svg" class="img-fluid px-2 mx-auto">
-                                       <p class="m-0 pt-2 text-muted text-center">Frutas <br>Diversas</p>
-                                    </span>
-                                 </div>
-                              </div>
-
-                              <div class="col-c" >
-                                 <div class="bg-white shadow-sm rounded text-center my-2 px-2 py-3 c-it disabled-des">
-                                    <span onclick="">
-                                       <img src="img/categorie/4.svg" class="img-fluid px-2 mx-auto">
-                                       <p class="m-0 pt-2 text-muted text-center">Frutos <br>do mar</p>
-                                    </span>
-                                 </div>
-                              </div>
-
-                              <div class="col-c" >
-                                 <div class="bg-white shadow-sm rounded text-center my-2 px-2 py-3 c-it">
-                                    <span onclick="(new MenuViewController()).showProductsOptions('pao')">
-
-                                       <img src="img/categorie/6.svg" class="img-fluid px-2 mx-auto">
-                                       <p class="m-0 pt-2 text-muted text-center">Pães <br>Diversos</p>
-
-                                    </a>
-                                 </div>
-                              </div>
-
-
-                           </div>
-                        </div>
-                        <!-- Promos -->
-                        <div class="py-3 osahan-promos">
-                           <div class="d-flex align-items-center mb-3">
-                              <h5 class="m-0">Ganhe pontos e troque por:</h5>
-                              <a href="#" class="ml-auto btn btn-outline-success btn-sm">Mais</a>
-                           </div>
-
-                           <div class="promo-slider pb-0 mb-0" id="promoLocal1">
-
-                              <div class="osahan-slider-item mx-2">
-                                 <span onclick="carrinho.controller.showProductDetail()">
-                                    <img src="img/promos/E.png" class="img-fluid mx-auto rounded promoImageContainer" alt="Responsive image">
-                                 </span>
-                             </div>
-                              <div class="osahan-slider-item mx-2">
-                                 <span onclick="carrinho.controller.showProductDetail()">
-                                    <img src="img/promos/R.png" class="img-fluid mx-auto rounded promoImageContainer" alt="Responsive image">
-                                 </span>
-                             </div>
-                              <div class="osahan-slider-item mx-2">
-                                 <span onclick="carrinho.controller.showProductDetail()">
-                                    <img src="img/promos/W.png" class="img-fluid mx-auto rounded promoImageContainer" alt="Responsive image">
-                                 </span>
-                             </div>
-
-
-                              <!--
-                              <div class="osahan-slider-item mx-2">
-                                 <a href="promo_details.html">
-                                    <img src="http://pprimo.online/app/template/img/promos/images/pao_273x180.jpg" class="img-fluid mx-auto rounded" alt="Responsive image">
-                                 </a>
-                             </div>
-                              <div class="osahan-slider-item mx-2">
-                                 <a href="promo_details.html">
-                                    <img src="http://pprimo.online/app/template/img/promos/images/paes_273x180.png" class="img-fluid mx-auto rounded promoImageContainer" alt="Responsive image">
-                                 </a>
-                             </div>
-                             -->
-                             
-                           </div>
+                           &nbsp;
                            
-                        </div>
-                        <!-- Pick's Today -->
-                        <div class="title d-flex align-items-center py-3">
-                           <h5 class="m-0">Solicite já e ganhe pontos</h5>
-                           <a class="ml-auto btn btn-outline-success btn-sm" href="javascript: return false;">Mais</a>
-                        </div>
-                        <!-- pick today -->
-                        <div class="pick_today">
-                           <div class="row" id="vitrine-listItems"></div>
-                        </div>
-                        <!-- Most sales -->
-                        <div class="title d-flex align-items-center py-3">
-                           <h5 class="m-0">Mais compras ou Serviços</h5>
-                           <a class="ml-auto btn btn-outline-success btn-sm" type="button" href="javascript: return false;">Mais</a>
-                        </div>
-                        <!-- osahan recommend -->
-                        <div class="osahan-recommend">
-                           <div class="row">
-                              <div class="col-12 col-md-4 mb-3">
-                                 <span class="text-dark text-decoration-none">
-                                    <div class="list-card bg-white h-100 rounded overflow-hidden position-relative shadow-sm">
-                                       
-                                       <div class="recommend-slider2 rounded mb-0">
-                                          <div onclick="carrinho.controller.showProductDetail()" class="osahan-slider-item m-2 rounded">
-                                             <img src="img/recommend/r1.jpg" class="img-fluid mx-auto rounded shadow-sm" alt="Responsive image">
-                                          </div>
-                                       </div>
+                           <!-- categories -->
+                           <div class="pt-3 pb-2  osahan-categories" style="margin-top: 20px;">
+                              <div class="d-flex align-items-center mb-2">
+                                 <h5 class="m-0">O que deseja?</h5>
+                                 <span href="#" class="ml-auto btn btn-outline-success btn-sm">...</span>
+                              </div>
+                              <div class="categories-slider" id="categories-slider">
 
-                                       <div class="p-3 position-relative">
-                                          <h6 class="mb-1 font-weight-bold text-success">Solicitar Manuntenção de viatura ao domicílio
-                                          </h6>
-                                          <p class="text-muted">
-                                             <ul>
-                                                <li>Manuntenção periodica ao domicílio (troca de oleo e filtros)</li>
-                                                <li>Troca de Calços</li>
-                                             </ul>
-                                          </p>
-                                       <div class="d-flex align-items-center">
-                                          <h6 class="m-0">de 7.000 à 20.000 Kz</h6>
-                                          <a class="ml-auto" href="#">
-                                             <form id='myform' class="cart-items-number d-flex" method='POST' action='#'>
-                                             <input type='button' value='-' class='qtyminus btn btn-success btn-sm' field='quantity' />
-                                             <input type='text' name='quantity' value='1' class='qty form-control' />
-                                             <input type='button' value='+' class='qtyplus btn btn-success btn-sm' field='quantity' />
-                                             </form>   
-                                          </a>
-                                       </div>
+                                 <div class="col-c">
+                                    <div class="bg-white shadow-sm rounded text-center my-2 px-2 py-3 c-it ">
+                                       <span onclick="(new MenuViewController()).showProductsOptions('carcut')">
+
+                                          <img src="img/categorie/3.svg" class="img-fluid px-2 mx-auto">
+                                          <p class="m-0 pt-2 text-muted text-center">Fiambre<br>e Queijo</p>
+
+                                       </a>
                                     </div>
                                  </div>
-                              </span>
-                           </div>      
-                        </div>
+
+                                 <div class="col-c" >
+                                    <div class="bg-white shadow-sm rounded text-center my-2 px-2 py-3 c-it disabled-des">
+                                       <span onclick="">
+                                          <img src="img/categorie/5.svg" class="img-fluid px-2 mx-auto">
+                                          <p class="m-0 pt-2 text-muted text-center">Leite <br>e ovos</p>
+                                       </span>
+                                    </div>
+                                 </div>
+
+                                 <div class="col-c" >
+                                    <div class="bg-white shadow-sm rounded text-center my-2 px-2 py-3 c-it disabled-des">
+                                       <span onclick="">
+                                          <img src="img/categorie/1.svg" class="img-fluid px-2 mx-auto">
+                                          <p class="m-0 pt-2 text-muted text-center">Legumes<br>Frescos</p>
+                                       </span>
+                                    </div>
+                                 </div>
+
+                                 <div class="col-c" >
+                                    <div class="bg-white shadow-sm rounded text-center my-2 px-2 py-3 c-it disabled-des">
+                                       <span onclick="">
+                                          <img src="img/categorie/2.svg" class="img-fluid px-2 mx-auto">
+                                          <p class="m-0 pt-2 text-muted text-center">Frutas <br>Diversas</p>
+                                       </span>
+                                    </div>
+                                 </div>
+
+                                 <div class="col-c" >
+                                    <div class="bg-white shadow-sm rounded text-center my-2 px-2 py-3 c-it disabled-des">
+                                       <span onclick="">
+                                          <img src="img/categorie/4.svg" class="img-fluid px-2 mx-auto">
+                                          <p class="m-0 pt-2 text-muted text-center">Frutos <br>do mar</p>
+                                       </span>
+                                    </div>
+                                 </div>
+
+                                 <div class="col-c" >
+                                    <div class="bg-white shadow-sm rounded text-center my-2 px-2 py-3 c-it">
+                                       <span onclick="(new MenuViewController()).showProductsOptions('pao')">
+
+                                          <img src="img/categorie/6.svg" class="img-fluid px-2 mx-auto">
+                                          <p class="m-0 pt-2 text-muted text-center">Pães <br>Diversos</p>
+
+                                       </a>
+                                    </div>
+                                 </div>
+
+
+                              </div>
+                           </div>
+                           <!-- Promos -->
+                           <div class="py-3 osahan-promos">
+                              <div class="d-flex align-items-center mb-3">
+                                 <h5 class="m-0">Ganhe pontos e troque por:</h5>
+                                 <span href="#" class="ml-auto btn btn-outline-success btn-sm">...</span>
+                              </div>
+
+                              <div class="promo-slider pb-0 mb-0" id="promoLocal1">
+
+                                 <div class="osahan-slider-item mx-2">
+                                    <span onclick="carrinho.controller.showProductDetail()">
+                                       <img src="img/promos/t.png" class="img-fluid mx-auto rounded promoImageContainer" alt="Responsive image">
+                                    </span>
+                              </div>
+                                 <div class="osahan-slider-item mx-2">
+                                    <span onclick="carrinho.controller.showProductDetail()">
+                                       <img src="img/promos/T2.png" class="img-fluid mx-auto rounded promoImageContainer" alt="Responsive image">
+                                    </span>
+                              </div>
+                                 <div class="osahan-slider-item mx-2">
+                                    <span onclick="carrinho.controller.showProductDetail()">
+                                       <img src="img/promos/t3.png" class="img-fluid mx-auto rounded promoImageContainer" alt="Responsive image">
+                                    </span>
+                              </div>
+
+
+                                 <!--
+                                 <div class="osahan-slider-item mx-2">
+                                    <a href="promo_details.html">
+                                       <img src="http://pprimo.online/app/template/img/promos/images/pao_273x180.jpg" class="img-fluid mx-auto rounded" alt="Responsive image">
+                                    </a>
+                              </div>
+                                 <div class="osahan-slider-item mx-2">
+                                    <a href="promo_details.html">
+                                       <img src="http://pprimo.online/app/template/img/promos/images/paes_273x180.png" class="img-fluid mx-auto rounded promoImageContainer" alt="Responsive image">
+                                    </a>
+                              </div>
+                              -->
+                              
+                              </div>
+                              
+                           </div>
+                           <!-- Pick's Today -->
+                           <div class="title d-flex align-items-center py-3">
+                              <h5 class="m-0">Solicite já e ganhe pontos</h5>
+                              <span class="ml-auto btn btn-outline-success btn-sm" href="javascript: return false;">...</span>
+                           </div>
+                           <!-- pick today -->
+                           <div class="pick_today">
+
+                              <div class="input-group mt-3 rounded shadow-sm overflow-hidden bg-white">
+                                 <div class="input-group-prepend">
+                                    <button class="border-0 btn btn-outline-secondary text-success bg-white"><i class="icofont-search"></i></button>
+                                 </div>
+                                 <input
+                                    onkeyup="itemList.controller.renderFilteredListItems(this.value)" 
+                                    type="text" 
+                                    class="shadow-none border-0 form-control pl-0" 
+                                    placeholder="Procurar produto (Ex: Pizza, Pão, Hamburguer)" 
+                                    id="searchInputText"
+                                    aria-label="" 
+                                    aria-describedby="basic-addon1">
+                                 <div class="input-group-prepend" id="closeSearchItem" style="display: none;">
+                                    <button 
+                                       onclick="itemList.controller.renderRestoredListItems()"
+                                       class="border-0 btn btn-outline-danger text-danger bg-white">
+                                       <i class="icofont-close"></i>
+                                    </button>
+                                 </div>
+                              </div>
+
+                              <div class="row" id="vitrine-listItems" style="margin-top: 20px;"></div>
+                           </div>
+                           <!-- Most sales -->
+                           <div class="title d-flex align-items-center py-3">
+                              <h5 class="m-0">Mais compras ou Serviços</h5>
+                              <span class="ml-auto btn btn-outline-success btn-sm" type="button" href="javascript: return false;">...</span>
+                           </div>
+                           <!-- osahan recommend -->
+                           <div class="osahan-recommend">
+                              <div class="row">
+                                 <div class="col-12 col-md-4 mb-3">
+                                    <span class="text-dark text-decoration-none">
+                                       <div class="list-card bg-white h-100 rounded overflow-hidden position-relative shadow-sm">
+                                          
+                                          <div class="recommend-slider2 rounded mb-0">
+                                             <div onclick="carrinho.controller.showProductDetail()" class="osahan-slider-item m-2 rounded">
+                                                <img src="img/recommend/service.jpg" class="img-fluid mx-auto rounded shadow-sm" alt="Responsive image">
+                                             </div>
+                                          </div>
+
+                                          <div class="p-3 position-relative">
+                                             <h6 class="mb-1 font-weight-bold text-success">Solicitar Manuntenção de viatura ao domicílio
+                                             </h6>
+                                             <p class="text-muted">
+                                                <ul>
+                                                   <li>Manuntenção periodica ao domicílio (troca de oleo e filtros)</li>
+                                                   <li>Troca de Calços</li>
+                                                </ul>
+                                             </p>
+                                          <div class="d-flex align-items-center">
+                                             <h6 class="m-0">de 7.000 à 20.000 Kz</h6>
+                                             <a class="ml-auto" href="#">
+                                                <form id='myform' class="cart-items-number d-flex" method='POST' action='#'>
+                                                <input type='button' value='-' class='qtyminus btn btn-success btn-sm' field='quantity' />
+                                                <input type='text' name='quantity' value='1' class='qty form-control' />
+                                                <input type='button' value='+' class='qtyplus btn btn-success btn-sm' field='quantity' />
+                                                </form>   
+                                             </a>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </span>
+                              </div>      
+                           </div>
+                           </div>
                         </div>
                      </div>
                   </div>
                </div>
             </div>
-         </div>
-      </section>
+         </section>
 
-      <nav id="main-nav">
+         <nav id="main-nav">
+            
+            <!-- Menu Principal -->         
+            <ul class="second-nav"></ul>
+            <ul class="bottom-nav" id="bottom-menu"></ul>
+
+         </nav>
+
          
-         <!-- Menu Principal -->         
-         <ul class="second-nav"></ul>
-         <ul class="bottom-nav" id="bottom-menu"></ul>
-
-      </nav>
-
-      
-      <!-- footer -->
-      <footer class="section-footer border-top bg-white">
-         <section class="footer-top py-4">
-            <div class="container">
-               <div class="row">
-                  <div class="col-md-4">
-                     <div class="form-inline">
-                        <select class="custom-select mr-2">
-                           <option>USD</option>
-                           <option>EUR</option>
-                           <option>RUBL</option>
-                        </select>
-                        <select class="custom-select">
-                           <option>United States</option>
-                           <option>Russia</option>
-                           <option>Uzbekistan</option>
-                        </select>
-                     </div>
-                     <!-- form-inline.// -->
-                  </div>
-                  <div class="col-md-4">
-                     <form>
-                        <div class="input-group">
-                           <input type="text" placeholder="Email" class="form-control" name="">
-                           <span class="input-group-append">
-                           <button type="submit" class="btn btn-success"> Subscribe</button>
-                           </span>
+         <!-- footer -->
+         <footer class="section-footer border-top bg-white">
+            <section class="footer-top py-4">
+               <div class="container">
+                  <div class="row">
+                     <div class="col-md-4">
+                        <div class="form-inline">
+                           <select class="custom-select mr-2">
+                              <option>USD</option>
+                              <option>EUR</option>
+                              <option>RUBL</option>
+                           </select>
+                           <select class="custom-select">
+                              <option>United States</option>
+                              <option>Russia</option>
+                              <option>Uzbekistan</option>
+                           </select>
                         </div>
-                        <!-- input-group.// -->
-                     </form>
+                        <!-- form-inline.// -->
+                     </div>
+                     <div class="col-md-4">
+                        <form>
+                           <div class="input-group">
+                              <input type="text" placeholder="Email" class="form-control" name="">
+                              <span class="input-group-append">
+                              <button type="submit" class="btn btn-success"> Subscribe</button>
+                              </span>
+                           </div>
+                           <!-- input-group.// -->
+                        </form>
+                     </div>
+                     <div class="col-md-4 text-md-right">
+                        <a href="#" class="btn btn-icon btn-light"><i class="icofont-facebook"></i></a>
+                        <a href="#" class="btn btn-icon btn-light"><i class="icofont-twitter"></i></a>
+                        <a href="#" class="btn btn-icon btn-light"><i class="icofont-instagram"></i></a>
+                        <a href="#" class="btn btn-icon btn-light"><i class="icofont-youtube"></i></a>
+                     </div>
                   </div>
-                  <div class="col-md-4 text-md-right">
-                     <a href="#" class="btn btn-icon btn-light"><i class="icofont-facebook"></i></a>
-                     <a href="#" class="btn btn-icon btn-light"><i class="icofont-twitter"></i></a>
-                     <a href="#" class="btn btn-icon btn-light"><i class="icofont-instagram"></i></a>
-                     <a href="#" class="btn btn-icon btn-light"><i class="icofont-youtube"></i></a>
+                  <!-- row.// -->
+               </div>
+               <!-- //container -->
+            </section>
+            <!-- footer-top.// -->
+            <section class="footer-main border-top pt-5 pb-4">
+               <div class="container">
+                  <div class="row">
+                     <aside class="col-md">
+                        <h6 class="title">Products</h6>
+                        <ul class="list-unstyled list-padding">
+                           <li> <a href="listing.html" class="text-dark">Listing</a></li>
+                           <li> <a href="product_details.html" class="text-dark">Detail</a></li>
+                           <li> <a href="picks_today.html" class="text-dark">Trending</a></li>
+                           <li> <a href="recommend.html" class="text-dark">Recommended</a></li>
+                           <li> <a href="fresh_vegan.html" class="text-dark">Most Popular</a></li>
+                        </ul>
+                     </aside>
+                     <aside class="col-md">
+                        <h6 class="title">Checkout Process</h6>
+                        <ul class="list-unstyled list-padding">
+                           <li> <a href="cart.html" class="text-dark">Cart</a></li>
+                           <li> <a href="cart.html" class="text-dark">Order Address</a></li>
+                           <li> <a href="cart.html" class="text-dark">Delivery Time</a></li>
+                           <li> <a href="cart.html" class="text-dark">Order Payment</a></li>
+                           <li> <a href="checkout.html" class="text-dark">Checkout</a></li>
+                           <li> <a href="successful.html" class="text-dark">Successful</a></li>
+                        </ul>
+                     </aside>
+                     <aside class="col-md">
+                        <h6 class="title">My Order</h6>
+                        <ul class="list-unstyled list-padding">
+                           <li> <a href="my_order.html" class="text-dark">My order</a></li>
+                           <li> <a href="status_complete.html" class="text-dark">Status Complete</a></li>
+                           <li> <a href="status_onprocess.html" class="text-dark">Status on Process</a></li>
+                           <li> <a href="status_canceled.html" class="text-dark">Status Canceled</a></li>
+                           <li> <a href="review.html" class="text-dark">Review</a></li>
+                        </ul>
+                     </aside>
+                     <aside class="col-md">
+                        <h6 class="title">My Account</h6>
+                        <ul class="list-unstyled list-padding">
+                           <li> <a class="text-dark" href="my_account.html"> My account</a></li>
+                           <li> <a class="text-dark" href="promos.html"> Promos</a></li>
+                           <li> <a class="text-dark" href="my_address.html"> My address</a></li>
+                           <li> <a class="text-dark" href="terms_conditions.html"> Terms &amp; conditions</a></li>
+                           <li> <a class="text-dark" href="help_support.html"> Help &amp; support</a></li>
+                           <li> <a class="text-dark" href="help_ticket.html"> Help ticket</a></li>
+                           <li> <a class="text-dark" href="signin.html"> Logout</a></li>
+                        </ul>
+                     </aside>
+                     <aside class="col-md">
+                        <h6 class="title">Extra Pages</h6>
+                        <ul class="list-unstyled list-padding">
+                                                   <li><a href="promo_details.html" class="text-dark"> Promo Details </a></li>
+                           <li><a href="terms_conditions.html" class="text-dark"> Conditions </a></li>
+                           <li><a href="help_support.html" class="text-dark"> Help Support </a></li>
+                           <li><a href="refund_payment.html" class="text-dark"> Refund Payment </a></li>
+                           <li><a href="faq.html" class="text-dark"> FAQ </a></li>
+                           <li><a href="signin.html" class="text-dark"> Sign In </a></li>
+                        </ul>
+                     </aside>
+                  </div>
+                  <!-- row.// -->
+               </div>
+               <!-- //container -->
+            </section>
+            <!-- footer-top.// -->
+            <section class="footer-bottom border-top py-4">
+               <div class="container">
+                  <div class="row">
+                     <div class="col-md-6">
+                        <span class="pr-2">© 2020 Grofarweb</span>
+                        <span class="pr-2"><a href="privacy.html" class="text-dark">Privacy</a></span>
+                        <span class="pr-2"><a href="terms&conditions.html" class="text-dark">Terms & Conditions</a></span>
+                     </div>
+                     <div class="col-md-6 text-md-right">
+                        <a href=""><img src="img/appstore.png" height="30"></a>
+                        <a href=""><img src="img/playmarket.png" height="30"></a>
+                     </div>
+                  </div>
+                  <!-- row.// -->
+               </div>
+               <!-- //container -->
+            </section>
+            <div class="modal fade right-modal" id="login" tabindex="-1" role="dialog" aria-labelledby="accountModalLabel" aria-hidden="true">
+               <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                     <div class="modal-header p-0">
+                        <nav class="schedule w-100">
+                           <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                              <a class="nav-link active col-5 py-4" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">
+                                 <p class="mb-0 font-weight-bold">Sign in</p>
+                              </a>
+                              <a class="nav-link col-5 py-4" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">
+                                 <p class="mb-0 font-weight-bold">Sign up</p>
+                              </a>
+                              <a class="nav-link col-2 p-0 d-flex align-items-center justify-content-center" data-dismiss="modal" aria-label="Close">
+                                 <h1 class="m-0 h4 text-dark"><i class="icofont-close-line"></i></h1>
+                              </a>
+                           </div>
+                        </nav>
+                     </div>
+                     <div class="modal-body p-0">
+                        <div class="tab-content" id="nav-tabContent">
+                           <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                              <div class="osahan-signin p-4 rounded">
+                                 <div class="p-2">
+                                    <h2 class="my-0">Welcome Back</h2>
+                                    <p class="small mb-4">Sign in to Continue.</p>
+                                    <form action="verification.html">
+                                       <div class="form-group">
+                                          <label for="exampleInputEmail1">Email</label>
+                                          <input placeholder="Enter Email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                                       </div>
+                                       <div class="form-group">
+                                          <label for="exampleInputPassword1">Password</label>
+                                          <input placeholder="Enter Password" type="password" class="form-control" id="exampleInputPassword1">
+                                       </div>
+                                       <button type="submit" class="btn btn-success btn-lg rounded btn-block">Sign in</button>
+                                    </form>
+                                    <p class="text-muted text-center small m-0 py-3">or</p>
+                                    <a href="verification.html" class="btn btn-dark btn-block rounded btn-lg btn-apple">
+                                    <i class="icofont-brand-apple mr-2"></i> Sign up with Apple
+                                    </a>
+                                    <a href="verification.html" class="btn btn-light border btn-block rounded btn-lg btn-google">
+                                    <i class="icofont-google-plus text-danger mr-2"></i> Sign up with Google
+                                    </a>
+                                    <p class="text-center mt-3 mb-0"><a href="signup.html" class="text-dark">Don't have an account? Sign up</a></p>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                              <div class="osahan-signup bg-white p-4">
+                                 <div class="p-2">
+                                    <h2 class="my-0">Let's get started</h2>
+                                    <p class="small mb-4">Create account to see our top picks for you!</p>
+                                    <form action="verification.html">
+                                       <div class="form-group">
+                                          <label for="exampleInputName1">Name</label>
+                                          <input placeholder="Enter Name" type="text" class="form-control" id="exampleInputName1" aria-describedby="emailHelp">
+                                       </div>
+                                       <div class="form-group">
+                                          <label for="exampleInputNumber1">Phone Number</label>
+                                          <input placeholder="Enter Phone Number" type="number" class="form-control" id="exampleInputNumber1" aria-describedby="emailHelp">
+                                       </div>
+                                       <div class="form-group">
+                                          <label for="exampleInputEmail1">Email</label>
+                                          <input placeholder="Enter Email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                                       </div>
+                                       <div class="form-group">
+                                          <label for="exampleInputPassword1">Password</label>
+                                          <input placeholder="Enter Password" type="password" class="form-control" id="exampleInputPassword1">
+                                       </div>
+                                       <div class="form-group">
+                                          <label for="exampleInputPassword2">Confirmation Password</label>
+                                          <input placeholder="Enter Confirmation Password" type="password" class="form-control" id="exampleInputPassword2">
+                                       </div>
+                                       <button type="submit" class="btn btn-success rounded btn-lg btn-block">Create Account</button>
+                                    </form>
+                                    <p class="text-muted text-center small py-2 m-0">or</p>
+                                    <a href="verification.html" class="btn btn-dark btn-block rounded btn-lg btn-apple">
+                                    <i class="icofont-brand-apple mr-2"></i> Sign up with Apple
+                                    </a>
+                                    <a href="verification.html" class="btn btn-light border btn-block rounded btn-lg btn-google">
+                                    <i class="icofont-google-plus text-danger mr-2"></i> Sign up with Google
+                                    </a>
+                                    <p class="text-center mt-3 mb-0"><a href="signin.html" class="text-dark">Already have an account! Sign in</a></p>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="modal-footer p-0 border-0">
+                        <div class="col-6 m-0 p-0">                 
+                           <a href="#" class="btn border-top border-right btn-lg btn-block" data-dismiss="modal">Close</a>
+                        </div>
+                        <div class="col-6 m-0 p-0">     
+                           <a href="help_support.html" class="btn border-top btn-lg btn-block">Help</a>
+                        </div>
+                     </div>
                   </div>
                </div>
-               <!-- row.// -->
             </div>
-            <!-- //container -->
-         </section>
-         <!-- footer-top.// -->
-         <section class="footer-main border-top pt-5 pb-4">
-            <div class="container">
-               <div class="row">
-                  <aside class="col-md">
-                     <h6 class="title">Products</h6>
-                     <ul class="list-unstyled list-padding">
-                        <li> <a href="listing.html" class="text-dark">Listing</a></li>
-                        <li> <a href="product_details.html" class="text-dark">Detail</a></li>
-                        <li> <a href="picks_today.html" class="text-dark">Trending</a></li>
-                        <li> <a href="recommend.html" class="text-dark">Recommended</a></li>
-                        <li> <a href="fresh_vegan.html" class="text-dark">Most Popular</a></li>
-                     </ul>
-                  </aside>
-                  <aside class="col-md">
-                     <h6 class="title">Checkout Process</h6>
-                     <ul class="list-unstyled list-padding">
-                        <li> <a href="cart.html" class="text-dark">Cart</a></li>
-                        <li> <a href="cart.html" class="text-dark">Order Address</a></li>
-                        <li> <a href="cart.html" class="text-dark">Delivery Time</a></li>
-                        <li> <a href="cart.html" class="text-dark">Order Payment</a></li>
-                        <li> <a href="checkout.html" class="text-dark">Checkout</a></li>
-                        <li> <a href="successful.html" class="text-dark">Successful</a></li>
-                     </ul>
-                  </aside>
-                  <aside class="col-md">
-                     <h6 class="title">My Order</h6>
-                     <ul class="list-unstyled list-padding">
-                        <li> <a href="my_order.html" class="text-dark">My order</a></li>
-                        <li> <a href="status_complete.html" class="text-dark">Status Complete</a></li>
-                        <li> <a href="status_onprocess.html" class="text-dark">Status on Process</a></li>
-                        <li> <a href="status_canceled.html" class="text-dark">Status Canceled</a></li>
-                        <li> <a href="review.html" class="text-dark">Review</a></li>
-                     </ul>
-                  </aside>
-                  <aside class="col-md">
-                     <h6 class="title">My Account</h6>
-                     <ul class="list-unstyled list-padding">
-                        <li> <a class="text-dark" href="my_account.html"> My account</a></li>
-                        <li> <a class="text-dark" href="promos.html"> Promos</a></li>
-                        <li> <a class="text-dark" href="my_address.html"> My address</a></li>
-                        <li> <a class="text-dark" href="terms_conditions.html"> Terms &amp; conditions</a></li>
-                        <li> <a class="text-dark" href="help_support.html"> Help &amp; support</a></li>
-                        <li> <a class="text-dark" href="help_ticket.html"> Help ticket</a></li>
-                        <li> <a class="text-dark" href="signin.html"> Logout</a></li>
-                     </ul>
-                  </aside>
-                  <aside class="col-md">
-                     <h6 class="title">Extra Pages</h6>
-                     <ul class="list-unstyled list-padding">
-                                                <li><a href="promo_details.html" class="text-dark"> Promo Details </a></li>
-                        <li><a href="terms_conditions.html" class="text-dark"> Conditions </a></li>
-                        <li><a href="help_support.html" class="text-dark"> Help Support </a></li>
-                        <li><a href="refund_payment.html" class="text-dark"> Refund Payment </a></li>
-                        <li><a href="faq.html" class="text-dark"> FAQ </a></li>
-                        <li><a href="signin.html" class="text-dark"> Sign In </a></li>
-                     </ul>
-                  </aside>
-               </div>
-               <!-- row.// -->
-            </div>
-            <!-- //container -->
-         </section>
-         <!-- footer-top.// -->
-         <section class="footer-bottom border-top py-4">
-            <div class="container">
-               <div class="row">
-                  <div class="col-md-6">
-                     <span class="pr-2">© 2020 Grofarweb</span>
-                     <span class="pr-2"><a href="privacy.html" class="text-dark">Privacy</a></span>
-                     <span class="pr-2"><a href="terms&conditions.html" class="text-dark">Terms & Conditions</a></span>
-                  </div>
-                  <div class="col-md-6 text-md-right">
-                     <a href=""><img src="img/appstore.png" height="30"></a>
-                     <a href=""><img src="img/playmarket.png" height="30"></a>
-                  </div>
-               </div>
-               <!-- row.// -->
-            </div>
-            <!-- //container -->
-         </section>
+         </footer>
+         <!-- Bootstrap core JavaScript -->
          <div class="modal fade right-modal" id="login" tabindex="-1" role="dialog" aria-labelledby="accountModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                <div class="modal-content">
@@ -685,398 +863,299 @@
                </div>
             </div>
          </div>
-      </footer>
-      <!-- Bootstrap core JavaScript -->
-      <div class="modal fade right-modal" id="login" tabindex="-1" role="dialog" aria-labelledby="accountModalLabel" aria-hidden="true">
-         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-               <div class="modal-header p-0">
-                  <nav class="schedule w-100">
-                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <a class="nav-link active col-5 py-4" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">
-                           <p class="mb-0 font-weight-bold">Sign in</p>
-                        </a>
-                        <a class="nav-link col-5 py-4" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">
-                           <p class="mb-0 font-weight-bold">Sign up</p>
-                        </a>
-                        <a class="nav-link col-2 p-0 d-flex align-items-center justify-content-center" data-dismiss="modal" aria-label="Close">
-                           <h1 class="m-0 h4 text-dark"><i class="icofont-close-line"></i></h1>
-                        </a>
-                     </div>
-                  </nav>
-               </div>
-               <div class="modal-body p-0">
-                  <div class="tab-content" id="nav-tabContent">
-                     <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                        <div class="osahan-signin p-4 rounded">
-                           <div class="p-2">
-                              <h2 class="my-0">Welcome Back</h2>
-                              <p class="small mb-4">Sign in to Continue.</p>
-                              <form action="verification.html">
-                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Email</label>
-                                    <input placeholder="Enter Email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                                 </div>
-                                 <div class="form-group">
-                                    <label for="exampleInputPassword1">Password</label>
-                                    <input placeholder="Enter Password" type="password" class="form-control" id="exampleInputPassword1">
-                                 </div>
-                                 <button type="submit" class="btn btn-success btn-lg rounded btn-block">Sign in</button>
-                              </form>
-                              <p class="text-muted text-center small m-0 py-3">or</p>
-                              <a href="verification.html" class="btn btn-dark btn-block rounded btn-lg btn-apple">
-                              <i class="icofont-brand-apple mr-2"></i> Sign up with Apple
-                              </a>
-                              <a href="verification.html" class="btn btn-light border btn-block rounded btn-lg btn-google">
-                              <i class="icofont-google-plus text-danger mr-2"></i> Sign up with Google
-                              </a>
-                              <p class="text-center mt-3 mb-0"><a href="signup.html" class="text-dark">Don't have an account? Sign up</a></p>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                        <div class="osahan-signup bg-white p-4">
-                           <div class="p-2">
-                              <h2 class="my-0">Let's get started</h2>
-                              <p class="small mb-4">Create account to see our top picks for you!</p>
-                              <form action="verification.html">
-                                 <div class="form-group">
-                                    <label for="exampleInputName1">Name</label>
-                                    <input placeholder="Enter Name" type="text" class="form-control" id="exampleInputName1" aria-describedby="emailHelp">
-                                 </div>
-                                 <div class="form-group">
-                                    <label for="exampleInputNumber1">Phone Number</label>
-                                    <input placeholder="Enter Phone Number" type="number" class="form-control" id="exampleInputNumber1" aria-describedby="emailHelp">
-                                 </div>
-                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Email</label>
-                                    <input placeholder="Enter Email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                                 </div>
-                                 <div class="form-group">
-                                    <label for="exampleInputPassword1">Password</label>
-                                    <input placeholder="Enter Password" type="password" class="form-control" id="exampleInputPassword1">
-                                 </div>
-                                 <div class="form-group">
-                                    <label for="exampleInputPassword2">Confirmation Password</label>
-                                    <input placeholder="Enter Confirmation Password" type="password" class="form-control" id="exampleInputPassword2">
-                                 </div>
-                                 <button type="submit" class="btn btn-success rounded btn-lg btn-block">Create Account</button>
-                              </form>
-                              <p class="text-muted text-center small py-2 m-0">or</p>
-                              <a href="verification.html" class="btn btn-dark btn-block rounded btn-lg btn-apple">
-                              <i class="icofont-brand-apple mr-2"></i> Sign up with Apple
-                              </a>
-                              <a href="verification.html" class="btn btn-light border btn-block rounded btn-lg btn-google">
-                              <i class="icofont-google-plus text-danger mr-2"></i> Sign up with Google
-                              </a>
-                              <p class="text-center mt-3 mb-0"><a href="signin.html" class="text-dark">Already have an account! Sign in</a></p>
-                           </div>
-                        </div>
-                     </div>
+
+         <style>
+
+
+            #localMap{
+               width: 100%;
+               height: 350px;
+               margin-top: 10px;
+            }
+
+            .disabled-des{
+               opacity: .5;
+            }
+
+            .profileButton{
+               width: 50%; text-align: center; padding-bottom: 0.8rem !important; padding-top: 0.8rem !important
+            }
+
+         </style>
+
+         <script src="../component/js/utils/ProwebMap.js?v3"></script>
+         <script src="../component/js/view/UserViewController.js?v31"></script>
+         <script src="../component/js/utils/Validation.js?v1"></script>
+         <script src="../component/js/utils/ViewUtils.js?v23"></script>
+         <script src="../component/js/view/CarrinhoViewController.js?v29"></script>
+
+         <script> 
+            
+            // REGISTRATION AND LOGIN BUTTONS
+            user.controller.handleNoAuthButton();
+
+            /* SCRIPT EXECUTIONS */
+            //promo.controller.findAndPromos("promoLocal"); 
+            menu.controller.renderMenu("PPRIMO");
+
+            /*
+            APRESENTA ITENS/PRODUTOS NA VITRINE QUE 
+            PODEM SER ADICIONADOS AO CARRINHO
+            */
+            itemList.controller.renderListItems();
+            carrinho.controller.cartItemsCount();
+
+         </script>
+
+         <script src="vendor/jquery/jquery.min.js"></script>
+         <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+         <!-- slick Slider JS-->
+         <script type="text/javascript" src="vendor/slick/slick.min.js"></script>
+         <!-- Sidebar JS-->
+         <script type="text/javascript" src="vendor/sidebar/hc-offcanvas-nav.js"></script>
+         <!-- Custom scripts for all pages-->
+         <script src="js/osahan.js"></script>
+
+
+         <!-- MODALS CONTENT -->
+         <!-- 
+            MODAL PARA QUALQUER TELA A SER CHAMADA
+         -->
+         <a href="#" id="emptyModalButton" style="display: none;" data-toggle="modal" data-target="#emptyModal" class="text-decoration-none text-green loggedUserButtonsIcon">
+            <i class="text-green icofont-badge" style="color: #fd7e14 !important;"></i>
+         </a>
+         <div class="modal fade" id="emptyModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="emptyModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+               <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="emptyModalLabel">--</h5>
+                     <button onclick="__VIEW_UTILS__.clearEmptyModalContent()" id="emptyBodalCloseBtn" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                     </button>
                   </div>
-               </div>
-               <div class="modal-footer p-0 border-0">
-                  <div class="col-6 m-0 p-0">                 
-                     <a href="#" class="btn border-top border-right btn-lg btn-block" data-dismiss="modal">Close</a>
+                  <div class="modal-body" id="epmtyModalBody">
+
                   </div>
-                  <div class="col-6 m-0 p-0">     
-                     <a href="help_support.html" class="btn border-top btn-lg btn-block">Help</a>
-                  </div>
+                  
                </div>
             </div>
          </div>
-      </div>
-
-      <style>
 
 
-         #localMap{
-            width: 100%;
-            height: 350px;
-            margin-top: 10px;
-         }
-
-         .disabled-des{
-            opacity: .5;
-         }
-
-         .profileButton{
-            width: 50%; text-align: center; padding-bottom: 0.8rem !important; padding-top: 0.8rem !important
-         }
-
-      </style>
-
-      <script src="../component/js/utils/ProwebMap.js?v3"></script>
-      <script src="../component/js/view/UserViewController.js?v2"></script>
-      <script src="../component/js/utils/Validation.js"></script>
-      <script src="../component/js/utils/ViewUtils.js"></script>
-      <script src="../component/js/view/CarrinhoViewController.js"></script>
-      <script> 
-         
-         // REGISTRATION AND LOGIN BUTTONS
-         user.controller.handleNoAuthButton();
-
-         /* SCRIPT EXECUTIONS */
-         //promo.controller.findAndPromos("promoLocal"); 
-         menu.controller.renderMenu("PPRIMO");
-
-         /*
-         APRESENTA ITENS/PRODUTOS NA VITRINE QUE 
-         PODEM SER ADICIONADOS AO CARRINHO
-         */
-         itemList.controller.renderListItems();
-         carrinho.controller.cartItemsCount();
-
-      </script>
-
-      <script src="vendor/jquery/jquery.min.js"></script>
-      <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-      <!-- slick Slider JS-->
-      <script type="text/javascript" src="vendor/slick/slick.min.js"></script>
-      <!-- Sidebar JS-->
-      <script type="text/javascript" src="vendor/sidebar/hc-offcanvas-nav.js"></script>
-      <!-- Custom scripts for all pages-->
-      <script src="js/osahan.js"></script>
-
-
-      <!-- MODALS CONTENT -->
-      <!-- 
-         MODAL PARA QUALQUER TELA A SER CHAMADA
-      -->
-      <a href="#" id="emptyModalButton" style="display: none;" data-toggle="modal" data-target="#emptyModal" class="text-decoration-none text-green loggedUserButtonsIcon">
-         <i class="text-green icofont-badge" style="color: #fd7e14 !important;"></i>
-      </a>
-      <div class="modal fade" id="emptyModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="emptyModalLabel" aria-hidden="true">
-         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-               <div class="modal-header">
-                  <h5 class="modal-title" id="emptyModalLabel">--</h5>
-                  <button onclick="__VIEW_UTILS__.clearEmptyModalContent()" id="emptyBodalCloseBtn" type="button" class="close" data-dismiss="modal" aria-label="Close">
+         <!-- ACCOUNT MODAL -->
+         <div class="modal fade" id="accountModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="accountModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+               <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="accountModalLabel">Registar-me (Nova conta)</h5>
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                      <span aria-hidden="true">&times;</span>
-                  </button>
-               </div>
-               <div class="modal-body" id="epmtyModalBody">
-
-               </div>
-               
-            </div>
-         </div>
-      </div>
-
-
-      <!-- ACCOUNT MODAL -->
-      <div class="modal fade" id="accountModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="accountModalLabel" aria-hidden="true">
-         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-               <div class="modal-header">
-                  <h5 class="modal-title" id="accountModalLabel">Registar-me (Nova conta)</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                  </button>
-               </div>
-               <div class="modal-body">
-                  <form action="my_account.html">
-                     <div class="form-group">
-                        <input type="search" autocomplete="off" class="form-control entyti-user required" id="nomeCompleto" placeholder="* Nome completo">
-                        <label style="display: none;" class="text-danger requiredLabel">Informe o nome</label>
-                     </div>
-                     <div class="form-group">
-                        <input type="number" class="form-control entyti-user required" id="telefone" onblur="user.controller.checkUser(this.value)" placeholder="* Telefone">
-                        <div style="display: none;" id="existinngNumberError" class="text-danger requiredLabel">Número já registado</div>
-                        <label style="display: none;" class="text-danger requiredLabel">Digite o telefone</label>
-                     </div>
-                     <div class="form-group">
-                        <input type="email" autocomplete="off" class="form-control entyti-user" id="email" placeholder="Email">
-                     </div>
-
-                     <div class="form-group" style="padding-top: 15px; font-weight: bold;">
-                        <label class="text-black">Endereço</label>
-                     </div>
-
-                     <div class="form-group">
-                        <select data-field="destrito" class="form-control entyti-user required entity-userAddressReg" id="bairro">
-                           <option value="">* Bairro</option>
-                           <option value="Benfica/Kifica">Benfica/Kifica</option>
-                           <option value="Patriota">Patriota</option>
-                           <option value="outro">Outro</option>
-                        </select>
-                        <label style="display: none;" class="text-danger requiredLabel">Digite/Seleccione o bairro</label>
-                     </div>
-
-                     <div class="form-group" style="display: flex; flex-direction: row;">
-                        <span>
-                           <input type="search" autocomplete="off" data-field="rua" class="form-control entyti-user required entity-userAddressReg" id="rua" placeholder="* Rua">
-                           <label style="display: none;" class="text-danger requiredLabel">Digite a rua</label>
-                        </span>
-                        <span>
-                           <input type="search" autocomplete="off" data-field="casa" class="form-control entyti-user required entity-userAddressReg" id="casa" placeholder="* Casa nº">
-                           <label style="display: none;" class="text-danger requiredLabel">Digite o nº da casa</label>
-                        </span>
-                     </div>
-                     <!--
-                        
-                     <div class="form-group">
-                        <input type="password" class="form-control entyti-user required" id="senha" placeholder="* Senha">
-                        <label style="display: none;" class="text-danger requiredLabel">Digite a senha</label>
-                     </div>
-                     <div class="form-group">
-                        <input type="password" class="form-control entyti-user required" id="senhaConf" placeholder="* Confirma a senha">
-                        <label style="display: none;" class="text-danger requiredLabel senhaRequiredLabel">Confirme a senha</label>
-                        <label id="senhaConf-emptyError" style="display: none;" class="text-danger">Senha e confirmação não conferem</label>
-                     </div>
-
-                     -->
-                  </form>
-               </div>
-               <div class="modal-footer p-0 border-0">
-                  <div class="col-6 m-0 p-0">                 
-                     <button type="button" class="btn border-top btn-lg btn-block" data-dismiss="modal">Fechar</button>
+                     </button>
                   </div>
-                  <div class="col-6 m-0 p-0">     
-                     <button type="button" class="btn btn-success btn-lg btn-block" id="btnCriarUser" onclick="user.controller.saveUser()">Criar</button>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-
-      <!-- LOGIN MODAL -->
-      <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="loginModalLabel" aria-hidden="true">
-         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-               <div class="modal-header">
-                  <h5 class="modal-title" id="loginModalLabel">Login</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true" id="closeLoginButton">&times;</span>
-                  </button>
-               </div>
-               <div class="modal-body">
-                  <form autocomplete="off">
-
-                     <span id="loginForm">
-
-                        <span
-                           style="display: block; padding-bottom: 10px; color: red;" 
-                           id="mensagemLoginRequired">Precisa fazer o login para ver o carrinho</span>
-
+                  <div class="modal-body">
+                     <form action="my_account.html">
                         <div class="form-group">
-                           <input type="tel" autocomplete="off" class="form-control" id="loginUser" placeholder="Telefone">
+                           <input type="search" autocomplete="off" class="form-control entyti-user required" id="nomeCompleto" placeholder="* Nome completo">
+                           <label style="display: none;" class="text-danger requiredLabel">Informe o nome</label>
                         </div>
                         <div class="form-group">
-                           <input type="password" autocomplete="off" class="form-control" id="loginPassword" placeholder="Senha">
+                           <input type="number" class="form-control entyti-user required" id="telefone" onblur="user.controller.checkUser(this.value)" placeholder="* Telefone">
+                           <div style="display: none;" id="existinngNumberError" class="text-danger requiredLabel">Número já registado</div>
+                           <label style="display: none;" class="text-danger requiredLabel">Digite o telefone</label>
+                        </div>
+                        <div class="form-group">
+                           <input type="email" autocomplete="off" class="form-control entyti-user" id="email" placeholder="Email">
                         </div>
 
-                        <div class="text-center">
-                           <div>
-                              <label style="display: none;" id="resetSuccessOk" class="text-success">Senha alterada com sucesso, pode fazer o login</label>
-                              <label style="display: none;" id="loginError" class="text-danger requiredLabel">Utilizador ou senha errada</label>
-                           </div>
-
-                           <label  style="font-weight: bold; font-size: 13px;" onclick="(new UserViewController()).showResetPasswordForm()">Esqueci minha senha!</label>
-                           <label  style="font-weight: bold; font-size: 13px; margin-top: 15px;" onclick="(new UserViewController()).goToTokenValidation()">Já tenho o token de recuperação!</label>
-                           <button type="button" style="margin-top:15px;" onclick="user.controller.login()" class="btn btn-success btn-block btn-lg">Entrar</button>
+                        <div class="form-group" style="padding-top: 15px; font-weight: bold;">
+                           <label class="text-black">Endereço</label>
                         </div>
 
+                        <div class="form-group">
+                           <select data-field="destrito" class="form-control entyti-user required entity-userAddressReg" id="bairro">
+                              <option value="">* Bairro</option>
+                              <option value="Benfica/Kifica">Benfica/Kifica</option>
+                              <option value="Patriota">Patriota</option>
+                              <option value="outro">Outro</option>
+                           </select>
+                           <label style="display: none;" class="text-danger requiredLabel">Digite/Seleccione o bairro</label>
+                        </div>
 
-                     </span>
-
-                     <span id="resetForm" style="display: none;">
-
-                        <span
-                           style="display: block; padding-bottom: 20px; font-weight: bold;" 
-                           id="mensagemLoginRequired">Recuperação de senha</span>
-                        
-                        <span id="resetFormContent">
-
-                           <span
-                              style="display: block; padding-bottom: 5px" 
-                              id="mensagemLoginRequired">Digite o numero de telefone para recuperar a senha</span>
-   
-                           <div class="form-group">
-                              <input type="text" placeholder="Número de telefone associado a conta" class="form-control" id="loginUserReset" placeholder="Telefone">
-                           </div>
-
-                        </span>                        
-                        
-                        <span id="resetTokenContent" style="display: none;">
-
-                           <span
-                              style="display: block; padding-bottom: 5px; font-size: 15px;" 
-                              id="mensagemLoginRequired" class="text-danger font-weight-bold">Digite o código recebido por SMS</span>
-   
-                           <div class="form-group">
-                              <input type="text" class="form-control" id="passwordUserReset" placeholder="Token de redifinição de senha">
-                              <label style="display: none;" id="invalidToken" class="text-danger">Token inválido, se esqueceu o seu token pode solicitar um novo</label>
-                           </div>
-
-                        </span>
-
-                        <span id="newPasswordEnter" style="display: none;">
-
-                           
-                           <span
-                              style="display: block; padding-bottom: 5px; font-size: 15px;" 
-                              id="mensagemLoginRequired" class="text-success font-weight-bold">
-                              <i class="text-success icofont-simple-smile" style="font-size: 18px;"></i>
-                              Digite a nova senha
-                              <i class="text-success icofont-simple-smile" style="font-size: 18px;"></i>
+                        <div class="form-group" style="display: flex; flex-direction: row;">
+                           <span>
+                              <input type="search" autocomplete="off" data-field="rua" class="form-control entyti-user required entity-userAddressReg" id="rua" placeholder="* Rua">
+                              <label style="display: none;" class="text-danger requiredLabel">Digite a rua</label>
                            </span>
-   
-                           <div class="form-group">
-                              <input type="password" placeholder="Nova senha" class="form-control" id="newPassword">
-                           </div>
-
-                        </span>
-                        
-                        <div class="text-center">
-                           <label  style="font-weight: bold; font-size: 15px;" onclick="(new UserViewController()).showLoginForm()">Voltar ao login</label>
-                           <label  style="font-weight: bold; font-size: 15px; margin-top: 10px;" class="text-success" id="resetSuccess"></label>
-                           <button type="button" style="margin-top:15px;" onclick="user.controller.requestPasswordReset()" class="btn btn-success btn-block btn-lg">Enviar</button>
+                           <span>
+                              <input type="search" autocomplete="off" data-field="casa" class="form-control entyti-user required entity-userAddressReg" id="casa" placeholder="* Casa nº">
+                              <label style="display: none;" class="text-danger requiredLabel">Digite o nº da casa</label>
+                           </span>
+                        </div>
+                        <!--
+                           
+                        <div class="form-group">
+                           <input type="password" class="form-control entyti-user required" id="senha" placeholder="* Senha">
+                           <label style="display: none;" class="text-danger requiredLabel">Digite a senha</label>
+                        </div>
+                        <div class="form-group">
+                           <input type="password" class="form-control entyti-user required" id="senhaConf" placeholder="* Confirma a senha">
+                           <label style="display: none;" class="text-danger requiredLabel senhaRequiredLabel">Confirme a senha</label>
+                           <label id="senhaConf-emptyError" style="display: none;" class="text-danger">Senha e confirmação não conferem</label>
                         </div>
 
-
-                     </span>
-
-                  </form>
+                        -->
+                     </form>
+                  </div>
+                  <div class="modal-footer p-0 border-0">
+                     <div class="col-6 m-0 p-0">                 
+                        <button type="button" class="btn border-top btn-lg btn-block" data-dismiss="modal">Fechar</button>
+                     </div>
+                     <div class="col-6 m-0 p-0">     
+                        <button type="button" class="btn btn-success btn-lg btn-block" id="btnCriarUser" onclick="user.controller.saveUser()">Criar</button>
+                     </div>
+                  </div>
                </div>
-               
             </div>
          </div>
-      </div>
 
+         <!-- LOGIN MODAL -->
+         <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="loginModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+               <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                     <span aria-hidden="true" id="closeLoginButton">&times;</span>
+                     </button>
+                  </div>
+                  <div class="modal-body">
+                     <form autocomplete="off">
+
+                        <span id="loginForm">
+
+                           <span
+                              style="display: block; padding-bottom: 10px; color: red;" 
+                              id="mensagemLoginRequired">Precisa fazer o login para ver o carrinho</span>
+
+                           <div class="form-group">
+                              <input type="tel" autocomplete="off" class="form-control" id="loginUser" placeholder="Telefone">
+                           </div>
+                           <div class="form-group">
+                              <input type="password" autocomplete="off" class="form-control" id="loginPassword" placeholder="Senha">
+                           </div>
+
+                           <div class="text-center">
+                              <div>
+                                 <label style="display: none;" id="resetSuccessOk" class="text-success">Senha alterada com sucesso, pode fazer o login</label>
+                                 <label style="display: none;" id="loginError" class="text-danger requiredLabel">Utilizador ou senha errada</label>
+                              </div>
+
+                              <label  style="font-weight: bold; font-size: 13px;" onclick="(new UserViewController()).showResetPasswordForm()">Esqueci minha senha!</label>
+                              <label  style="font-weight: bold; font-size: 13px; margin-top: 15px;" onclick="(new UserViewController()).goToTokenValidation()">Já tenho o token de recuperação!</label>
+                              <button type="button" style="margin-top:15px;" onclick="user.controller.login()" class="btn btn-success btn-block btn-lg">Entrar</button>
+                           </div>
+
+
+                        </span>
+
+                        <span id="resetForm" style="display: none;">
+
+                           <span
+                              style="display: block; padding-bottom: 20px; font-weight: bold;" 
+                              id="mensagemLoginRequired">Recuperação de senha</span>
+                           
+                           <span id="resetFormContent">
+
+                              <span
+                                 style="display: block; padding-bottom: 5px" 
+                                 id="mensagemLoginRequired">Digite o numero de telefone para recuperar a senha</span>
       
-      <!-- SPINNING MODAL -->
-      <div id="spinnerModalContainer"></div>
+                              <div class="form-group">
+                                 <input type="text" placeholder="Número de telefone associado a conta" class="form-control" id="loginUserReset" placeholder="Telefone">
+                              </div>
 
-      <!-- SUCCESS MODAL -->
-      <div id="successModalContainer"></div>
+                           </span>                        
+                           
+                           <span id="resetTokenContent" style="display: none;">
+
+                              <span
+                                 style="display: block; padding-bottom: 5px; font-size: 15px;" 
+                                 id="mensagemLoginRequired" class="text-danger font-weight-bold">Digite o código recebido por SMS</span>
+      
+                              <div class="form-group">
+                                 <input type="text" class="form-control" id="passwordUserReset" placeholder="Token de redifinição de senha">
+                                 <label style="display: none;" id="invalidToken" class="text-danger">Token inválido, se esqueceu o seu token pode solicitar um novo</label>
+                              </div>
+
+                           </span>
+
+                           <span id="newPasswordEnter" style="display: none;">
+
+                              
+                              <span
+                                 style="display: block; padding-bottom: 5px; font-size: 15px;" 
+                                 id="mensagemLoginRequired" class="text-success font-weight-bold">
+                                 <i class="text-success icofont-simple-smile" style="font-size: 18px;"></i>
+                                 Digite a nova senha
+                                 <i class="text-success icofont-simple-smile" style="font-size: 18px;"></i>
+                              </span>
+      
+                              <div class="form-group">
+                                 <input type="password" placeholder="Nova senha" class="form-control" id="newPassword">
+                              </div>
+
+                           </span>
+                           
+                           <div class="text-center">
+                              <label  style="font-weight: bold; font-size: 15px;" onclick="(new UserViewController()).showLoginForm()">Voltar ao login</label>
+                              <label  style="font-weight: bold; font-size: 15px; margin-top: 10px;" class="text-success" id="resetSuccess"></label>
+                              <button type="button" style="margin-top:15px;" onclick="user.controller.requestPasswordReset()" class="btn btn-success btn-block btn-lg">Enviar</button>
+                           </div>
 
 
-      <!-- MODAL CARRINHO -->
-      <div id="cartViewContainer"></div>
+                        </span>
 
-
-      <script>
-         /* RENDERIZA A MODAL PARA PROCESSOS BEM SUCESSIDOS (Ex: Criação de Conta, CHeckout de uma compra)*/
-         __VIEW_UTILS__.generateSuccessModal();
-
-         /* RENDERIZA A MODAL PARA INDICAR UM PROCESSO EM EXECUÇÂO */
-         __VIEW_UTILS__.generateSpinningModal();
-
-         /* RENDERIZA A VIEW COMPLETA DO CARRINHO DE COMPRA */
-         carrinho.controller.renderCartView();
+                     </form>
+                  </div>
+                  
+               </div>
+            </div>
+         </div>
 
          
-         document.getElementById("categories-slider").getElementsByTagName("div")[0].classList.remove("draggable");
-         document.getElementById("promoLocal1").getElementsByClassName("slick-list")[0].classList.remove("draggable");
+         <!-- SPINNING MODAL -->
+         <div id="spinnerModalContainer"></div>
 
-      </script>
+         <!-- SUCCESS MODAL -->
+         <div id="successModalContainer"></div>
 
-      <script src="../component/js/third/calendar/vanilla-calendar-min.js" ></script>
 
-      <!-- <link href="../component/css/third/metro.4ui.css" rel="stylesheet"/> -->
-      <!-- <script src="../component/js/third/metro.4ui.js"></script> -->
+         <!-- MODAL CARRINHO -->
+         <div id="cartViewContainer"></div>
 
+
+         <script>
+            /* RENDERIZA A MODAL PARA PROCESSOS BEM SUCESSIDOS (Ex: Criação de Conta, CHeckout de uma compra)*/
+            __VIEW_UTILS__.generateSuccessModal();
+
+            /* RENDERIZA A MODAL PARA INDICAR UM PROCESSO EM EXECUÇÂO */
+            __VIEW_UTILS__.generateSpinningModal();
+
+            /* RENDERIZA A VIEW COMPLETA DO CARRINHO DE COMPRA */
+            carrinho.controller.renderCartView();
+
+            
+            document.getElementById("categories-slider").getElementsByTagName("div")[0].classList.remove("draggable");
+            document.getElementById("promoLocal1").getElementsByClassName("slick-list")[0].classList.remove("draggable");
+
+         </script>
+
+         <script src="../component/js/third/calendar/vanilla-calendar-min.js" ></script>
+
+         <!-- <link href="../component/css/third/metro.4ui.css" rel="stylesheet"/> -->
+         <!-- <script src="../component/js/third/metro.4ui.js"></script> -->
+
+      </span>
 
    </body>
 </html>
