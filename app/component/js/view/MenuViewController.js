@@ -156,6 +156,19 @@ function MenuViewController(){
                 <!--
                     <li><a class="dropdown-item" href="cart.html">Carrinho de compras</a></li>
                 -->
+                ${
+                    //user.adminView -> UserViewController.js
+                    user.adminView ? 
+
+`                    <li onclick="">
+                         <span onclick="user.controller.showCustomers()">
+                             <i class="icofont-users-alt-5" style="font-size:25px;"></i> &nbsp;Clientes
+                         </span>
+                     </li>`
+                     :
+                     ''
+
+                }
                 <li onclick="">
                     <span onclick="__VIEW_UTILS__.showAboutUs()">
                         <i class="icofont-cube mr-2" style="font-size:20px;"></i>Nosso serviços

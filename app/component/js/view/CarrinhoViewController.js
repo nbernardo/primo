@@ -264,6 +264,11 @@ function CarrinhoViewController(){
     //METHODS TO INVOICE
     this.findInvoicesOnline = function(){
 
+        document.getElementById("allInvoicesSection").style.display = "none";
+        if(!__PROWEBAUTH__.isUserLogged())
+            return false;
+
+        document.getElementById("allInvoicesSection").style.display = "";
         carrinho.itemsByInvoice = {};
         carrinho.activeView = true;
 
@@ -952,7 +957,8 @@ function CarrinhoViewController(){
             document.getElementById("cartFloatingButton").innerHTML = "0";
         }catch(e){};
 
-        document.getElementById("itensOnCart").innerHTML = "";
+        if(document.getElementById("itensOnCart"))
+            document.getElementById("itensOnCart").innerHTML = "";
 
         if(document.getElementById("totalFactura")) document.getElementById("totalFactura").innerHTML = `0 Kz`;
         if(document.getElementById("endTotalAmount")) document.getElementById("endTotalAmount").innerHTML = `0 Kz`;

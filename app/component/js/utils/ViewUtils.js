@@ -452,8 +452,8 @@ function ViewUtils(){
 
         __VIEW_UTILS__.showSpinnerWithNoEscape({
             feedback: true,
-            title: "Registo de endereço",
-            message1: `Endereço registado com sucesso`
+            title: "Carregando informação",
+            message1: `Informação carregada com sucesso`
         });
 
         (new ProwebRequest()).getRequest(`${BASE_IP}:3000/template/about.html`,null,(content) => {
@@ -462,16 +462,34 @@ function ViewUtils(){
             
             setTimeout(() => {
 
-                __VIEW_UTILS__.showEmptyModel({content, title: `Nosso serviços`});
+                __VIEW_UTILS__.showEmptyModel({content, title: `Nosso serviços`, removePadding: true, delay: 500});
 
             },500);
             
-            /*
+        })
+
+    }
+
+
+    this.showCustumers = function(){
+
+        (new MenuViewController()).sideMenuClose();
+
+        __VIEW_UTILS__.showSpinnerWithNoEscape({
+            feedback: true,
+            title: "Carregando informação",
+            message1: `Informação carregada com sucesso`
+        });
+
+        (new ProwebRequest()).getRequest(`${BASE_IP}:3000/template/about.html`,null,(content) => {
+
+            __VIEW_UTILS__.hideSpinner();
+            
             setTimeout(() => {
 
-    
-             }, 500)
-             */
+                __VIEW_UTILS__.showEmptyModel({content, title: `Clientes`, removePadding: true, delay: 500});
+
+            },500);
             
         })
 

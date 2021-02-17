@@ -352,7 +352,14 @@ function UserViewController(){
 
         `;
 
-        return myAccountButtons;
+        try{
+            if(admin != undefined){
+                return '';
+            }
+        }catch(e){
+
+            return myAccountButtons;
+        }
 
     }
 
@@ -644,6 +651,11 @@ function UserViewController(){
             let curUser = result.data;
             curUser.logged = true;
             curUser.senha = pass;
+
+            if(curUser.admin){
+                __PROWEBAUTH__.setAdminPrivileges();
+            }
+
             clearOfflineUserData(false);
             localStorage.setItem("user", JSON.stringify(curUser));
             let curAddress = {endereco: curUser.endereco || {}};
@@ -680,6 +692,11 @@ function UserViewController(){
 
         console.log("*** Offline Searching ***");
         loggedUser.logged = true;
+
+        if(loggedUser.admin){
+            __PROWEBAUTH__.setAdminPrivileges();
+        }
+
         localStorage.setItem("user",JSON.stringify(loggedUser));
         document.getElementById("loginError").style.display = "none";
 
@@ -771,6 +788,77 @@ function UserViewController(){
 
 
     }
+
+
+
+
+    this.customerCard = function(obj){
+        
+        let nomeCliente = obj.nomeCompleto ? 
+                        `<div style="margin-left: 20px; text-align:center;">
+                            <p class="text-muted m-0">Cliente</p>
+                            <p class="text-dark font-weight-bold">${obj.nomeCompleto} <br> ${obj.telefone}</p>
+                         </div>` : "";
+
+        let addr = obj.address ? 
+                        `<div style="margin-left: 50px; text-align:center;">
+                            <p class="text-muted m-0">Endereço</p> 
+                            <p class="text-dark font-weight-bold">
+                                ${obj.bairro} ${obj.rua} ${obj.casa}
+                            </p>
+                         </div>` : "";
+
+        
+        return `
+
+            <div class="order-body">
+                        
+                <div class="pb-3">
+                    <span class="text-decoration-none text-dark">
+                        
+                        <div class="p-3 rounded shadow-sm bg-white" style="padding-top: 0px !important">
+                            <div class="d-flex align-items-center mb-3">
+                                ${nomeCliente}
+                                ${addr}
+                            </div>
+                        </div>
+
+                    </span>
+                </div>
+
+            </div>
+        
+        `;
+
+    }
+
+
+    this.showCustomers = function(){
+
+
+        __REQUEST__.getRequest(`${user.baseUrl}/customer`,null,(res) => {
+        
+            
+            console.log(JSON.parse(res).data);
+            let allCustomers = JSON.parse(res).data.map(client => this.customerCard(client));
+            let customerList = ""
+
+            for(x = 0; x < allCustomers.length; x++){
+                 customerList += `
+                     ${allCustomers[x]}
+                 `;
+            }
+
+            console.log(customerList);
+
+            __VIEW_UTILS__.showEmptyModel({content: customerList, title: `Minha conta`});
+            (new MenuViewController()).sideMenuClose();
+        
+        })
+        
+
+    }
+
 
     return this;
 

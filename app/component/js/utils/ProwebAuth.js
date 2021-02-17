@@ -1,4 +1,7 @@
 const __PROWEBAUTH__ = new ProwebAuth();
+const ProwebAuthBucket = {
+    privileges : false,
+}
 
 function ProwebAuth(){
 
@@ -34,6 +37,26 @@ function ProwebAuth(){
                 console.warn("User access denied!");
             }
         };
+
+    }
+
+
+    this.setAdminPrivileges = function(){
+
+        ProwebAuthBucket.privileges = "ADMIN";
+
+    }
+
+    this.getAdminPrivileges = function(){
+
+        if(this.isUserLogged()){
+
+            let loggetUser = localStorage.getItem("user");
+            loggetUser = JSON.parse(loggetUser);
+            return loggetUser.admin ? "ADMIN" : 'NORMAL';
+
+        }
+        return ProwebAuthBucket.privileges;
 
     }
 
