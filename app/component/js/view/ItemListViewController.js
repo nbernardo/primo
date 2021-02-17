@@ -4,7 +4,8 @@ itemList = {
     editingObject: null,
     newItemObject : null,
     productEdited: false,
-    savingProductImg : null
+    savingProductImg : null,
+    loadedItems : null
 }
 
 
@@ -17,16 +18,57 @@ function ItemListViewController(){
         (new ProwebRequest()).getRequest(url,null, async (res, xhr) => {
             console.log("Valor é: ", res);
             const response = JSON.parse(res);
+
             const dados = await response.data.map(i => {
                 if(i.available) 
                     return this.generateItem(i);
             });
             document.getElementById("vitrine-listItems").innerHTML = dados.join("");
-            carrinho.controller.loadCartItemsList();
+            
+            if(itemList.loadedItems == null){
+
+                carrinho.controller.loadCartItemsList();
+                itemList.loadedItems = response.data;
+
+            }
 
         });
 
     }
+
+
+    this.renderFilteredListItems = async function(textSearch){
+
+        if(textSearch.length > 0){
+            document.getElementById("closeSearchItem").style.display = "block";
+        }else{
+            document.getElementById("closeSearchItem").style.display = "none";
+        }
+
+        filteredItems = itemList.loadedItems.filter(i => i.nome.toString().toLowerCase().indexOf(textSearch.toLowerCase()) >= 0);
+        const dados = await filteredItems.map(i => {
+            if(i.available) 
+                return this.generateItem(i);
+        });
+        document.getElementById("vitrine-listItems").innerHTML = dados.join("");
+
+    }
+
+
+    this.renderRestoredListItems = async function(textSearch){
+
+        document.getElementById("searchInputText").value = "";
+        document.getElementById("closeSearchItem").style.display = "none";
+
+        const dados = await itemList.loadedItems.map(i => {
+            if(i.available) 
+                return this.generateItem(i);
+        });
+        document.getElementById("vitrine-listItems").innerHTML = dados.join("");
+
+    }
+
+
 
     this.renderListItemsByType = function(type){
 
