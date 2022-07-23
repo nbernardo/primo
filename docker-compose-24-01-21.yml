@@ -1,0 +1,102 @@
+version: '3'
+
+services:
+
+  mongoservice:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo/data/:/data/db
+      - ./mongo/data/bkp/:/data/bkp
+
+  #front:
+  #  image: primo:app
+  #  build:
+  #    context: ./app/
+  #    dockerfile: Dockerfile
+  #  ports: 
+  #    - "80:80"    
+
+  promo:
+    depends_on: 
+      - mongoservice
+    image: promo:service1
+    build: 
+      context: ./services/promos/
+      dockerfile: Dockerfile
+    ports: 
+      - "4000:4000"
+  
+  user:
+    depends_on: 
+      - mongoservice
+    image: user:service1
+    build:
+      context: ./services/user/
+      dockerfile: Dockerfile
+    ports: 
+      - "4001:4001"
+
+  catalog:
+    image: catalog
+    build:
+      context: ./services/catalog
+      dockerfile: Dockerfile
+    ports:
+      - "4002:4002"
+
+  shopping:
+    depends_on: 
+      - mongoservice
+      - commandservice
+    image: shopping
+    build:
+      context: ./services/shopping/
+      dockerfile: Dockerfile
+    ports: 
+      - "4003:4003"
+    environment:
+      - CMD_URL=commandservice:4005/event
+      - DB_HOST=mongo://mongoservice:27017
+
+
+  # BEGUIN -> QUERY SERVICE
+  
+  query:
+    depends_on:
+      - querymongo
+    image: queryservice
+    build:
+      context: ./services/query/
+      dockerfile: Dockerfile
+    ports:
+      - "4004:4004"
+    environment:
+      - HOST=querymongo:27004
+
+  querymongo:
+    command: mongod --port 27004
+    build:
+      context: ./services/query/db/
+      dockerfile: Dockerfile
+    image: mongoquery
+    ports:
+      - "27004:27004"
+    volumes: 
+      - ./service/query/data/mongo:/data/db
+      - ./service/query/bkp:/data/bkp
+
+
+  commandservice:
+    depends_on: 
+      - querymongo
+    build:
+      context: ./services/command/
+      dockerfile: Dockerfile
+    ports:
+      - "4005:4005"
+    environment:
+      - HOST=querymongo:27004
+
+    # END -> QUERY SERVICE

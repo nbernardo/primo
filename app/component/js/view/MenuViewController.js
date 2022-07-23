@@ -6,7 +6,18 @@ function MenuViewController(){
 
     this.renderMenu = function(viewTitle = "PPRIMO"){
 
-        document.getElementsByClassName("mobile-nav")[0].innerHTML = this.generateTopBar().replace("(current)",viewTitle);
+        let userName = "";
+        if(user.controller.getLoggedUser().name && user.controller.getLoggedUser().name.split(" ")){
+            userName = user.controller.getLoggedUser().name.split(" ")[0];
+        }
+
+        let logedUser = `
+            <div style="font-size:0.7rem; color:black;">
+                <i class="text-dark icofont-user-alt-7"></i>&nbsp; ${userName}
+            </div>
+        `
+        let viewTitleContent = `${viewTitle}${__PROWEBAUTH__.isUserLogged() ? logedUser : ''}`; 
+        document.getElementsByClassName("mobile-nav")[0].innerHTML = this.generateTopBar().replace("(current)",`${viewTitleContent}`);
         document.getElementsByClassName("bottom-nav")[0].innerHTML = this.generateBottomMenu();
         document.getElementsByClassName("second-nav")[0].innerHTML = this.generateMainMenu();
         
@@ -23,7 +34,7 @@ function MenuViewController(){
         
                 <div class="title d-flex align-items-center">
                     <a href="home.html" class="text-decoration-none text-dark d-flex align-items-center">
-                        <img class="osahan-logo mr-2" src="img/logo.svg">
+                        <img class="osahan-logo mr-2" src="img/pprimus.png" style="height:40px">
                         <h4 class="font-weight-bold text-success m-0">(current)</h4>
                     </a>
                     <p class="ml-auto m-0" style="visibility: hidden;">
@@ -32,7 +43,30 @@ function MenuViewController(){
                         <span class="badge badge-danger p-1 ml-1 small">50%</span>
                         </a>
                     </p>
-                    <a class="toggle ml-3" href="#"><i class="icofont-navigation-menu"></i></a>
+
+                    <a href="#" style="display: none;" data-toggle="modal" id="carrinhoModalButton" data-target="#carrinhoModal">&nbsp;</a>
+
+                    ${ 
+                        //user.adminView -> UserViewController.js
+                        user.adminView ? '' :
+                        `
+                        <span 
+                            onclick="carrinho.controller.showAppropriateView()" 
+                            class="bg-color-head text-white  rounded  profileButton" 
+                            style="right: 0; width: 70px; height: 42px;">
+                            
+                            <a href="#" class="text-decoration-none text-white">
+                            <i class="text-white icofont-shopping-cart" style="color: white; font-size: 14px;"></i> 
+                            <span id="itensOnCarrinho">
+                                ( <span>...</span> )
+                            </span>
+                            </a>
+                        </span>
+                        `
+                     }
+
+                    
+                    <a class="toggle ml-3" id="toggleButton" href="#"><i class="icofont-navigation-menu"></i></a>
                 </div>
                 <a href="search.html" class="text-decoration-none" style="display:none;">
                     <div class="input-group mt-3 rounded shadow-sm overflow-hidden bg-white">
@@ -47,55 +81,138 @@ function MenuViewController(){
 
     }
 
+    const authorizedMenu = function(section){
+
+        
+        if(__PROWEBAUTH__.isUserLogged() == null) return '';
+
+        const loggedInSections = {
+            "meusDadosOld" : `
+                        <li>
+                            <a href="my_account.html"><i class="icofont-ui-user mr-2"></i>Minha conta</a>
+                            <!--
+                            <ul>
+                                <li><a class="dropdown-item" href="my_account.html">Meus dados</a></li>
+                                <li><a class="dropdown-item" href="promos.html">Meus pontos</a></li>
+                                <li><a class="dropdown-item" href="my_address.html">Meu endereço</a></li>
+                                <li><a class="dropdown-item" href="terms_conditions.html">Termos & condições</a></li>
+                                <li><a class="dropdown-item" href="help_support.html">Ajuda</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="user.controller.logout()">Sair</a></li>
+                            </ul>
+                            -->
+                        </li>
+            `, 
+            "meusPontosOld" : `
+                    <li>
+                        <a href="index.html">
+                            <i class="icofont-money-bag mr-3" style="font-size: 20px;"></i> Meus Pontos
+                        </a>
+                    </li>
+            `,
+
+            "meusDados" : ``, 
+            "meusPontos" : ``,
+
+        }
+
+        return loggedInSections[section];
+        
+    }
+
+    this.sideMenuClose = function(){
+        document.getElementById("toggleButton").click();
+    }
+
+    this.showLoggedUserInvoices = function(){
+        this.sideMenuClose();
+        user.controller.getInvoices();
+    }
+
+
     this.generateMainMenu = function(){
 
+        let logoutButton = `
+            <li>
+                <a href="#a" class="dropdown-item" onclick="user.controller.logout()"><i class="icofont-logout mr-2"></i> Sair</a>
+            </li>
+        `;
+
         return `
-        
-            <li>
-                <a href="#"><i class="icofont-ui-user mr-2"></i>Minha conta</a>
-                <ul>
-                    <li><a class="dropdown-item" href="my_account.html">Meus dados</a></li>
-                    <li><a class="dropdown-item" href="promos.html">Meus pontos</a></li>
-                    <li><a class="dropdown-item" href="my_address.html">Meu endereço</a></li>
-                    <li><a class="dropdown-item" href="terms_conditions.html">Termos & condições</a></li>
-                    <li><a class="dropdown-item" href="help_support.html">Ajuda</a></li>
-                    <li><a class="dropdown-item" href="signin.html">Sair</a></li>
-                </ul>
-            </li>
+            
+                ${authorizedMenu("meusDados")}
+                ${authorizedMenu("meusPontos")}
 
-            <li><a href="index.html"><i class="icofont-money-bag mr-3" style="font-size: 20px;"></i> Meus Pontos</a></li>
-            <li><a href="index.html"><i class="icofont-smart-phone mr-2"></i> Início</a></li>
-            <li>
-            <a href="#"><i class="icofont-login mr-2"></i> Autenticação</a>
-            <ul>
-                <li><a class="dropdown-item" href="signin.html">Login</a></li>
-                <li><a class="dropdown-item" href="signup.html">Nova conta</a></li>
-                <li><a href="verification.html">Verificação</a></li>
-            </ul>
-            </li>
-            <li><a class="dropdown-item" href="cart.html">Carrinho de compras</a></li>
-            <li><a class="dropdown-item" href="listing.html">Lista de produtos</a></li>
+                <li><a href="index.html"><i class="icofont-cloud-refresh mr-2" style="font-size: 25px;"></i> Actualizar</a></li>
+                <!--
+                    <li>
+                        <a href="#"><i class="icofont-login mr-2"></i> Autenticação</a>
+                        <ul>
+                            <li><a class="dropdown-item" href="signin.html">Login</a></li>
+                            <li><a class="dropdown-item" href="signup.html">Nova conta</a></li>
+                            <li><a href="verification.html">Verificação</a></li>
+                        </ul>
+                    </li>
+                -->
+                <!--
+                    <li><a class="dropdown-item" href="cart.html">Carrinho de compras</a></li>
+                -->
+                <li onclick="">
+                    <span onclick="__VIEW_UTILS__.showAboutUs()">
+                        <i class="icofont-cube mr-2" style="font-size:20px;"></i>Nosso serviços
+                    </span>
+                </li>
 
-            <!-- 
-                <li><a class="dropdown-item" href="listing.html">Listing</a></li>
-                <li><a class="dropdown-item" href="product_details.html">Detail</a></li>
-                <li><a class="dropdown-item" href="picks_today.html">Trending</a></li>
-                <li><a class="dropdown-item" href="recommend.html">Recommended</a></li>
-                <li><a class="dropdown-item" href="fresh_vegan.html">Most Popular</a></li>
-                <li><a class="dropdown-item" href="checkout.html">Checkout</a></li>
-                <li><a class="dropdown-item" href="successful.html">Successful</a></li>
-            -->
+                ${
+                    //user.adminView -> UserViewController.js
+                    user.adminView ? 
+                    `
+                        <li onclick="">
+                            <span onclick="admin.controller.viewAdminProducts()">
+                                <i class="icofont-page mr-2" style="font-size:20px;"></i>Produtos
+                            </span>
+                        </li>
 
-            <li>
-                <a href="#"><i class="icofont-sub-listing mr-2"></i> Minhas solicitações</a>
-                <ul>
-                    <li><a class="dropdown-item" href="my_order.html">Factura</a></li>
-                    <li><a class="dropdown-item" href="status_complete.html">Entregues</a></li>
-                    <li><a class="dropdown-item" href="status_onprocess.html">EM Processo</a></li>
-                    <li><a class="dropdown-item" href="status_canceled.html">Cancelada</a></li>
-                    <li><a class="dropdown-item" href="review.html">Rever</a></li>
-                </ul>
-            </li>
+                        <li onclick="">
+                            <span onclick="admin.controller.addNewProduct()">
+                                <i class="icofont-ui-add mr-2" style="font-size:15px;"></i>Novo Produto
+                            </span>
+                        </li>
+                    ` : 
+                    ''
+                }
+
+                <!-- 
+                    <li><a class="dropdown-item" href="listing.html">Listing</a></li>
+                    <li><a class="dropdown-item" href="product_details.html">Detail</a></li>
+                    <li><a class="dropdown-item" href="picks_today.html">Trending</a></li>
+                    <li><a class="dropdown-item" href="recommend.html">Recommended</a></li>
+                    <li><a class="dropdown-item" href="fresh_vegan.html">Most Popular</a></li>
+                    <li><a class="dropdown-item" href="checkout.html">Checkout</a></li>
+                    <li><a class="dropdown-item" href="successful.html">Successful</a></li>
+                -->
+
+                ${
+                    __PROWEBAUTH__.isUserLogged() ? 
+                    `
+                        <li>
+                            <span onclick="(new MenuViewController()).showLoggedUserInvoices()">
+                                <i class="icofont-sub-listing mr-2"></i> Minhas solicitações
+                                <!--
+                                <ul>
+                                    <li><a class="dropdown-item" href="my_order.html">Factura</a></li>
+                                    <li><a class="dropdown-item" href="status_complete.html">Entregues</a></li>
+                                    <li><a class="dropdown-item" href="status_onprocess.html">EM Processo</a></li>
+                                    <li><a class="dropdown-item" href="status_canceled.html">Cancelada</a></li>
+                                    <li><a class="dropdown-item" href="review.html">Rever</a></li>
+                                </ul>
+                                -->
+                            </span>
+                        </li>
+
+                    ` : ''
+                }
+
+                ${__PROWEBAUTH__.isUserLogged() ? logoutButton : ''}
 
         `;
 
@@ -107,7 +224,7 @@ function MenuViewController(){
         return `
                 <li class="email">
                 <a class="text-success" href="home.html">
-                    <p class="h5 m-0"><i class="icofont-home text-success"></i></p>
+                    <p class="h5 m-0"><i class="icofont-cloud-refresh text-success"></i></p>
                     Início
                 </a>
                 </li>
@@ -126,6 +243,14 @@ function MenuViewController(){
         `;
 
     }
+
+
+    this.showProductsOptions = function(type){
+
+        (new ItemListViewController()).renderListItemsByType(type);
+
+    }
+
 
     return this;
 

@@ -1,10 +1,11 @@
-__CALENDAR__ = new ProwebCalendar();
+const __CALENDAR__ = new ProwebCalendar();
 
 
 function ProwebCalendar(){
 
     this.renderCalendarFor = function(viewContainer, obj){
         
+        /*
         __VIEW_UTILS__.loadJS("../component/js/mobiscroll.javascript.min.js");
         __VIEW_UTILS__.loadCss("../component/css/mobiscroll.javascript.min.css");
 
@@ -38,16 +39,25 @@ function ProwebCalendar(){
                 });
 
             }
+            */
+
+
+
+
+
             /*
             mobiscroll.datepicker('#dateTimeDeliver', {
                 controls: ['time'],
                 timeFormat: 'HH:mm',
                 touchUi: true
             });
-            */
-
-
+            
         }, 500);
+        */
+
+
+        
+
 
         /* 
         <script src="../component/js/mobiscroll.javascript.min.js"></script>

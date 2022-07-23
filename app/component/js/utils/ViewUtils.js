@@ -1,10 +1,19 @@
 const __VIEW_UTILS__ = new ViewUtils();
 
+String.prototype.capitalize = function(){
+    return this.charAt(0).toUpperCase() + this.substr(1);
+}
 
 
 function ViewUtils(){
 
     this.viewToHide = "";
+    this.spinningSuccessMessage = "";
+    this.afterSpinningContent = "";
+    this.spinnerFeedBack = false;
+    this.faildMessage = "";
+    this.onOk = "";
+
 
     this.showSpinnerForViewContainer = function(viewToHide){
 
@@ -61,7 +70,7 @@ function ViewUtils(){
                     <i class="text-white icofont-badge" style="color: white; font-size: 18px;"></i> Processando...
                 </a>
 
-                <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+                <div class="modal fade" id="successModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="successModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content bg-success">
                         <div class="modal-header">
@@ -76,7 +85,7 @@ function ViewUtils(){
                                 <div class="col-md-6">
                                 <div class="p-1 text-center">
                                     <i class="icofont-check-circled display-1 text-warning"></i>
-                                    <h3 class="text-white font-weight-bold"><span id="userMessage"></span> 🎉</h3>
+                                    <h4 class="text-white font-weight-bold"><span id="userMessage"></span> 🎉</h4>
                                     <p class="text-white" id="continueUserMessage"></p>
                                     <!-- <p class="text-white">Check your order status in <a href="complete_order.html" class="font-weight-bold text-decoration-none text-white">My Order</a> about next steps information.</p> -->
                                 </div>
@@ -199,16 +208,16 @@ function ViewUtils(){
                     <a href="#" data-toggle="modal" data-target="#loadingModal" id="processSpinnerButton" style="display: none;" class="text-decoration-none text-white">
                         <i class="text-white icofont-badge" style="color: white; font-size: 18px;"></i> Processando...
                     </a>
-                    <div class="modal fade" id="loadingModal" tabindex="-1" role="dialog" aria-labelledby="loadingModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="loadingModal"  aria-labelledby="loadingModalLabel">
                         <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="loadingModalLabel">Processando...</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
+                                <button type="button" id="spinnerCloseButton" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body" style="text-align: center;">
+                            <div class="modal-body" id="spinnerModalContent" style="text-align: center;">
 
                                 <div class="lds-roller">
                                     <div></div>
@@ -234,6 +243,121 @@ function ViewUtils(){
         `;
 
         document.getElementById("spinnerModalContainer").innerHTML = modal;
+        //setTimeout(() => {$('#loadingModal').modal({backdrop: 'static', keyboard: false})}, 500);
+
+    }
+
+    this.spinningContent = function(){
+
+        return `
+                <div class="lds-roller">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+
+                <div>
+                    ... Aguarde ...
+                </div>
+        `;
+
+    }
+
+    
+
+    this.showSpinnerWithNoEscape = function(obj){
+
+        this.spinningContentReset();
+        document.getElementById("spinnerCloseButton").style.display = "none";
+        $('#loadingModal').modal({backdrop: 'static', keyboard: false});
+
+        document.getElementById("loadingModalLabel").innerHTML = `${(obj.title || "Processando...")}`;
+        
+        this.spinnerFeedBack = obj.feedback;
+        this.spinningSuccessMessage = `${(obj.message1 ? obj.message1 : 'Processo terminado com sucesso')}`;
+        this.afterSpinningContent = `
+            <h6>${this.spinningSuccessMessage} !</h6>
+            <div style="margin: 20px auto">
+                <button type="button" class="btn btn-success btn-block btn-lg" class="close" data-dismiss="modal" aria-label="Close">Ok</button>
+            </div>
+        `;
+
+        this.faildMessage = `
+            <h6>${obj.failMessage} !</h6>
+            <div style="margin: 20px auto">
+                <button type="button" class="btn btn-danger btn-block btn-lg" class="close" data-dismiss="modal" aria-label="Close">Ok</button>
+            </div>
+        `;
+
+    }    
+
+    this.closeModalAlert = function(){
+        this.onOk();
+        (new ViewUtils()).spinningContentReset();
+        document.getElementById("spinnerCloseButton").click();
+    }
+
+    this.showModalAlert = function({failMessage, message1, title, onOk}){
+        
+        this.onOk = onOk;
+
+        document.getElementById("spinnerModalContent").innerHTML = `
+            <h6>${failMessage} !</h6>
+            <div style="margin: 20px auto">
+                <button type="button" onclick="__VIEW_UTILS__.closeModalAlert();" class="btn btn-danger btn-block btn-lg">Ok</button>
+            </div>
+        `;
+        document.getElementById("spinnerCloseButton").style.display = "";
+        $('#loadingModal').modal({backdrop: 'static', keyboard: false});
+        document.getElementById("loadingModalLabel").innerHTML = `${(title || "Processando...")}`;
+        
+    }
+
+    this.spinningContentReset = function(){
+        document.getElementById("spinnerModalContent").innerHTML = this.spinningContent()
+    }
+
+    this.showSpinnerFeedback = function(){
+
+        if(this.spinnerFeedBack){
+            setTimeout(() => {
+                document.getElementById("spinnerModalContent").innerHTML = this.afterSpinningContent;    
+            },500);
+        }
+
+    }
+
+    this.showSpinnerFail = function(){
+
+        if(this.spinnerFeedBack){
+            setTimeout(() => {
+                document.getElementById("spinnerModalContent").innerHTML = this.faildMessage;    
+            },500);
+        }
+
+    }
+
+
+    this.showSpinner = function(obj){
+
+        //if(obj.message1) document.getElementById("userMessage").innerHTML = obj.message1;
+        document.getElementById("processSpinnerButton").click();
+
+    }
+
+    this.hideSpinner = function(){
+        setTimeout(() => {
+            document.getElementById("loadingModal").getElementsByTagName("button")[0].click();
+        },500);
+    }
+
+
+    this.mapView = function(){
 
     }
 
@@ -255,6 +379,104 @@ function ViewUtils(){
         document.getElementsByTagName("head")[0].appendChild(jsObj);
 
     }
+
+
+    this.emptyModal = function(){
+
+        return `
+        
+            <div class="modal fade" id="emptyModal" style="padding: 1rem;" tabindex="-1" role="dialog" aria-labelledby="emptyModalLbl" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="emptyModalLbl">Carrinho de compras</h5>
+                            <button type="button" id="emptyModalCloseBtn" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <div class="modal-body">
+
+                            <!-- CARRINHO CONTENT -->
+
+                            <section class="py-4 osahan-main-body">
+                                
+                            </section>
+
+                        </div>
+                    
+                    </div>
+                </div>
+            </div>
+
+        `;
+
+
+    }
+
+    this.clearEmptyModalContent = function(){
+        document.getElementById("epmtyModalBody").innerHTML = "";
+    }
+
+
+    this.showEmptyModel = function({content, title, removePadding, doNotClose = false, delay = 0}){
+
+        console.log("Passou o clising de: ",doNotClose);
+        
+        document.getElementById("emptyModalLabel").innerHTML = title || "---";
+
+        if(doNotClose == false && delay == 0)
+            document.getElementById("emptyModalButton").click();
+        
+        document.getElementById("epmtyModalBody").innerHTML = content;
+        
+        setTimeout(() => {            
+            //Check if modal is closed
+            if(!document.getElementById("emptyModal").classList.contains("show")){
+                document.getElementById("emptyModalButton").click();
+            }
+
+        },delay);
+        
+
+        if(removePadding){
+            document.getElementById("epmtyModalBody").style.padding = "0px";
+        }
+
+    }
+
+
+    this.showAboutUs = function(){
+
+        (new MenuViewController()).sideMenuClose();
+
+        __VIEW_UTILS__.showSpinnerWithNoEscape({
+            feedback: true,
+            title: "Registo de endereço",
+            message1: `Endereço registado com sucesso`
+        });
+
+        (new ProwebRequest()).getRequest(`${BASE_IP}:3000/template/about.html`,null,(content) => {
+
+            __VIEW_UTILS__.hideSpinner();
+            
+            setTimeout(() => {
+
+                __VIEW_UTILS__.showEmptyModel({content, title: `Nosso serviços`});
+
+            },500);
+            
+            /*
+            setTimeout(() => {
+
+    
+             }, 500)
+             */
+            
+        })
+
+    }
+
 
     return this;
 

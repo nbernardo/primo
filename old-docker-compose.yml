@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+
+  mongoservice:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo/data/:/data/db
+
+  front:
+    image: primo:app
+    build:
+      context: ./app/
+      dockerfile: Dockerfile
+    ports: 
+      - "80:80"    
+
+  promo:
+    depends_on: 
+      - mongoservice
+    image: promo:service1
+    build: 
+      context: ./services/promos/
+      dockerfile: Dockerfile
+    ports: 
+      - "4000:4000"
+  
+  user:
+    depends_on: 
+      - mongoservice
+    image: user:service1
+    build:
+      context: ./services/user/
+      dockerfile: Dockerfile
+    ports: 
+      - "4001:4001"
